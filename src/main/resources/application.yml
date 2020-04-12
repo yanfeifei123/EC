@@ -1,0 +1,99 @@
+
+#http:
+#  port: 7001
+
+server:
+  port: 443   # 默认https 443端口
+  ssl:
+     key-store: classpath:xyfantuan.cn.pfx
+     key-store-password: Aaa!1234
+     key-store-type: PKCS12
+  servlet:
+     context-path: /
+
+spring:
+#数据库配置
+  datasource:
+    primary:
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.zaxxer.hikari.HikariDataSource
+      url: jdbc:mysql://127.0.0.1:3305/ec?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
+#      url: jdbc:mysql://111.231.190.252:3305/ec?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
+      username: ec
+      password: Aaa!1234
+      hikari:
+         minimum-idle: 10
+         maximum-pool-size: 60
+         auto-commit: true
+         idle-timeout: 600000
+         pool-name: DatebookHikariCP
+         max-lifetime: 1800000
+         connection-timeout: 30000
+
+    secondary:
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.zaxxer.hikari.HikariDataSource
+      url: jdbc:mysql://127.0.0.1:3305/iteae?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
+#      url: jdbc:mysql://10.111.117.225:3307/iteae?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
+#      username: kshjk
+#      password: Nbs@2010
+      username: root
+      password: Gntz@2019
+      hikari:
+         minimum-idle: 10
+         maximum-pool-size: 60
+         auto-commit: true
+         idle-timeout: 600000
+         pool-name: DatebookHikariCP
+         max-lifetime: 1800000
+         connection-timeout: 30000
+
+  jpa:
+    database: mysql
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update  #validate | update | create | create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+#         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  mvc:
+     view:
+        prefix: /view
+  thymeleaf:
+       prefix: classpath:/view/
+       cache: false
+       encoding: UTF-8
+
+
+
+parameterconf:
+    # 代表这个JWT的接收对象,存入audience
+    clientId: 098f6bcd4621d373cade4e832627b4f6
+    # 密钥, 经过Base64加密, 可自行替换
+    base64Secret: MDk4ZjZiY2Q0NjIxZDM3M2NhZGU0ZTgzMjYyN2I0ZjY=
+    # JWT的签发主体，存入issuer
+    name: restapiuser
+    # 过期时间，时间戳
+    expiresSecond: 120000  # 分钟
+
+    appid: wx9458a422912a3de5  # 小程序id
+
+    appsecret: f608de4a08b04b276e7fa84e56a93b79  #小程序API
+
+    bnumber: 1584671801   #商户id
+
+    sessionHost: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
+
+    notify_url: http://www.weixin.qq.com/wxpay/pay.php
+
+    paykey: 40288184715a5d4d01715a5d4d460000  #商户API
+
+    unifiedorderurl: https://api.mch.weixin.qq.com/pay/unifiedorder
+
+
+
+fileupload:
+  upload-TypesOf: bmp,jpg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,WMF,webp
+

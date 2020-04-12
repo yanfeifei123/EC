@@ -1,0 +1,166 @@
+[{
+  "id": "id1",
+  "name": "热销",
+  "category": [{
+    "id": "category1_id1",
+    "name": "小炒肉盖饭",
+    "awesome": "1",
+    "month": "2",
+    "imagepath": "http://img14.yiguoimg.com/e/albums/2017/170629/153403897729786589_800x468.jpg",
+    "price": 12,
+    "unitprice":15,
+    "num":0,
+    "bzcost":1,
+    "psfcost":1
+  },
+    {
+      "id": "category2_id1",
+      "name": "香辣鸡翅",
+      "awesome": "200",
+      "month": "401",
+      "imagepath": "http://img12.yiguoimg.com/e/albums/2017/170626/153403897618375386_596x379.jpg",
+      "price": 16,
+      "unitprice":30,
+      "num":0,
+      "bzcost":1,
+      "psfcost":1
+    },
+    {
+      "id": "category3_id1",
+      "name": "小炒肉盖饭",
+      "awesome": "1",
+      "month": "2",
+      "imagepath": "http://img14.yiguoimg.com/e/albums/2017/170629/153403897729786589_800x468.jpg",
+      "price": 26,
+      "unitprice":30,
+      "num":0,
+      "bzcost":1,
+      "psfcost":1
+    },
+    {
+      "id": "category4_id1",
+      "name": "香辣鸡翅",
+      "awesome": "200",
+      "month": "401",
+      "imagepath": "http://img12.yiguoimg.com/e/albums/2017/170626/153403897618375386_596x379.jpg",
+      "price": 16,
+      "unitprice":30,
+      "num":0,
+      "bzcost":1,
+      "psfcost":1
+    }
+  ]
+},
+  {
+    "id": "id2",
+    "name": "特价",
+    "category": [
+
+      {
+        "id": "category1_id2",
+        "name": "小炒肉盖饭",
+        "awesome": "1",
+        "month": "2",
+        "imagepath": "http://img14.yiguoimg.com/e/albums/2017/170629/153403897729786589_800x468.jpg",
+        "price": 26,
+        "unitprice":30,
+        "num":0,
+        "bzcost":1,
+        "psfcost":1
+      },
+      {
+        "id": "category2_id2",
+        "name": "香辣鸡翅",
+        "awesome": "200",
+        "month": "401",
+        "imagepath": "http://img12.yiguoimg.com/e/albums/2017/170626/153403897618375386_596x379.jpg",
+        "price": 16,
+        "unitprice":30,
+        "num":0,
+        "bzcost":1,
+        "psfcost":1
+      },
+      {
+        "id": "category3_id2",
+        "name": "小炒肉盖饭",
+        "awesome": "1",
+        "month": "2",
+        "imagepath": "http://img14.yiguoimg.com/e/albums/2017/170629/153403897729786589_800x468.jpg",
+        "price": 26,
+        "unitprice":30,
+        "num":0,
+        "bzcost":1,
+        "psfcost":1
+      },
+      {
+        "id": "category4_id2",
+        "name": "香辣鸡翅",
+        "awesome": "200",
+        "month": "401",
+        "imagepath": "http://img12.yiguoimg.com/e/albums/2017/170626/153403897618375386_596x379.jpg",
+        "price": 16,
+        "unitprice":30,
+        "num":0,
+        "bzcost":1,
+        "psfcost":1
+      }
+
+    ]
+  },
+  {
+    "id": "id3",
+    "name": "招牌菜",
+    "category": [
+
+      {
+        "id": "category1_id3",
+        "name": "小炒肉盖饭",
+        "awesome": "1",
+        "month": "2",
+        "imagepath": "http://img14.yiguoimg.com/e/albums/2017/170629/153403897729786589_800x468.jpg",
+        "price": 26,
+        "unitprice":30,
+        "num":0,
+        "bzcost":1,
+        "psfcost":1
+      },
+      {
+        "id": "category2_id3",
+        "name": "香辣鸡翅",
+        "awesome": "200",
+        "month": "401",
+        "imagepath": "http://img12.yiguoimg.com/e/albums/2017/170626/153403897618375386_596x379.jpg",
+        "price": 16,
+        "unitprice":30,
+        "num":0,
+        "bzcost":1,
+        "psfcost":1
+      },
+      {
+        "id": "category3_id3",
+        "name": "小炒肉盖饭",
+        "awesome": "1",
+        "month": "2",
+        "imagepath": "http://img14.yiguoimg.com/e/albums/2017/170629/153403897729786589_800x468.jpg",
+        "price": 26,
+        "unitprice":30,
+        "num":0,
+        "bzcost":1,
+        "psfcost":1
+      },
+      {
+        "id": "category4_id3",
+        "name": "香辣鸡翅",
+        "awesome": "200",
+        "month": "401",
+        "imagepath": "http://img12.yiguoimg.com/e/albums/2017/170626/153403897618375386_596x379.jpg",
+        "price": 16,
+        "unitprice":30,
+        "num":0,
+        "bzcost":1,
+        "psfcost":1
+      }
+
+    ]
+  }
+]
