@@ -27,6 +27,12 @@ public class Business extends BaseEntity<Long> {
     @Column(columnDefinition = "varchar(220) comment '备注'")
     private String note;
 
+    @Column(columnDefinition = "decimal comment '配送费'")
+    private float psfcost;
+
+    @Column(columnDefinition = "decimal comment '首单用户-x元'")
+    private float firstorder;
+
 
     public String getName() {
         return name;
@@ -66,5 +72,22 @@ public class Business extends BaseEntity<Long> {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+
+    public float getPsfcost() {
+        return psfcost;
+    }
+
+    public void setPsfcost(float psfcost) {
+        this.psfcost = psfcost;
+    }
+
+    public float getFirstorder() {
+        return firstorder;
+    }
+
+    public void setFirstorder(float firstorder) {
+        this.firstorder = firstorder;
     }
 }

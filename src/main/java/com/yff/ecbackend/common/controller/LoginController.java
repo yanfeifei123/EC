@@ -129,9 +129,9 @@ public class LoginController {
     @RequestMapping("/binding/mobilePhone")
     @ResponseBody
     public Object login(HttpServletRequest request, @Param("encryptedData") String encryptedData, @Param("iv") String iv, @Param("session_key") String session_key, String openid) {
-        System.out.println("encryptedData:"+encryptedData);
-        System.out.println("iv:"+iv);
-        System.out.println("session_key:"+session_key);
+//        System.out.println("encryptedData:"+encryptedData);
+//        System.out.println("iv:"+iv);
+//        System.out.println("session_key:"+session_key);
         JSONObject obj = this.weChatService.getPhoneNumber(session_key, encryptedData, iv);
         String phone = obj.get("phoneNumber").toString();
         User user = this.uuserService.getUser(openid);

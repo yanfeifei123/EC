@@ -9,9 +9,9 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "b_categorys")
-@org.hibernate.annotations.Table(appliesTo = "b_categorys",comment = "商品表")
-public class Bcategorys extends BaseEntity<Long> {
+@Table(name = "b_product")
+@org.hibernate.annotations.Table(appliesTo = "b_product",comment = "商品表")
+public class Bproducts extends BaseEntity<Long> {
 
 
     @Column(columnDefinition = "int(255) comment '关联商家id'")
@@ -24,16 +24,18 @@ public class Bcategorys extends BaseEntity<Long> {
     @Column(columnDefinition = "varchar(255) comment '商品名称'")
     private String name;
 
-    @Column(columnDefinition = "decimal comment '现价'")
-    private float currentprice;
+    @Column(columnDefinition = "decimal comment '单价'")
+    private float price;
 
 
-    @Column(columnDefinition = "decimal comment '原价'")
-    private float unitprice;
+    @Column(columnDefinition = "decimal comment '会员价'")
+    private float memberprice;
 
 
-    @Column(columnDefinition = "varchar(50) comment '折扣'")
-    private float discount;
+    @Column(columnDefinition = "decimal comment '备注'")
+    private String note;
+
+
 
     public Long getBusinessid() {
         return businessid;
@@ -59,27 +61,28 @@ public class Bcategorys extends BaseEntity<Long> {
         this.name = name;
     }
 
-    public float getCurrentprice() {
-        return currentprice;
+
+    public float getPrice() {
+        return price;
     }
 
-    public void setCurrentprice(float currentprice) {
-        this.currentprice = currentprice;
+    public void setPrice(float price) {
+        this.price = price;
     }
 
-    public float getUnitprice() {
-        return unitprice;
+    public float getMemberprice() {
+        return memberprice;
     }
 
-    public void setUnitprice(float unitprice) {
-        this.unitprice = unitprice;
+    public void setMemberprice(float memberprice) {
+        this.memberprice = memberprice;
     }
 
-    public float getDiscount() {
-        return discount;
+    public String getNote() {
+        return note;
     }
 
-    public void setDiscount(float discount) {
-        this.discount = discount;
+    public void setNote(String note) {
+        this.note = note;
     }
 }
