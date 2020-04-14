@@ -76,7 +76,7 @@ parameterconf:
     # JWT的签发主体，存入issuer
     name: restapiuser
     # 过期时间，时间戳
-    expiresSecond: 120000  # 分钟
+    expiresSecond: 1800000  # 毫秒
 
     appid: wx9458a422912a3de5  # 小程序id
 

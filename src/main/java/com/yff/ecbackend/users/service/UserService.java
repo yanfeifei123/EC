@@ -6,12 +6,15 @@ import com.yff.core.jparepository.service.BaseService;
 import com.yff.core.safetysupport.aes.Aes;
 import com.yff.core.util.CustomException;
 import com.yff.core.util.ToolUtil;
+import com.yff.ecbackend.business.entity.Business;
+import com.yff.ecbackend.business.service.BusinessService;
+import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.User;
 import com.yff.ecbackend.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.*;
 
 @Service
 public class UserService extends BaseService<User, Long> {
@@ -19,10 +22,17 @@ public class UserService extends BaseService<User, Long> {
     @Autowired
     private UserRepository uuserRepository;
 
+    @Autowired
+    private UorderService uorderService;
+
+    @Autowired
+    private BusinessService businessService;
 
     public User uLogin(String userInfo, String openid) {
+
         User uuser = this.uuserRepository.findByOnenid(openid);
         JSONObject jsonObject = JSON.parseObject(userInfo);
+
         if (ToolUtil.isEmpty(uuser)) {
             uuser = new User();
             uuser.setBuildtime(new Date());
@@ -36,7 +46,10 @@ public class UserService extends BaseService<User, Long> {
 
 
     public User getUser(String openid) {
+        System.out.println(openid);
         User uuser = this.findByUserid(openid);
+        String user = JSON.toJSONString(uuser);
+        System.out.println(user);
         if (ToolUtil.isEmpty(uuser)) {
             uuser = new User();
             uuser.setOpenid(openid);
@@ -57,13 +70,14 @@ public class UserService extends BaseService<User, Long> {
 
     /**
      * 商家用户验证
+     *
      * @param account
      * @param password
      * @param sessionKey
      * @param iv
      * @return
      */
-    public User bLogiin(String account, String password, String sessionKey, String iv)throws CustomException {
+    public User bLogiin(String account, String password, String sessionKey, String iv) throws CustomException {
         Aes aes = new Aes();
 
         String a = aes.decrypt(account, sessionKey, iv);
@@ -74,13 +88,23 @@ public class UserService extends BaseService<User, Long> {
         } else {
             String p = aes.decrypt(password, sessionKey, iv);
             String pa = this.uuserRepository.findByPassword(p, user.getOpenid());
-//            System.out.println(a+"  "+p+"  "+pa+"  "+user.getOpenid());
-            if(!pa.equals(user.getPassword())){
+//            System.out.println(pa);
+            if (!pa.equals(user.getPassword())) {
                 throw new CustomException("账号密码错误!");
             }
         }
         return user;
 
+    }
+
+    public float onisfirstorder(String businessid, String openid) {
+        List<Uorder> uorderList = this.uorderService.findUserOrder(openid);
+        float firstorder = 0;
+        if (ToolUtil.isEmpty(uorderList)) {
+            Business business = businessService.findOne(Long.valueOf(businessid));
+            firstorder = business.getFirstorder();
+        }
+        return firstorder;
     }
 
 }

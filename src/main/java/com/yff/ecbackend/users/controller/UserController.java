@@ -3,12 +3,14 @@ package com.yff.ecbackend.users.controller;
 
 import com.yff.ecbackend.users.entity.Uaddress;
 import com.yff.ecbackend.users.service.UaddressService;
+import com.yff.ecbackend.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
+import java.util.* ;
+
 
 @Controller
 public class UserController {
@@ -16,6 +18,8 @@ public class UserController {
 
     @Autowired
     private UaddressService uaddressService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/findByUaddress")
     @ResponseBody
@@ -50,6 +54,16 @@ public class UserController {
         Uaddress uaddress = this.uaddressService.findOne(Long.valueOf(id));
         uaddress.setBuildtime(new Date());
         return this.uaddressService.update(uaddress);
+    }
+
+
+    @PostMapping("/onisfirstorder")
+    @ResponseBody
+    public Object onisfirstorder(String businessid,String openid){
+        Map<String,Object> map=new HashMap<>();
+        float firstorder= this.userService.onisfirstorder(businessid,openid);
+        map.put("firstorder",firstorder);
+        return map;
     }
 
 }

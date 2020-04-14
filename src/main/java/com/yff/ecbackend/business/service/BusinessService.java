@@ -19,6 +19,8 @@ public class BusinessService extends BaseService<Business, Long> {
     private BusinessRepository businessRepository;
 
 
+
+
     public Object getgoods(String businessid) {
         try {
             ClassPathResource resource = new ClassPathResource("/static/commoditys.json");
@@ -33,5 +35,10 @@ public class BusinessService extends BaseService<Business, Long> {
         }
         return null;
     }
+
+
+
+
+
 }
 

@@ -4,6 +4,8 @@ import com.yff.core.jparepository.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.*;
 
 @Entity
 @Table(name = "b_category")
@@ -54,5 +56,25 @@ public class Bcategory extends BaseEntity<Long> {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+
+    /**
+     * 类别下的商品
+     */
+    @Transient
+    private List<Bproducts> bproductsitems = new ArrayList<>();
+
+    /**
+     * 类别下的商品
+     */
+    public List<Bproducts> getBproductsitems() {
+        return bproductsitems;
+    }
+    /**
+     * 类别下的商品
+     */
+    public void setBproductsitems(List<Bproducts> bproductsitems) {
+        this.bproductsitems = bproductsitems;
     }
 }

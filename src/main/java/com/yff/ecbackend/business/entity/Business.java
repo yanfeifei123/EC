@@ -27,10 +27,10 @@ public class Business extends BaseEntity<Long> {
     @Column(columnDefinition = "varchar(220) comment '备注'")
     private String note;
 
-    @Column(columnDefinition = "decimal comment '配送费'")
+    @Column(columnDefinition = "decimal default 0 comment '配送费'")
     private float psfcost;
 
-    @Column(columnDefinition = "decimal comment '首单用户-x元'")
+    @Column(columnDefinition = "decimal default 0 comment '首单用户-x元'")
     private float firstorder;
 
 

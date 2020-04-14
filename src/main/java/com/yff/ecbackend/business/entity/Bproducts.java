@@ -24,17 +24,19 @@ public class Bproducts extends BaseEntity<Long> {
     @Column(columnDefinition = "varchar(255) comment '商品名称'")
     private String name;
 
-    @Column(columnDefinition = "decimal comment '单价'")
+    @Column(columnDefinition = "decimal(6,2) comment '单价'")
     private float price;
 
 
-    @Column(columnDefinition = "decimal comment '会员价'")
+    @Column(columnDefinition = "decimal(6,2) comment '会员价'")
     private float memberprice;
 
 
-    @Column(columnDefinition = "decimal comment '备注'")
+    @Column(columnDefinition = "varchar(255) comment '备注'")
     private String note;
 
+    @Column(columnDefinition = "int(255) comment '关联上级id（组合套餐）'")
+    private Long pid;
 
 
     public Long getBusinessid() {
@@ -84,5 +86,13 @@ public class Bproducts extends BaseEntity<Long> {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
     }
 }
