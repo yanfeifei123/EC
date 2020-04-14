@@ -13,7 +13,7 @@ public class User extends BaseEntity<Long> {
 
 
     @Column(columnDefinition = "varchar(255) comment '微信用户昵称'")
-    private String nickName;
+    private String nickname;
 
 
     @Column(columnDefinition = "int comment '性别'")
@@ -21,7 +21,7 @@ public class User extends BaseEntity<Long> {
 
 
     @Column(columnDefinition = "varchar(255) comment '用户头像'")
-    private String avatarUrl;
+    private String avatarurl;
 
 
     @Column(columnDefinition = "varchar(50) comment '手机号码'")
@@ -43,12 +43,20 @@ public class User extends BaseEntity<Long> {
     private String password;
 
 
-    public String getNickName() {
-        return nickName;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getAvatarurl() {
+        return avatarurl;
+    }
+
+    public void setAvatarurl(String avatarurl) {
+        this.avatarurl = avatarurl;
     }
 
     public int getGender() {
@@ -59,13 +67,7 @@ public class User extends BaseEntity<Long> {
         this.gender = gender;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
 
     public String getPhone() {
         return phone;

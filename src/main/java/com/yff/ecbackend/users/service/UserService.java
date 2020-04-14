@@ -28,9 +28,9 @@ public class UserService extends BaseService<User, Long> {
             uuser.setBuildtime(new Date());
         }
         uuser.setOpenid(openid);
-        uuser.setAvatarUrl(jsonObject.getString("avatarUrl"));
+        uuser.setAvatarurl(jsonObject.getString("avatarUrl"));
         uuser.setGender(Integer.parseInt(jsonObject.getString("gender")));
-        uuser.setNickName(jsonObject.getString("nickName"));
+        uuser.setNickname(jsonObject.getString("nickName"));
         return this.update(uuser);
     }
 
