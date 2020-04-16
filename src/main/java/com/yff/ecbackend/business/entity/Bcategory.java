@@ -63,18 +63,18 @@ public class Bcategory extends BaseEntity<Long> {
      * 类别下的商品
      */
     @Transient
-    private List<Bproducts> bproductsitems = new ArrayList<>();
+    private List<Bproduct> bproductsitems = new ArrayList<>();
 
     /**
      * 类别下的商品
      */
-    public List<Bproducts> getBproductsitems() {
+    public List<Bproduct> getBproductsitems() {
         return bproductsitems;
     }
     /**
      * 类别下的商品
      */
-    public void setBproductsitems(List<Bproducts> bproductsitems) {
+    public void setBproductsitems(List<Bproduct> bproductsitems) {
         this.bproductsitems = bproductsitems;
     }
 }

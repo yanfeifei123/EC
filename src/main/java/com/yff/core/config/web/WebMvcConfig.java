@@ -36,6 +36,9 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         registry.addInterceptor(new JwtInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns("/static/**")
                 .excludePathPatterns("/view/**");
+
+
+
     }
 
     @Override

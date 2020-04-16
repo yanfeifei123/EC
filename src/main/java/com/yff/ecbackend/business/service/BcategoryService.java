@@ -1,14 +1,25 @@
 package com.yff.ecbackend.business.service;
 
 import com.yff.core.jparepository.service.BaseService;
+import com.yff.core.safetysupport.parameterconf.Parameterconf;
+import com.yff.core.util.DateUtil;
 import com.yff.ecbackend.business.entity.Bcategory;
-import com.yff.ecbackend.business.entity.Bproducts;
+import com.yff.ecbackend.business.entity.Bphoto;
+import com.yff.ecbackend.business.entity.Bproduct;
 import com.yff.ecbackend.business.repository.BcategoryRepository;
+import com.yff.ecbackend.common.service.WeChatService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+
 @Service
 public class BcategoryService extends BaseService<Bcategory, Long> {
+
+    @Autowired
+    private Parameterconf parameterconf;
 
     @Autowired
     private BcategoryRepository bcategoryRepository;
@@ -16,13 +27,62 @@ public class BcategoryService extends BaseService<Bcategory, Long> {
     @Autowired
     private BproductsService bproductsService;
 
-    public List<Bcategory> findbusinessAll(Long businessid){
+    @Autowired
+    private BphotoService bphotoService;
+
+    @Autowired
+    private WeChatService weChatService;
+
+    public List<Bcategory> findbusinessAll(HttpServletRequest request,Long businessid) {
+
+        System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         List<Bcategory> bcategoryList = this.bcategoryRepository.findbusinessAll(businessid);
-        for(Bcategory bcategory : bcategoryList){
-            List<Bproducts>  bproductsitems = bproductsService.findBproducts(bcategory.getId());
+        List<Bphoto> bphotos = this.bphotoService.findAll();
+        for (Bcategory bcategory : bcategoryList) {
+            List<Bproduct> bproductsitems = bproductsService.findBproducts(bcategory.getId());
+            for(Bproduct bproducts : bproductsitems){
+                String imagepath = this.findByBphoto(request,bphotos,bproducts.getId());
+                bproducts.setImagepath(imagepath);
+//                System.out.println(imagepath);
+            }
             bcategory.setBproductsitems(bproductsitems);
         }
+
+        System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+
         return bcategoryList;
     }
+
+
+    private String findByBphoto(HttpServletRequest request, List<Bphoto> bphotos, Long fkid) {
+        String https="https://"+weChatService.getIp(request)+":"+parameterconf.getServerPort();
+        String imagepath="";
+        for (Bphoto bphoto : bphotos) {
+            if (bphoto.getFkid() == fkid) {
+                imagepath=https+bphoto.getPath();
+                break;
+            }
+        }
+        return imagepath;
+    }
+
+
+    /**
+     * 通过内存查询提高效率
+     *
+     * @param allBproducts
+     * @param categoryid
+     * @return
+     */
+    private List<Bproduct> findByBproducts(List<Bproduct> allBproducts, Long categoryid) {
+        List<Bproduct> bproductsitems = new ArrayList<>();
+        for (Bproduct bproducts : allBproducts) {
+            if (bproducts.getCategoryid().equals(categoryid)) {
+                bproductsitems.add(bproducts);
+            }
+        }
+        return bproductsitems;
+    }
+
 
 }

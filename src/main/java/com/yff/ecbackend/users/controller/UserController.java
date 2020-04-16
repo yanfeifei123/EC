@@ -60,10 +60,7 @@ public class UserController {
     @PostMapping("/onisfirstorder")
     @ResponseBody
     public Object onisfirstorder(String businessid,String openid){
-        Map<String,Object> map=new HashMap<>();
-        float firstorder= this.userService.onisfirstorder(businessid,openid);
-        map.put("firstorder",firstorder);
-        return map;
+        return  this.userService.onisfirstorder(businessid,openid);
     }
 
 }

@@ -43,8 +43,8 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         final String authHeader = request.getHeader(JwtTokenUtil.AUTH_HEADER_KEY);
 
         if (StringUtils.isBlank(authHeader) || !authHeader.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
-            System.out.println("### 用户未登录，请先登录 ###"+url);
-            throw new CustomException(USER_NOT_LOGGED_IN);
+            System.out.println("### 用户未登录，请先登录 ###   "+url);
+//            throw new CustomException(USER_NOT_LOGGED_IN);
         }
         final String token = authHeader.substring(6);
         if (parameterconf == null) {

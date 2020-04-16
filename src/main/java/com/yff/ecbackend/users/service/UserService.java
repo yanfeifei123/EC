@@ -97,14 +97,19 @@ public class UserService extends BaseService<User, Long> {
 
     }
 
-    public float onisfirstorder(String businessid, String openid) {
+    public Map<String,Object> onisfirstorder(String businessid, String openid) {
+        Map<String,Object> map =new HashMap<>();
         List<Uorder> uorderList = this.uorderService.findUserOrder(openid);
         float firstorder = 0;
+        float psfcost=0;
+        Business business = businessService.findOne(Long.valueOf(businessid));
         if (ToolUtil.isEmpty(uorderList)) {
-            Business business = businessService.findOne(Long.valueOf(businessid));
             firstorder = business.getFirstorder();
         }
-        return firstorder;
+        psfcost=business.getPsfcost();
+        map.put("firstorder",firstorder);
+        map.put("psfcost",psfcost);
+        return map;
     }
 
 }

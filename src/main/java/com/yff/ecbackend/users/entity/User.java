@@ -42,6 +42,8 @@ public class User extends BaseEntity<Long> {
     @Column(columnDefinition = "varchar(250) comment '密码'")
     private String password;
 
+    @Column(columnDefinition = "varchar(20) DEFAULT '0' comment '是否会员(0否,1是)'")
+    private String member;
 
     public String getNickname() {
         return nickname;
@@ -118,5 +120,14 @@ public class User extends BaseEntity<Long> {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    public String getMember() {
+        return member;
+    }
+
+    public void setMember(String member) {
+        this.member = member;
     }
 }

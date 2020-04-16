@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/business")
 public class BusinessController {
@@ -26,8 +28,9 @@ public class BusinessController {
 
     @RequestMapping("/findbusinessAll")
     @ResponseBody
-    public Object findbusinessAll(String businessid){
-        return bcategoryService.findbusinessAll(Long.valueOf(businessid));
+    public Object findbusinessAll(HttpServletRequest request, String businessid){
+
+        return bcategoryService.findbusinessAll(request,Long.valueOf(businessid));
     }
 
 

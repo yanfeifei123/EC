@@ -6,12 +6,13 @@ import com.yff.core.jparepository.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 @Entity
 @Table(name = "b_product")
 @org.hibernate.annotations.Table(appliesTo = "b_product",comment = "商品表")
-public class Bproducts extends BaseEntity<Long> {
+public class Bproduct extends BaseEntity<Long> {
 
 
     @Column(columnDefinition = "int(255) comment '关联商家id'")
@@ -37,6 +38,17 @@ public class Bproducts extends BaseEntity<Long> {
 
     @Column(columnDefinition = "int(255) comment '关联上级id（组合套餐）'")
     private Long pid;
+
+    @Column(columnDefinition = "varchar(20) DEFAULT '0' comment '是否是套餐(0否，1是)'")
+    private String packages;
+
+
+
+    @Transient
+    private String imagepath;
+
+    @Transient
+    private int num=0;
 
 
     public Long getBusinessid() {
@@ -94,5 +106,29 @@ public class Bproducts extends BaseEntity<Long> {
 
     public void setPid(Long pid) {
         this.pid = pid;
+    }
+
+    public String getImagepath() {
+        return imagepath;
+    }
+
+    public void setImagepath(String imagepath) {
+        this.imagepath = imagepath;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public String getPackages() {
+        return packages;
+    }
+
+    public void setPackages(String packages) {
+        this.packages = packages;
     }
 }
