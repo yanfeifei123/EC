@@ -19,7 +19,7 @@ public class Uorder extends BaseEntity<Long> {
     private String openid;
 
 
-    @Column(columnDefinition = "decimal comment '订单总金额'")
+    @Column(columnDefinition = "decimal(6,2) comment '订单总金额'")
     private float totalfee;
 
     @Column(columnDefinition = "varchar(5000) comment '订单主题'")
@@ -27,6 +27,10 @@ public class Uorder extends BaseEntity<Long> {
 
     @Column(columnDefinition = "int(255) comment '商家id'")
     private Long bid;
+
+    @Column(columnDefinition = "int(255) comment '分店id'")
+    private Long branchid;
+
 
     @Column(columnDefinition = "varchar(30) comment '状态(0未支付，1已支付)'")
     private String status;
@@ -111,5 +115,13 @@ public class Uorder extends BaseEntity<Long> {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Long getBranchid() {
+        return branchid;
+    }
+
+    public void setBranchid(Long branchid) {
+        this.branchid = branchid;
     }
 }

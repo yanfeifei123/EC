@@ -24,7 +24,7 @@ public class Bphoto extends BaseEntity<Long> {
     @Column(columnDefinition = "varchar(520) comment '路径'")
     private String path;
 
-    @Column(columnDefinition = "float comment '文件大小'")
+    @Column(columnDefinition = "float DEFAULT '0' comment '文件大小'")
     private float size;
 
 

@@ -20,15 +20,22 @@ public class Uordertail extends BaseEntity<Long> {
     private Integer number;
 
 
-    @Column(columnDefinition = "decimal comment '单价'")
+    @Column(columnDefinition = "decimal(6,2) comment '单价'")
     private float price;
 
-
-    @Column(columnDefinition = "decimal comment '会员价'")
+    @Column(columnDefinition = "decimal(6,2) comment '会员价'")
     private float memberprice;
 
-    @Column(columnDefinition = "decimal comment '已优惠'")
+    @Column(columnDefinition = "decimal(6,2) comment '已优惠'")
     private float prefprice;
+
+
+    @Column(columnDefinition = "varchar(20) DEFAULT '0' comment '是否是套餐(0否，1是)'")
+    private String packages;
+
+
+    @Column(columnDefinition = "int(255) comment '关联上级id（组合套餐）'")
+    private Long pid;
 
 
     public Long getOrderid() {
@@ -77,5 +84,22 @@ public class Uordertail extends BaseEntity<Long> {
 
     public void setPrefprice(float prefprice) {
         this.prefprice = prefprice;
+    }
+
+
+    public String getPackages() {
+        return packages;
+    }
+
+    public void setPackages(String packages) {
+        this.packages = packages;
+    }
+
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
     }
 }
