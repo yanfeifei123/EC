@@ -8,9 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "b_address")
-@org.hibernate.annotations.Table(appliesTo = "b_address",comment = "商家地址")
-public class Baddress extends BaseEntity<Long> {
+@Table(name = "b_branch")
+@org.hibernate.annotations.Table(appliesTo = "b_branch",comment = "商家分店")
+public class Bbranch extends BaseEntity<Long> {
 
     @Column(columnDefinition = "varchar(255) comment '分店名称'")
     private String name;
@@ -31,7 +31,6 @@ public class Baddress extends BaseEntity<Long> {
 
     @Column(columnDefinition = "float comment '商家纬度'")
     private float latitude;
-
 
 
     public String getName() {

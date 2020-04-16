@@ -18,6 +18,9 @@ public class Bcategory extends BaseEntity<Long> {
     @Column(columnDefinition = "int(255) comment '关联商家id'")
     private Long businessid;
 
+    @Column(columnDefinition = "int(255) comment '关联分店id'")
+    private Long branchid;
+
     @Column(columnDefinition = "int(255) comment '分类上级id自关联'")
     private Long pid;
 
@@ -76,5 +79,13 @@ public class Bcategory extends BaseEntity<Long> {
      */
     public void setBproductsitems(List<Bproduct> bproductsitems) {
         this.bproductsitems = bproductsitems;
+    }
+
+    public Long getBranchid() {
+        return branchid;
+    }
+
+    public void setBranchid(Long branchid) {
+        this.branchid = branchid;
     }
 }

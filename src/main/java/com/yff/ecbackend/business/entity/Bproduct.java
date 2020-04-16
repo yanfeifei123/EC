@@ -22,6 +22,10 @@ public class Bproduct extends BaseEntity<Long> {
     @Column(columnDefinition = "int(255) comment '关联分类id'")
     private Long categoryid;
 
+
+    @Column(columnDefinition = "int(255) comment '关联分店id'")
+    private Long branchid;
+
     @Column(columnDefinition = "varchar(255) comment '商品名称'")
     private String name;
 
@@ -41,7 +45,6 @@ public class Bproduct extends BaseEntity<Long> {
 
     @Column(columnDefinition = "varchar(20) DEFAULT '0' comment '是否是套餐(0否，1是)'")
     private String packages;
-
 
 
     @Transient
@@ -130,5 +133,13 @@ public class Bproduct extends BaseEntity<Long> {
 
     public void setPackages(String packages) {
         this.packages = packages;
+    }
+
+    public Long getBranchid() {
+        return branchid;
+    }
+
+    public void setBranchid(Long branchid) {
+        this.branchid = branchid;
     }
 }
