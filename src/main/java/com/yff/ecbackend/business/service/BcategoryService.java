@@ -25,46 +25,32 @@ public class BcategoryService extends BaseService<Bcategory, Long> {
     private BcategoryRepository bcategoryRepository;
 
     @Autowired
-    private BproductsService bproductsService;
+    private BproductService bproductsService;
 
     @Autowired
     private BphotoService bphotoService;
 
     @Autowired
     private WeChatService weChatService;
+    @Autowired
+    private BproductService bproductService;
 
     public List<Bcategory> findbusinessAll(HttpServletRequest request,Long businessid) {
 
         System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         List<Bcategory> bcategoryList = this.bcategoryRepository.findbusinessAll(businessid);
-        List<Bphoto> bphotos = this.bphotoService.findAll();
         for (Bcategory bcategory : bcategoryList) {
             List<Bproduct> bproductsitems = bproductsService.findBproducts(bcategory.getId());
-            for(Bproduct bproducts : bproductsitems){
-                String imagepath = this.findByBphoto(request,bphotos,bproducts.getId());
-                bproducts.setImagepath(imagepath);
-//                System.out.println(imagepath);
-            }
+            bproductService.setImagepath(request,bproductsitems);
             bcategory.setBproductsitems(bproductsitems);
         }
-
         System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 
         return bcategoryList;
     }
 
 
-    private String findByBphoto(HttpServletRequest request, List<Bphoto> bphotos, Long fkid) {
-        String https="https://"+weChatService.getIp(request)+":"+parameterconf.getServerPort();
-        String imagepath="";
-        for (Bphoto bphoto : bphotos) {
-            if (bphoto.getFkid() == fkid) {
-                imagepath=https+bphoto.getPath();
-                break;
-            }
-        }
-        return imagepath;
-    }
+
 
 
     /**

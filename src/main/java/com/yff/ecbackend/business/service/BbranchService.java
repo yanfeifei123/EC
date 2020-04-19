@@ -12,4 +12,6 @@ public class BbranchService extends BaseService<Bbranch, Long> {
     @Autowired
     private BbranchRepository bbranchRepository;
 
+
+
 }

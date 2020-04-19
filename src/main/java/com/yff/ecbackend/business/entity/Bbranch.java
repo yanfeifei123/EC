@@ -32,6 +32,14 @@ public class Bbranch extends BaseEntity<Long> {
     @Column(columnDefinition = "float comment '商家纬度'")
     private float latitude;
 
+    @Column(columnDefinition = "decimal default 0 comment '配送费'")
+    private float psfcost;
+
+    @Column(columnDefinition = "decimal default 0 comment '首单用户-x元'")
+    private float firstorder;
+
+    @Column(columnDefinition = "decimal default 0 comment '多少钱起送'")
+    private float firstmoney;
 
     public String getName() {
         return name;
@@ -79,5 +87,29 @@ public class Bbranch extends BaseEntity<Long> {
 
     public void setLatitude(float latitude) {
         this.latitude = latitude;
+    }
+
+    public float getPsfcost() {
+        return psfcost;
+    }
+
+    public void setPsfcost(float psfcost) {
+        this.psfcost = psfcost;
+    }
+
+    public float getFirstorder() {
+        return firstorder;
+    }
+
+    public void setFirstorder(float firstorder) {
+        this.firstorder = firstorder;
+    }
+
+    public float getFirstmoney() {
+        return firstmoney;
+    }
+
+    public void setFirstmoney(float firstmoney) {
+        this.firstmoney = firstmoney;
     }
 }

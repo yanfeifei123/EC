@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -52,6 +54,9 @@ public class Bproduct extends BaseEntity<Long> {
 
     @Transient
     private int num=0;
+
+    @Transient
+    private List<Bproduct> bproductsitems = new ArrayList<>();
 
 
     public Long getBusinessid() {
@@ -141,5 +146,13 @@ public class Bproduct extends BaseEntity<Long> {
 
     public void setBranchid(Long branchid) {
         this.branchid = branchid;
+    }
+
+    public List<Bproduct> getBproductsitems() {
+        return bproductsitems;
+    }
+
+    public void setBproductsitems(List<Bproduct> bproductsitems) {
+        this.bproductsitems = bproductsitems;
     }
 }

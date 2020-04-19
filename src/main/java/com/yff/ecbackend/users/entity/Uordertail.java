@@ -6,8 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "u_ordertail")
-@org.hibernate.annotations.Table(appliesTo = "u_ordertail",comment = "用户订单明细表")
+@Table(name = "u_orderta")
+@org.hibernate.annotations.Table(appliesTo = "u_orderta",comment = "用户订单明细表")
 public class Uordertail extends BaseEntity<Long> {
 
     @Column(columnDefinition = "int(255) comment '关联订单id'")
@@ -16,26 +16,17 @@ public class Uordertail extends BaseEntity<Long> {
     @Column(columnDefinition = "int(255) comment '关联商品id'")
     private Long productid;
 
-    @Column(columnDefinition = "int comment '数量'")
-    private Integer number;
+    @Column(columnDefinition = "int(255) comment '关联上级id'")
+    private Long pid;
 
+    @Column(columnDefinition = "int DEFAULT '0' comment '是否套餐（0否，1是）'")
+    private int ismeal;
 
     @Column(columnDefinition = "decimal(6,2) comment '单价'")
     private float price;
 
     @Column(columnDefinition = "decimal(6,2) comment '会员价'")
     private float memberprice;
-
-    @Column(columnDefinition = "decimal(6,2) comment '已优惠'")
-    private float prefprice;
-
-
-    @Column(columnDefinition = "varchar(20) DEFAULT '0' comment '是否是套餐(0否，1是)'")
-    private String packages;
-
-
-    @Column(columnDefinition = "int(255) comment '关联上级id（组合套餐）'")
-    private Long pid;
 
 
     public Long getOrderid() {
@@ -54,14 +45,6 @@ public class Uordertail extends BaseEntity<Long> {
         this.productid = productid;
     }
 
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
     public float getPrice() {
         return price;
     }
@@ -78,28 +61,19 @@ public class Uordertail extends BaseEntity<Long> {
         this.memberprice = memberprice;
     }
 
-    public float getPrefprice() {
-        return prefprice;
-    }
-
-    public void setPrefprice(float prefprice) {
-        this.prefprice = prefprice;
-    }
-
-
-    public String getPackages() {
-        return packages;
-    }
-
-    public void setPackages(String packages) {
-        this.packages = packages;
-    }
-
     public Long getPid() {
         return pid;
     }
 
     public void setPid(Long pid) {
         this.pid = pid;
+    }
+
+    public int getIsmeal() {
+        return ismeal;
+    }
+
+    public void setIsmeal(int ismeal) {
+        this.ismeal = ismeal;
     }
 }

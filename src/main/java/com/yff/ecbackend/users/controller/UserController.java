@@ -59,8 +59,11 @@ public class UserController {
 
     @PostMapping("/onisfirstorder")
     @ResponseBody
-    public Object onisfirstorder(String businessid,String openid){
-        return  this.userService.onisfirstorder(businessid,openid);
+    public Object onisfirstorder(String branchid,String openid){
+        return  this.userService.onisfirstorder(branchid,openid);
     }
+
+
+
 
 }

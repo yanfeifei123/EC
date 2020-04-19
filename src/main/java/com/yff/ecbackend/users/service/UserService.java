@@ -6,7 +6,9 @@ import com.yff.core.jparepository.service.BaseService;
 import com.yff.core.safetysupport.aes.Aes;
 import com.yff.core.util.CustomException;
 import com.yff.core.util.ToolUtil;
+import com.yff.ecbackend.business.entity.Bbranch;
 import com.yff.ecbackend.business.entity.Business;
+import com.yff.ecbackend.business.service.BbranchService;
 import com.yff.ecbackend.business.service.BusinessService;
 import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.User;
@@ -28,6 +30,9 @@ public class UserService extends BaseService<User, Long> {
     @Autowired
     private BusinessService businessService;
 
+    @Autowired
+    private BbranchService bbranchService;
+
     public User uLogin(String userInfo, String openid) {
 
         User uuser = this.uuserRepository.findByOnenid(openid);
@@ -46,10 +51,10 @@ public class UserService extends BaseService<User, Long> {
 
 
     public User getUser(String openid) {
-        System.out.println(openid);
+//        System.out.println(openid);
         User uuser = this.findByUserid(openid);
         String user = JSON.toJSONString(uuser);
-        System.out.println(user);
+//        System.out.println(user);
         if (ToolUtil.isEmpty(uuser)) {
             uuser = new User();
             uuser.setOpenid(openid);
@@ -97,16 +102,16 @@ public class UserService extends BaseService<User, Long> {
 
     }
 
-    public Map<String,Object> onisfirstorder(String businessid, String openid) {
+    public Map<String,Object> onisfirstorder(String branchid, String openid) {
         Map<String,Object> map =new HashMap<>();
         List<Uorder> uorderList = this.uorderService.findUserOrder(openid);
         float firstorder = 0;
         float psfcost=0;
-        Business business = businessService.findOne(Long.valueOf(businessid));
+        Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
         if (ToolUtil.isEmpty(uorderList)) {
-            firstorder = business.getFirstorder();
+            firstorder = bbranch.getFirstorder();
         }
-        psfcost=business.getPsfcost();
+        psfcost=bbranch.getPsfcost();
         map.put("firstorder",firstorder);
         map.put("psfcost",psfcost);
         return map;

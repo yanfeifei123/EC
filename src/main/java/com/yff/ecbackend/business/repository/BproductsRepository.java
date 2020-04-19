@@ -16,4 +16,8 @@ public interface BproductsRepository extends BaseRepository<Bproduct,Long> {
      */
     @Query("select  b from  Bproduct b where b.categoryid=:categoryid and b.pid is null order by b.odr")
     public abstract List<Bproduct> findBproducts(@Param("categoryid")Long categoryid);
+
+
+    @Query("select b from Bproduct b where b.pid=:pid")
+    public abstract List<Bproduct> findByproductPackage(@Param("pid")Long pid);
 }
