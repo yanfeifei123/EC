@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50727
 File Encoding         : 65001
 
-Date: 2020-04-19 17:32:03
+Date: 2020-04-19 20:23:02
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -242,7 +242,7 @@ CREATE TABLE `u_address` (
 -- ----------------------------
 -- Records of u_address
 -- ----------------------------
-INSERT INTO `u_address` VALUES ('31', '2020-04-19 11:29:25', '0', '天骄北麓19幢', '3109', '7', '先生', '严', '13888563741', '25.1151', '102.731');
+INSERT INTO `u_address` VALUES ('31', '2020-04-19 17:58:23', '0', '天骄北麓19幢', '3109', '7', '先生', '严', '13888563741', '25.1151', '102.731');
 
 -- ----------------------------
 -- Table structure for `u_order`
@@ -263,12 +263,15 @@ CREATE TABLE `u_order` (
   `status` int(11) DEFAULT NULL COMMENT '状态(0未支付，1已支付)',
   `totalfee` decimal(6,2) DEFAULT NULL COMMENT '订单总金额',
   `userid` int(255) DEFAULT NULL COMMENT '关联用户id',
+  `json` text COMMENT '存储json格式字符串',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='用户订单信息';
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='用户订单信息';
 
 -- ----------------------------
 -- Records of u_order
 -- ----------------------------
+INSERT INTO `u_order` VALUES ('16', '2020-04-19 18:48:30', '1', '1', '2', null, '3.00', '0', null, 'oM_GB4rjG6k2dKlqXxrBb_0fdAWI', '0', '1', '13.00', '7', '[{\"id\":1,\"num\":1,\"name\":\"肉松饭团\",\"tprice\":6,\"tmemberprice\":5.5,\"index\":0,\"parentIndex\":0,\"imagepath\":\"https://127.0.0.1:443/static/fantuan/twft/rsft.jpg\"},{\"id\":3,\"num\":1,\"name\":\"奥尔良鸡肉饭团\",\"tprice\":9,\"tmemberprice\":8,\"index\":2,\"parentIndex\":0,\"imagepath\":\"https://127.0.0.1:443/static/fantuan/twft/eeljrft.jpg\"}]');
+INSERT INTO `u_order` VALUES ('17', '2020-04-19 18:51:17', '1', '1', '2', null, '0.00', '0', null, 'oM_GB4rjG6k2dKlqXxrBb_0fdAWI', '0', '1', '16.00', '7', '[{\"id\":1,\"num\":1,\"name\":\"肉松饭团\",\"tprice\":6,\"tmemberprice\":5.5,\"index\":0,\"parentIndex\":0,\"imagepath\":\"https://127.0.0.1:443/static/fantuan/twft/rsft.jpg\"},{\"id\":3,\"num\":1,\"name\":\"奥尔良鸡肉饭团\",\"tprice\":9,\"tmemberprice\":8,\"index\":2,\"parentIndex\":0,\"imagepath\":\"https://127.0.0.1:443/static/fantuan/twft/eeljrft.jpg\"}]');
 
 -- ----------------------------
 -- Table structure for `u_orderta`
@@ -285,11 +288,15 @@ CREATE TABLE `u_orderta` (
   `productid` int(255) DEFAULT NULL COMMENT '关联商品id',
   `ismeal` int(11) DEFAULT '0' COMMENT '是否套餐（0否，1是）',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8 COMMENT='用户订单明细表';
+) ENGINE=MyISAM AUTO_INCREMENT=78 DEFAULT CHARSET=utf8 COMMENT='用户订单明细表';
 
 -- ----------------------------
 -- Records of u_orderta
 -- ----------------------------
+INSERT INTO `u_orderta` VALUES ('74', '2020-04-19 18:48:30', '1', '5.50', '16', null, '6.00', '1', '0');
+INSERT INTO `u_orderta` VALUES ('75', '2020-04-19 18:48:30', '2', '8.00', '16', null, '9.00', '3', '0');
+INSERT INTO `u_orderta` VALUES ('76', '2020-04-19 18:51:17', '1', '5.50', '17', null, '6.00', '1', '0');
+INSERT INTO `u_orderta` VALUES ('77', '2020-04-19 18:51:17', '2', '8.00', '17', null, '9.00', '3', '0');
 
 -- ----------------------------
 -- Table structure for `user`
@@ -315,4 +322,4 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('7', '2020-04-14 20:22:51', '0', 'feifei_yan@.com', 'https://wx.qlogo.cn/mmopen/vi_32/Stlx6Jh69H1QH3fTxcjVfmeqe6niah7kDaic6gP1GMx8t3U1sCGHMACfWCJdZ54aMq3FQ6N4Rq3DI6P5AjmP4MIw/132', '1', '1', null, 'change their', 'oM_GB4rjG6k2dKlqXxrBb_0fdAWI', 'd13f864ba7e1b90b0b408d10c257a8da', '13888563741', '1');
+INSERT INTO `user` VALUES ('7', '2020-04-14 20:22:51', '0', 'feifei_yan@.com', 'https://wx.qlogo.cn/mmopen/vi_32/Stlx6Jh69H1QH3fTxcjVfmeqe6niah7kDaic6gP1GMx8t3U1sCGHMACfWCJdZ54aMq3FQ6N4Rq3DI6P5AjmP4MIw/132', '1', '1', null, 'change their', 'oM_GB4rjG6k2dKlqXxrBb_0fdAWI', 'd13f864ba7e1b90b0b408d10c257a8da', '13888563741', '0');
