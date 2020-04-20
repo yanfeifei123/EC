@@ -3,19 +3,20 @@ package com.yff.ecbackend.users.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.yff.core.jparepository.entity.BaseEntity;
+import com.yff.ecbackend.users.view.OrderItem;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "u_order")
 @org.hibernate.annotations.Table(appliesTo = "u_order",comment = "用户订单信息")
 public class Uorder extends BaseEntity<Long> {
-
-
 
 
     @Column(columnDefinition = "int(255) comment '关联用户id'")
@@ -42,7 +43,7 @@ public class Uorder extends BaseEntity<Long> {
     @Column(columnDefinition = "int comment '状态(0未支付，1已支付)'")
     private int status;
 
-    @Column(columnDefinition = "int comment '是否完成(0未完成，1已完成)'")
+    @Column(columnDefinition = "int DEFAULT '0' comment '是否完成(0未完成，1已完成)'")
     private int iscomplete;
 
     @Column(columnDefinition = "int comment '是否到店自取(0否，1是)'")
@@ -58,6 +59,11 @@ public class Uorder extends BaseEntity<Long> {
     @Column(columnDefinition = "datetime DEFAULT NULL COMMENT '订单完成时间'")
     private Date completetime;
 
+    @Transient
+    private String branchname;
+
+    @Transient
+    private List<OrderItem> orderItems = new ArrayList<>();
 
 
     public Long getUserid() {
@@ -156,5 +162,26 @@ public class Uorder extends BaseEntity<Long> {
 
     public void setJson(String json) {
         this.json = json;
+    }
+
+    /**
+     * 分店名称
+     */
+    public String getBranchname() {
+        return branchname;
+    }
+    /**
+     * 分店名称
+     */
+    public void setBranchname(String branchname) {
+        this.branchname = branchname;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 }

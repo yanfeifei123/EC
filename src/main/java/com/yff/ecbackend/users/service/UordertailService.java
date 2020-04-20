@@ -61,10 +61,30 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                     }
                 }
             } else {   //计算单个不是套餐的
+
                 float tprice = Float.valueOf(jsonObject.getString("tprice"));
                 float tmemberprice = Float.valueOf(jsonObject.getString("tmemberprice"));
                 Uordertail uordertail = this.assembleUordertail(orderid, tmemberprice, tprice, productid, i + 1, null, 0);
-                uordertails.add(uordertail);
+
+                //计算单个套餐
+
+                int ismeal = ToolUtil.isNotEmpty(items) ? 1 : 0;
+                if (ismeal == 1) {
+                    uordertail = this.uordertailRepository.save(uordertail);
+                    JSONArray childshoppingcarts = JSON.parseArray(items.getJSONObject(0).getString("shoppingcart"));
+                    for (int k = 0; k < childshoppingcarts.size(); k++) {
+                        JSONObject childshoppingcart = childshoppingcarts.getJSONObject(k);
+                        Integer number = Integer.parseInt(childshoppingcart.getString("num")); //数量
+                        Long productid1 = Long.valueOf(childshoppingcart.getString("id"));  //商品id
+                        for (int l = 1; l <= number; l++) {
+                            Bproduct bproductc = bproductService.findOne(productid1);
+                            Uordertail uordertailc = this.assembleUordertail(orderid, bproductc.getMemberprice(), bproductc.getPrice(), bproductc.getId(), l, uordertail.getId(), ismeal);
+                            this.uordertailRepository.save(uordertailc);
+                        }
+                    }
+                }else{
+                    uordertails.add(uordertail);
+                }
             }
         }
         return this.update(uordertails);

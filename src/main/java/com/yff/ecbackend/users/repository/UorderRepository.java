@@ -18,8 +18,9 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      * @param openid
      * @return
      */
-    @Query("select o from Uorder o where o.openid=:openid ")
+    @Query("select o from Uorder o where o.openid=:openid ORDER BY o.buildtime DESC")
     public abstract List<Uorder> findUserOrder(@Param("openid") String openid);
+
 
 
 }
