@@ -8,15 +8,11 @@ import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.User;
 import com.yff.ecbackend.users.repository.UorderRepository;
 import com.yff.ecbackend.users.view.OrderItem;
-import org.hibernate.Hibernate;
-import org.hibernate.SQLQuery;
-import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
