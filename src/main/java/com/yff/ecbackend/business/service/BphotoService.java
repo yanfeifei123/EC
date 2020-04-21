@@ -22,6 +22,9 @@ public class BphotoService extends BaseService<Bphoto,Long> {
     @Autowired
     private Parameterconf parameterconf;
 
+
+
+
     public void setImagepath(HttpServletRequest request, Bproduct bproduct) {
         List<Bphoto> bphotos = this.findAll();
         String https = "https://" + weChatService.getIp(request) + ":" + parameterconf.getServerPort();
