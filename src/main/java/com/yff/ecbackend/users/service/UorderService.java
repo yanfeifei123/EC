@@ -3,7 +3,9 @@ package com.yff.ecbackend.users.service;
 import com.alibaba.fastjson.JSON;
 import com.yff.core.jparepository.service.BaseService;
 import com.yff.ecbackend.business.entity.Bbranch;
+import com.yff.ecbackend.business.entity.Bphoto;
 import com.yff.ecbackend.business.service.BbranchService;
+import com.yff.ecbackend.business.service.BphotoService;
 import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.User;
 import com.yff.ecbackend.users.repository.UorderRepository;
@@ -13,9 +15,11 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Service
@@ -35,6 +39,9 @@ public class UorderService extends BaseService<Uorder, Long> {
 
     @Autowired
     private BbranchService bbranchService;
+
+    @Autowired
+    private BphotoService bphotoService;
 
     public List<Uorder> findUserOrder(String openid) {
         return this.uorderRepository.findUserOrder(openid);
@@ -85,11 +92,11 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @param openid
      * @return
      */
-    public List<Uorder> findOrderList(String openid) {
+    public List<Uorder> findOrderList(HttpServletRequest request,String openid) {
         List<Uorder> uorders = this.uorderRepository.findUserOrder(openid);
         setbranchName(uorders, bbranchService.findAll());
-        List<OrderItem> orderItems = this.findByOrderItem(openid);
-        this.setOrderItem(uorders,orderItems);
+        List<OrderItem> orderItems = this.findByOrderItem(request,openid);
+        this.setOrderItem(uorders, orderItems);
 //        String s = JSON.toJSONString(uorders);
 //        System.out.println(s);
         return uorders;
@@ -106,16 +113,20 @@ public class UorderService extends BaseService<Uorder, Long> {
         }
     }
 
-    public List<OrderItem> findByOrderItem(String openid) {
+    public List<OrderItem> findByOrderItem(HttpServletRequest request,String openid) {
         StringBuilder dataSql = new StringBuilder();
-        dataSql.append("select  a.productid,  c.name, count(a.productid)   number ,sum(a.price) price  ,sum(a.memberprice ) memberprice ,a.ismeal , a.orderid   FROM u_orderta a,u_order b ,b_product c where a.orderid=b.id  and c.id=a.productid  and a.pid is null AND b.openid=:openid GROUP BY a.productid,c.name,a.ismeal,a.orderid ORDER BY b.buildtime desc");
+        dataSql.append("select  a.productid,  if(a.ismeal=1,concat(c.name,'(套餐)'),c.name )  name, count(a.productid)   number ,sum(a.price) price  ,sum(a.memberprice ) memberprice ,a.ismeal , a.orderid   FROM u_orderta a,u_order b ,b_product c where a.orderid=b.id  and c.id=a.productid  and a.pid is null AND b.openid=:openid GROUP BY a.productid,c.name,a.ismeal,a.orderid ORDER BY b.buildtime desc");
 //        System.out.println(dataSql.toString());
         Query query = this.entityManager.createNativeQuery(dataSql.toString());
-        query.setParameter("openid",openid);
+        query.setParameter("openid", openid);
         List<Map<String, Object>> list = query.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
         List<OrderItem> orderItems = JSON.parseArray(JSON.toJSONString(list), OrderItem.class);
+        this.bphotoService.setOrderItemImagePath(request,orderItems);
         return orderItems;
     }
+
+
+
 
 
     private void setbranchName(List<Uorder> uorders, List<Bbranch> bbranchs) {

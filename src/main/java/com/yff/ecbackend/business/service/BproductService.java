@@ -29,6 +29,7 @@ public class BproductService extends BaseService<Bproduct, Long> {
     @Autowired
     private Parameterconf parameterconf;
 
+
     public List<Bproduct> findBproducts(Long categoryid) {
         return this.bcategorysRepository.findBproducts(categoryid);
     }
@@ -43,8 +44,8 @@ public class BproductService extends BaseService<Bproduct, Long> {
         List<Bproduct> child = this.bcategorysRepository.findByproductPackage(pid);
         Bproduct bproduct = this.findOne(pid);
         if (ToolUtil.isNotEmpty(bproduct)) {
-            this.setImagepath(request, bproduct);
-            this.setImagepath(request, child);
+            this.bphotoService.setImagepath(request, bproduct);
+            this.bphotoService.setImagepath(request, child);
             bproduct.setBproductsitems(child);
         }
 //        String s = JSON.toJSONString(bproduct);
@@ -52,30 +53,6 @@ public class BproductService extends BaseService<Bproduct, Long> {
         return bproduct;
     }
 
-    public void setImagepath(HttpServletRequest request, Bproduct bproduct) {
-        List<Bphoto> bphotos = this.bphotoService.findAll();
-        String https = "https://" + weChatService.getIp(request) + ":" + parameterconf.getServerPort();
-        String imagepath = "";
-        for (Bphoto bphoto : bphotos) {
-            if (bphoto.getFkid() == bproduct.getId()) {
-                imagepath = https + bphoto.getPath();
-                bproduct.setImagepath(imagepath);
-            }
-        }
-    }
 
-    public void setImagepath(HttpServletRequest request, List<Bproduct> bproducts) {
-        List<Bphoto> bphotos = this.bphotoService.findAll();
-        String https = "https://" + weChatService.getIp(request) + ":" + parameterconf.getServerPort();
-        String imagepath = "";
-        for (Bphoto bphoto : bphotos) {
-            for (Bproduct bproduct : bproducts) {
-                if (bphoto.getFkid() == bproduct.getId()) {
-                    imagepath = https + bphoto.getPath();
-                    bproduct.setImagepath(imagepath);
-                }
-            }
-        }
-    }
 
 }

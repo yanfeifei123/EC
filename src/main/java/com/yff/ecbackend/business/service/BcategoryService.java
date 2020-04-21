@@ -37,14 +37,14 @@ public class BcategoryService extends BaseService<Bcategory, Long> {
 
     public List<Bcategory> findbusinessAll(HttpServletRequest request,Long businessid) {
 
-        System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+//        System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         List<Bcategory> bcategoryList = this.bcategoryRepository.findbusinessAll(businessid);
         for (Bcategory bcategory : bcategoryList) {
             List<Bproduct> bproductsitems = bproductsService.findBproducts(bcategory.getId());
-            bproductService.setImagepath(request,bproductsitems);
+            bphotoService.setImagepath(request,bproductsitems);
             bcategory.setBproductsitems(bproductsitems);
         }
-        System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+//        System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 
         return bcategoryList;
     }

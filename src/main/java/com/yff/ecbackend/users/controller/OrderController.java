@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/order")
 public class OrderController {
@@ -18,8 +20,8 @@ public class OrderController {
 
     @RequestMapping(value = "/findOrderList", method = RequestMethod.POST)
     @ResponseBody
-    public Object findOrderList(String openid){
-      return  this.uorderService.findOrderList(openid);
+    public Object findOrderList(HttpServletRequest request, String openid){
+      return  this.uorderService.findOrderList(request, openid);
     }
 
 }

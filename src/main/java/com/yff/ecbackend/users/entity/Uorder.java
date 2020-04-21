@@ -5,6 +5,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.yff.core.jparepository.entity.BaseEntity;
 import com.yff.ecbackend.users.view.OrderItem;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "u_order")
-@org.hibernate.annotations.Table(appliesTo = "u_order",comment = "用户订单信息")
+@org.hibernate.annotations.Table(appliesTo = "u_order", comment = "用户订单信息")
 public class Uorder extends BaseEntity<Long> {
 
 
@@ -51,6 +52,8 @@ public class Uorder extends BaseEntity<Long> {
 
     @Column(columnDefinition = "varchar(5000) comment '备注'")
     private String note;
+
+    @JSONField(serialize = false)
     @Column(columnDefinition = "text  comment '存储json格式字符串'")
     private String json;
 
@@ -64,6 +67,12 @@ public class Uorder extends BaseEntity<Long> {
 
     @Transient
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    @Transient
+    private String info;
+
+    @Transient
+    private int piece;
 
 
     public Long getUserid() {
@@ -170,6 +179,7 @@ public class Uorder extends BaseEntity<Long> {
     public String getBranchname() {
         return branchname;
     }
+
     /**
      * 分店名称
      */
@@ -183,5 +193,25 @@ public class Uorder extends BaseEntity<Long> {
 
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    public String getInfo() {
+        this.info = "已完成";
+        if (this.iscomplete == 0) {
+            this.info = "商家已接单";
+        }
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public int getPiece() {
+        return piece = this.orderItems.size();
+    }
+
+    public void setPiece(int piece) {
+        this.piece = piece;
     }
 }
