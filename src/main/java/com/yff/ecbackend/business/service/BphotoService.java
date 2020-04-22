@@ -27,7 +27,7 @@ public class BphotoService extends BaseService<Bphoto,Long> {
 
     public void setImagepath(HttpServletRequest request, Bproduct bproduct) {
         List<Bphoto> bphotos = this.findAll();
-        String https = "https://" + weChatService.getIp(request) + ":" + parameterconf.getServerPort();
+        String https = weChatService.getHttps(request);
         String imagepath = "";
         for (Bphoto bphoto : bphotos) {
             if (bphoto.getFkid() == bproduct.getId()) {
@@ -39,7 +39,7 @@ public class BphotoService extends BaseService<Bphoto,Long> {
 
     public void setImagepath(HttpServletRequest request, List<Bproduct> bproducts) {
         List<Bphoto> bphotos = this.findAll();
-        String https = "https://" + weChatService.getIp(request) + ":" + parameterconf.getServerPort();
+        String https = weChatService.getHttps(request);
         String imagepath = "";
         for (Bphoto bphoto : bphotos) {
             for (Bproduct bproduct : bproducts) {
@@ -52,7 +52,7 @@ public class BphotoService extends BaseService<Bphoto,Long> {
     }
 
     public void setOrderItemImagePath(HttpServletRequest request, List<OrderItem> orderItems) {
-        String https = "https://" + weChatService.getIp(request) + ":" + parameterconf.getServerPort();
+        String https = weChatService.getHttps(request);
         String imagepath = "";
         List<Bphoto> bphotoList = this.findAll();
         for (Bphoto bphoto : bphotoList) {

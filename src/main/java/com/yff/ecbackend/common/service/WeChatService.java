@@ -39,32 +39,31 @@ public class WeChatService {
     private Parameterconf parameterconf;
 
 
-    public String getWebAccess(String APPID, String SECRET,String CODE) {
-        return String.format(parameterconf.getSessionHost(), APPID, SECRET,CODE);
+    public String getWebAccess(String APPID, String SECRET, String CODE) {
+        return String.format(parameterconf.getSessionHost(), APPID, SECRET, CODE);
     }
-
 
 
     public String getIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
-        if(ToolUtil.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)){
+        if (ToolUtil.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
             //多次反向代理后会有多个ip值，第一个ip才是真实ip
             int index = ip.indexOf(",");
-            if(index != -1){
-                return ip.substring(0,index);
-            }else{
+            if (index != -1) {
+                return ip.substring(0, index);
+            } else {
                 return ip;
             }
         }
         ip = request.getHeader("X-Real-IP");
-        if(ToolUtil.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)){
+        if (ToolUtil.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
             return ip;
         }
         return request.getRemoteAddr();
     }
 
 
-    public  String httpsRequestToString(String path, String method, String body) {
+    public String httpsRequestToString(String path, String method, String body) {
         if (path == null || method == null) {
             return null;
         }
@@ -134,6 +133,7 @@ public class WeChatService {
 
     /**
      * 用户手机解码
+     *
      * @param session_key
      * @param encryptedData
      * @param iv
@@ -174,13 +174,14 @@ public class WeChatService {
 
     /**
      * 统一下单
+     *
      * @param openid
      * @param total_fee
      * @param body
      * @param request
      * @return
      */
-    public Object UnifiedOrder(String openid, String total_fee, String body, HttpServletRequest request){
+    public Object UnifiedOrder(String openid, String total_fee, String body, HttpServletRequest request) {
         Map<String, String> resultMap = new HashMap<>();
 
         WXPayConfigImpl config = null;
@@ -208,7 +209,7 @@ public class WeChatService {
         data.put("nonce_str", nonce_str);
         data.put("body", body);
         data.put("out_trade_no", out_trade_no);
-        data.put("total_fee",  total_fee);
+        data.put("total_fee", total_fee);
         data.put("spbill_create_ip", spbill_create_ip);
         data.put("notify_url", parameterconf.getNotify_url());
         data.put("trade_type", "JSAPI");
@@ -241,12 +242,9 @@ public class WeChatService {
     }
 
 
-
-
-
-
-
-
+    public String getHttps(HttpServletRequest request) {
+        return "https://" + this.getIp(request) + ":" + parameterconf.getServerPort();
+    }
 
 
 }
