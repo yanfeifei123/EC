@@ -44,8 +44,9 @@ public class OrderManagerController {
      */
     @RequestMapping(value = "/updateUserOrder", method = RequestMethod.POST)
     @ResponseBody
-    public int updateUserOrder(String openid,String shoppingcart,String bid,String totalfee, String branchid,String isself,String discount){
-        return   this.uorderService.updateUserOrder(openid,shoppingcart,bid,totalfee,branchid,isself,discount);
+    public int updateUserOrder(String openid,String shoppingcart,String bid,String totalfee, String branchid,String isself,String discount,String out_trade_no){
+//        System.out.println("商户单号："+out_trade_no);
+        return   this.uorderService.updateUserOrder(openid,shoppingcart,bid,totalfee,branchid,isself,discount,out_trade_no);
     }
 
 }

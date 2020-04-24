@@ -201,7 +201,9 @@ public class WeChatService {
 
         String nonce_str = WXPayUtil.generateNonceStr();
         String spbill_create_ip = this.getIp(request);
-        String out_trade_no = WXPayUtil.generateNonceStr();
+        String out_trade_no = WXPayUtil.outtradeno();
+
+//        System.out.println("out_trade_no:"+out_trade_no);
 
         HashMap<String, String> data = new HashMap<String, String>();
         data.put("appid", parameterconf.getAppid());
@@ -232,6 +234,7 @@ public class WeChatService {
                 resultMap.put("appId", parameterconf.getAppid());
                 String sign = WXPayUtil.generateSignature(resultMap, parameterconf.getPaykey());
                 resultMap.put("paySign", sign);
+                resultMap.put("out_trade_no",out_trade_no);
                 System.out.println("生成的签名paySign : " + sign);
             }
         } catch (Exception e) {

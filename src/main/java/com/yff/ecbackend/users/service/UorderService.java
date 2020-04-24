@@ -49,10 +49,10 @@ public class UorderService extends BaseService<Uorder, Long> {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public int updateUserOrder(String openid, String shoppingcart, String bid, String totalfee, String branchid, String isself, String discount) {
+    public int updateUserOrder(String openid, String shoppingcart, String bid, String totalfee, String branchid, String isself, String discount,String out_trade_no) {
 //        System.out.println(shoppingcart);
         User user = this.userService.getUser(openid);
-        Uorder uorder = this.updateUorder(user, bid, branchid, Integer.parseInt(isself), Float.valueOf(totalfee), Float.valueOf(discount), shoppingcart);
+        Uorder uorder = this.updateUorder(user, bid, branchid, Integer.parseInt(isself), Float.valueOf(totalfee), Float.valueOf(discount), shoppingcart,out_trade_no);
         this.uordertailService.updateUordertail(uorder.getId(), shoppingcart);
         return 1;
     }
@@ -68,7 +68,7 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @param totalfee
      * @return
      */
-    private Uorder updateUorder(User user, String bid, String branchid, int isself, float totalfee, float discount, String josn) {
+    private Uorder updateUorder(User user, String bid, String branchid, int isself, float totalfee, float discount, String josn,String tradeno) {
         Uorder uorder = new Uorder();
         uorder.setBid(Long.valueOf(bid));
         uorder.setBranchid(Long.valueOf(branchid));
@@ -83,6 +83,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         uorder.setDiscount(discount);
         uorder.setIscomplete(0);
         uorder.setJson(josn);
+        uorder.setTradeno(tradeno);
         return this.uorderRepository.save(uorder);
     }
 

@@ -62,6 +62,9 @@ public class Uorder extends BaseEntity<Long> {
     @Column(columnDefinition = "datetime DEFAULT NULL COMMENT '订单完成时间'")
     private Date completetime;
 
+    @Column(columnDefinition = "varchar(50) comment '生成商户单号'")
+    private String tradeno;
+
     @Transient
     private String branchname;
 
@@ -213,5 +216,13 @@ public class Uorder extends BaseEntity<Long> {
 
     public void setPiece(int piece) {
         this.piece = piece;
+    }
+
+    public String getTradeno() {
+        return tradeno;
+    }
+
+    public void setTradeno(String tradeno) {
+        this.tradeno = tradeno;
     }
 }
