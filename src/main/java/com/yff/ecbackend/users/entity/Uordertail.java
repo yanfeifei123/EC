@@ -1,10 +1,13 @@
 package com.yff.ecbackend.users.entity;
 
 import com.yff.core.jparepository.entity.BaseEntity;
+import com.yff.ecbackend.users.view.OrderItem;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
+import javax.persistence.Transient;
+import java.util.*;
 @Entity
 @Table(name = "u_orderta")
 @org.hibernate.annotations.Table(appliesTo = "u_orderta",comment = "用户订单明细表")
@@ -27,6 +30,15 @@ public class Uordertail extends BaseEntity<Long> {
 
     @Column(columnDefinition = "decimal(6,2) comment '会员价'")
     private float memberprice;
+    /*
+      商品名称
+     */
+    @Transient
+    private String name;
+
+    @Transient
+    private String imagepath;
+
 
 
     public Long getOrderid() {
@@ -76,4 +88,21 @@ public class Uordertail extends BaseEntity<Long> {
     public void setIsmeal(int ismeal) {
         this.ismeal = ismeal;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImagepath() {
+        return imagepath;
+    }
+
+    public void setImagepath(String imagepath) {
+        this.imagepath = imagepath;
+    }
+
 }

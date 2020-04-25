@@ -20,8 +20,22 @@ public class OrderController {
 
     @RequestMapping(value = "/findOrderList", method = RequestMethod.POST)
     @ResponseBody
-    public Object findOrderList(HttpServletRequest request, String openid){
-      return  this.uorderService.findOrderList(request, openid);
+    public Object findOrderList(HttpServletRequest request, String openid) {
+//        System.out.println("openid:" + openid);
+        return this.uorderService.findOrderList(request, openid);
     }
+
+    /**
+     * 点餐用户端订单明细
+     *
+     * @param orderid
+     * @return
+     */
+    @RequestMapping(value = "/findOrderDetailed", method = RequestMethod.POST)
+    @ResponseBody
+    public Object findOrderDetailed(HttpServletRequest request, String orderid) {
+        return this.uorderService.findOrderDetailed(request, orderid);
+    }
+
 
 }

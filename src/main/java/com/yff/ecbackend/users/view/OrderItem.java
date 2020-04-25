@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
+import java.util.*;
 @Data
 public class OrderItem {
 
@@ -17,5 +17,10 @@ public class OrderItem {
     private Long orderid;
     private Integer ismeal;
     private String imagepath;
+    /*
+      套餐统计
+     */
+    private List<OrderItem> orderItems =new ArrayList<>();
+
 
 }

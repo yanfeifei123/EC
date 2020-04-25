@@ -65,6 +65,16 @@ public class Uorder extends BaseEntity<Long> {
     @Column(columnDefinition = "varchar(50) comment '生成商户单号'")
     private String tradeno;
 
+    @Column(columnDefinition = "bigint(20) comment '关联送餐地址id'")
+    private Long uaddressid;
+
+    @Column(columnDefinition = "decimal(6,2) comment '首单用户-xx元'")
+    private float firstorder;
+
+    @Column(columnDefinition = "int DEFAULT '0'  comment '是否是会员价购买 0,1'")
+    private int ismember;
+
+
     @Transient
     private String branchname;
 
@@ -75,7 +85,7 @@ public class Uorder extends BaseEntity<Long> {
     private String info;
 
     @Transient
-    private int piece;
+    private int total;
 
 
     public Long getUserid() {
@@ -210,12 +220,12 @@ public class Uorder extends BaseEntity<Long> {
         this.info = info;
     }
 
-    public int getPiece() {
-        return piece = this.orderItems.size();
+    public int getTotal() {
+        return total;
     }
 
-    public void setPiece(int piece) {
-        this.piece = piece;
+    public void setTotal(int total) {
+        this.total = total;
     }
 
     public String getTradeno() {
@@ -224,5 +234,29 @@ public class Uorder extends BaseEntity<Long> {
 
     public void setTradeno(String tradeno) {
         this.tradeno = tradeno;
+    }
+
+    public Long getUaddressid() {
+        return uaddressid;
+    }
+
+    public void setUaddressid(Long uaddressid) {
+        this.uaddressid = uaddressid;
+    }
+
+    public float getFirstorder() {
+        return firstorder;
+    }
+
+    public void setFirstorder(float firstorder) {
+        this.firstorder = firstorder;
+    }
+
+    public int getIsmember() {
+        return ismember;
+    }
+
+    public void setIsmember(int ismember) {
+        this.ismember = ismember;
     }
 }

@@ -53,6 +53,14 @@ public class BproductService extends BaseService<Bproduct, Long> {
         return bproduct;
     }
 
+    /**
+     * 通过分店id查询分店商品
+     * @param branchid
+     * @return
+     */
+    public List<Bproduct> findByBproductToBbranch(Long branchid){
+        return this.bcategorysRepository.findByBproductToBbranch(branchid);
+    }
 
 
 }
