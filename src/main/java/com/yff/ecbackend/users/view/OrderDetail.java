@@ -22,6 +22,7 @@ public class OrderDetail {
     private List<OrderItem> orderItems = new ArrayList<>(); //包含明细统计（不包含套餐）
 
     private Uaddress uaddress;  //配送地址
+    private String exptimeinf="由商家自行配送";
     private String exptime="立即配送"; //期望时间
     private String disservice="商家自行配送";//配送服务
     private String orderno; //订单号码
@@ -38,5 +39,7 @@ public class OrderDetail {
     private Float totalfee ;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date completetime;
+
+    private int self;
 
 }

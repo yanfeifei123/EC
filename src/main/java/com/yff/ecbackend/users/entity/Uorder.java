@@ -75,6 +75,7 @@ public class Uorder extends BaseEntity<Long> {
     private int ismember;
 
 
+
     @Transient
     private String branchname;
 

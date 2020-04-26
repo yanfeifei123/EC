@@ -6,6 +6,11 @@ import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+
+/**
+ * 订单统计商品
+ */
+
 @Data
 public class OrderItem {
 
