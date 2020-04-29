@@ -1,17 +1,25 @@
 package com.yff.ecbackend.common.service;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.yff.core.safetysupport.parameterconf.Parameterconf;
 import com.yff.core.util.ToolUtil;
-
+import com.yff.ecbackend.common.pojo.SubscribeMessage;
+import com.yff.ecbackend.common.pojo.TemplateData;
 import com.yff.wechat.impl.WXPayConfigImpl;
 import com.yff.wechat.wxpaysdk.WXPay;
 import com.yff.wechat.wxpaysdk.WXPayUtil;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +32,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.AlgorithmParameters;
 import java.security.SecureRandom;
@@ -31,6 +40,9 @@ import java.security.Security;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.*;
 
 @Service
 public class WeChatService {
@@ -39,8 +51,65 @@ public class WeChatService {
     private Parameterconf parameterconf;
 
 
+    public Object subscribeMessage(String touser, String templateId, String page, Map<String, TemplateData> map) {
+
+        String accessToken = this.getAccess_token();
+        SubscribeMessage subscribeMessage = new SubscribeMessage();
+        subscribeMessage.setAccess_token(accessToken);
+        subscribeMessage.setTouser(touser);
+        subscribeMessage.setTemplate_id(templateId);
+        subscribeMessage.setPage(page);
+        subscribeMessage.setData(map);
+        String json = JSONObject.toJSONString(subscribeMessage);
+//        String ret = Unirest.sendPost(Wechat.SUBSCRIBEMESSAGE + accessToken, json);
+        JsonNode ret = null;
+        try {
+            ret = Unirest.post(this.parameterconf.getSubscribeMessageurl() + accessToken).body(json).asJson().getBody();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("ret:"+ret);
+        return ret;
+    }
+
+
     public String getWebAccess(String APPID, String SECRET, String CODE) {
         return String.format(parameterconf.getSessionHost(), APPID, SECRET, CODE);
+    }
+
+
+    /**
+     * 获取模板消息Token
+     *
+     * @return
+     */
+    public String getAccess_token() {
+
+
+        String access_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential" + "&appid=" + parameterconf.getAppid() + "&secret=" + parameterconf.getAppsecret();
+        String message = "";
+        try {
+            URL url = new URL(access_url);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.connect();
+            //获取返回的字符
+            InputStream inputStream = connection.getInputStream();
+            int size = inputStream.available();
+            byte[] bs = new byte[size];
+            inputStream.read(bs);
+            message = new String(bs, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //获取access_token
+        JSONObject jsonObject = JSONObject.parseObject(message);
+        String accessToken = jsonObject.getString("access_token");
+        String expires_in = jsonObject.getString("expires_in");
+//        System.out.println(expires_in);
+        return accessToken;
     }
 
 
@@ -224,17 +293,19 @@ public class WeChatService {
             resultMap.put("nonceStr", nonceStr);
             Long timeStamp = System.currentTimeMillis() / 1000;
 
-            System.out.println(JSON.toJSONString(rMap));
+//            System.out.println(JSON.toJSONString(rMap));
 
             if ("SUCCESS".equals(return_code) && return_code.equals(result_code)) {
                 String prepayid = rMap.get("prepay_id");
+                System.out.println("prepayid:" + prepayid);
                 resultMap.put("package", "prepay_id=" + prepayid);
                 resultMap.put("signType", "MD5");
                 resultMap.put("timeStamp", timeStamp + "");
                 resultMap.put("appId", parameterconf.getAppid());
                 String sign = WXPayUtil.generateSignature(resultMap, parameterconf.getPaykey());
                 resultMap.put("paySign", sign);
-                resultMap.put("out_trade_no",out_trade_no);
+                resultMap.put("out_trade_no", out_trade_no);
+                resultMap.put("prepay_id", prepayid);
                 System.out.println("生成的签名paySign : " + sign);
             }
         } catch (Exception e) {

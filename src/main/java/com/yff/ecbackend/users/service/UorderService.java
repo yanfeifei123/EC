@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.yff.core.jparepository.service.BaseService;
 import com.yff.core.util.DateUtil;
 import com.yff.ecbackend.business.entity.Bbranch;
-import com.yff.ecbackend.business.entity.Bphoto;
 import com.yff.ecbackend.business.service.BbranchService;
 import com.yff.ecbackend.business.service.BphotoService;
+import com.yff.ecbackend.common.pojo.TemplateData;
 import com.yff.ecbackend.users.entity.Uaddress;
 import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.Uordertail;
@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -50,6 +51,8 @@ public class UorderService extends BaseService<Uorder, Long> {
     @Autowired
     private UaddressService uaddressService;
 
+    private DecimalFormat df = new DecimalFormat("#.00");
+
 
     public List<Uorder> findUserOrder(String openid) {
         return this.uorderRepository.findUserOrder(openid);
@@ -57,12 +60,12 @@ public class UorderService extends BaseService<Uorder, Long> {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public int updateUserOrder(String openid, String shoppingcart, String bid, String totalfee, String branchid, String isself, String discount, String out_trade_no, String uaddressid, String firstorder, String ismember) {
+    public Object updateUserOrder(String openid, String shoppingcart, String bid, String totalfee, String branchid, String isself, String discount, String out_trade_no, String uaddressid, String firstorder, String ismember) {
 //        System.out.println(shoppingcart);
         User user = this.userService.getUser(openid);
         Uorder uorder = this.updateUorder(user, bid, branchid, Integer.parseInt(isself), Float.valueOf(totalfee), Float.valueOf(discount), shoppingcart, out_trade_no, uaddressid, firstorder, ismember);
         this.uordertailService.updateUordertail(uorder.getId(), shoppingcart);
-        return 1;
+        return uorder;
     }
 
 
@@ -186,7 +189,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         orderDetail.setDiscount(uorder.getDiscount());
         orderDetail.setPaym("在线支付");
 
-        if(uorder.getSelf()==1){
+        if (uorder.getSelf() == 1) {
             orderDetail.setExptimeinf("商家马上出品");
             orderDetail.setExptime("马上完成");
             orderDetail.setDisservice("到店自取");
@@ -198,6 +201,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         Uaddress uaddress = this.uaddressService.findOne(uorder.getUaddressid());
         orderDetail.setUaddress(uaddress);
         orderDetail.setOrderno(uorder.getTradeno());
+
         List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, Long.valueOf(orderid));
         List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
         orderDetail.setOrderItems(orderItems);
@@ -221,6 +225,42 @@ public class UorderService extends BaseService<Uorder, Long> {
         Date date = calendar.getTime();
         String e = DateUtil.format(date, "HH:mm");
         return e;
+    }
+
+
+    public List<OrderItem> orderByOrderDetailed(HttpServletRequest request, String orderid) {
+        List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, Long.valueOf(orderid));
+        List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
+        return orderItems;
+    }
+
+    /**
+     * 配合消息模板
+     *
+     * @return
+     */
+    public Map<String, TemplateData>  findByOrderSendTempInfo(HttpServletRequest request, String orderid) {
+        Uorder uorder = this.findOne(Long.valueOf(orderid));
+        Map<String, TemplateData> map = new HashMap<>();
+        map.put("character_string1", new TemplateData(uorder.getTradeno()));
+        String orderType = uorder.getSelf() == 1 ? "到店自取" : "外卖配送";
+        map.put("phrase2", new TemplateData(orderType));
+        map.put("amount4", new TemplateData(df.format(uorder.getTotalfee())));
+        List<OrderItem> orderItems = this.orderByOrderDetailed(request, orderid);
+        String names = "";
+        String istc="";
+        for (OrderItem orderItem : orderItems) {
+            istc= orderItem.getIsmeal() == 1?"（套餐）":"";
+            if (names.equals("")) {
+                names = orderItem.getName()+istc;
+            } else {
+                names += "," + orderItem.getName()+istc;
+            }
+        }
+        map.put("thing6",  new TemplateData(names));
+        Uaddress uaddress = this.uaddressService.findOne(uorder.getUaddressid());
+        map.put("name7",  new TemplateData(uaddress.getName() +"("+ uaddress.getGender()+")" ));
+        return map;
     }
 
 }
