@@ -29,4 +29,5 @@ public class Parameterconf {
 
     private String subscribeMessageurl;
 
+    private String domainname;
 }

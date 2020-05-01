@@ -12,17 +12,9 @@ import com.yff.ecbackend.common.pojo.TemplateData;
 import com.yff.wechat.impl.WXPayConfigImpl;
 import com.yff.wechat.wxpaysdk.WXPay;
 import com.yff.wechat.wxpaysdk.WXPayUtil;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -40,9 +32,6 @@ import java.security.Security;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static java.util.concurrent.TimeUnit.*;
 
 @Service
 public class WeChatService {
@@ -53,6 +42,7 @@ public class WeChatService {
 
     public Object subscribeMessage(String touser, String templateId, String page, Map<String, TemplateData> map) {
 
+        Map<String,Object> jsonmap = new HashMap<>();
         String accessToken = this.getAccess_token();
         SubscribeMessage subscribeMessage = new SubscribeMessage();
         subscribeMessage.setAccess_token(accessToken);
@@ -61,15 +51,17 @@ public class WeChatService {
         subscribeMessage.setPage(page);
         subscribeMessage.setData(map);
         String json = JSONObject.toJSONString(subscribeMessage);
-//        String ret = Unirest.sendPost(Wechat.SUBSCRIBEMESSAGE + accessToken, json);
         JsonNode ret = null;
         try {
             ret = Unirest.post(this.parameterconf.getSubscribeMessageurl() + accessToken).body(json).asJson().getBody();
+            jsonmap.put("errcode",0);
+            jsonmap.put("errmsg","ok");
         }catch (Exception e){
+            jsonmap.put("errcode",1);
+            jsonmap.put("errmsg",e.getMessage());
             e.printStackTrace();
         }
-        System.out.println("ret:"+ret);
-        return ret;
+        return jsonmap;
     }
 
 
@@ -317,7 +309,8 @@ public class WeChatService {
 
 
     public String getHttps(HttpServletRequest request) {
-        return "https://" + this.getIp(request) + ":" + parameterconf.getServerPort();
+//        return "https://" + this.getIp(request) + ":" + parameterconf.getServerPort();
+        return "https://" + this.parameterconf.getDomainname()  + ":" + parameterconf.getServerPort();
     }
 
 

@@ -73,7 +73,7 @@ public class LoginController {
     @PostMapping("/uLogin")
     @ResponseBody
     public Object uLogin(String userInfo, String openid) {
-//        System.out.println(userInfo + "  openid:" + openid);
+        System.out.println(userInfo);
         return uuserService.uLogin(userInfo, openid);
     }
 

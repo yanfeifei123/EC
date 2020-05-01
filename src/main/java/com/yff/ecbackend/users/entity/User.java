@@ -36,6 +36,9 @@ public class User extends BaseEntity<Long> {
     @Column(columnDefinition = "int(255) comment '关联商家'")
     private Long bid;
 
+    @Column(columnDefinition = "int(255) comment '关联商家(分店)'")
+    private Long  branchid;
+
     @Column(columnDefinition = "varchar(250) comment '账号'")
     private String  account;
 
@@ -129,5 +132,13 @@ public class User extends BaseEntity<Long> {
 
     public void setMember(String member) {
         this.member = member;
+    }
+
+    public Long getBranchid() {
+        return branchid;
+    }
+
+    public void setBranchid(Long branchid) {
+        this.branchid = branchid;
     }
 }

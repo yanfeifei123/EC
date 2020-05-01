@@ -20,4 +20,13 @@ public interface UserRepository extends BaseRepository<User,Long> {
     @Query("select u from User u where u.account=:account" )
     public abstract User findByAccount(@Param("account") String account);
 
+    /**
+     * 通过分店id查询管理者
+     * @param branchid
+     * @return
+     */
+    @Query("select u from User u where u.branchid=:branchid" )
+    public abstract User findByBranchid(@Param("branchid") Long branchid);
+
+
 }

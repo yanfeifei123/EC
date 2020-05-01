@@ -117,4 +117,15 @@ public class UserService extends BaseService<User, Long> {
         return map;
     }
 
+    /**
+     * 通过分店id查询管理者
+     * @param branchid
+     * @return
+     */
+    public User findByBranchid(Long branchid){
+        return  this.uuserRepository.findByBranchid(branchid);
+    }
+
+
+
 }

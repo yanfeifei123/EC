@@ -198,8 +198,12 @@ public class UorderService extends BaseService<Uorder, Long> {
 
         orderDetail.setCompletetime(uorder.getCompletetime());
         orderDetail.setOrdertime(uorder.getBuildtime());
-        Uaddress uaddress = this.uaddressService.findOne(uorder.getUaddressid());
-        orderDetail.setUaddress(uaddress);
+        if (orderDetail.getSelf() == 0) {
+            Uaddress uaddress = this.uaddressService.findOne(uorder.getUaddressid());
+            orderDetail.setUaddress(uaddress);
+        }
+
+
         orderDetail.setOrderno(uorder.getTradeno());
 
         List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, Long.valueOf(orderid));
@@ -239,7 +243,7 @@ public class UorderService extends BaseService<Uorder, Long> {
      *
      * @return
      */
-    public Map<String, TemplateData>  findByOrderSendTempInfo(HttpServletRequest request, String orderid) {
+    public Map<String, TemplateData> findByOrderSendTempInfo(HttpServletRequest request, String orderid) {
         Uorder uorder = this.findOne(Long.valueOf(orderid));
         Map<String, TemplateData> map = new HashMap<>();
         map.put("character_string1", new TemplateData(uorder.getTradeno()));
@@ -248,18 +252,18 @@ public class UorderService extends BaseService<Uorder, Long> {
         map.put("amount4", new TemplateData(df.format(uorder.getTotalfee())));
         List<OrderItem> orderItems = this.orderByOrderDetailed(request, orderid);
         String names = "";
-        String istc="";
+        String istc = "";
         for (OrderItem orderItem : orderItems) {
-            istc= orderItem.getIsmeal() == 1?"（套餐）":"";
+            istc = orderItem.getIsmeal() == 1 ? "（套餐）" : "";
             if (names.equals("")) {
-                names = orderItem.getName()+istc;
+                names = orderItem.getName() + istc;
             } else {
-                names += "," + orderItem.getName()+istc;
+                names += "," + orderItem.getName() + istc;
             }
         }
-        map.put("thing6",  new TemplateData(names));
+        map.put("thing6", new TemplateData(names));
         Uaddress uaddress = this.uaddressService.findOne(uorder.getUaddressid());
-        map.put("name7",  new TemplateData(uaddress.getName() +"("+ uaddress.getGender()+")" ));
+        map.put("name7", new TemplateData(uaddress.getName() + "(" + uaddress.getGender() + ")"));
         return map;
     }
 
