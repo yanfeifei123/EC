@@ -222,14 +222,10 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @return
      */
     public String timeCalculation(Date time) {
-        String s = DateUtil.format(time, "yyyy-MM-dd HH:mm:ss");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        calendar.add(Calendar.MINUTE, 15);
-        Date date = calendar.getTime();
-        String e = DateUtil.format(date, "HH:mm");
-        return e;
+        String  date = DateUtil.calculationTime(time,"MINUTE",15);
+        return DateUtil.format(DateUtil.parseTime(date),"HH:mm") ;
     }
+
 
 
     public List<OrderItem> orderByOrderDetailed(HttpServletRequest request, String orderid) {

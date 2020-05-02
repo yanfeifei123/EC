@@ -227,4 +227,31 @@ public class DateUtil {
 
         return dateStr;
     }
+
+
+    /**
+     * 時間加減法
+     * @param time 時間類型
+     * @param calendarType   小時，天，分鐘
+     * @param value
+     * @return
+     */
+    public static String calculationTime(Date time, String calendarType, int value){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(time);
+
+        if(calendarType.equals("MINUTE")){
+            calendar.add(Calendar.MINUTE, value);
+        }else if(calendarType.equals("DATE")){
+            calendar.add(Calendar.DATE, value);
+        }else if(calendarType.equals("MONTH")){
+            calendar.add(Calendar.MONTH, value);
+        }
+
+        Date date = calendar.getTime();
+        String e = DateUtil.format(date, "yyyy-MM-dd HH:mm:ss");
+        return e;
+    }
+
+
 }
