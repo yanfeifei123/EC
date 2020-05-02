@@ -225,7 +225,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         String s = DateUtil.format(time, "yyyy-MM-dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(time);
-        calendar.add(Calendar.MINUTE, 30);
+        calendar.add(Calendar.MINUTE, 15);
         Date date = calendar.getTime();
         String e = DateUtil.format(date, "HH:mm");
         return e;
