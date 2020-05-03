@@ -3,12 +3,15 @@ package com.yff.ecbackend.business.service;
 
 import com.alibaba.fastjson.JSON;
 import com.yff.core.util.DateUtil;
+import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.business.view.OrderSummary;
-import org.aspectj.weaver.ast.Or;
+import com.yff.ecbackend.messagequeue.pojo.OrderMessageTemplate;
+import com.yff.ecbackend.messagequeue.service.OrderMessageThreadingService;
+import com.yff.ecbackend.users.repository.UorderRepository;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -26,6 +29,11 @@ public class BOrderService {
     @PersistenceContext(unitName = "entityManagerFactoryPrimary")
     private EntityManager entityManager;
 
+    @Autowired
+    private OrderMessageThreadingService orderMessageThreadingService;
+
+    @Autowired
+    private UorderRepository uorderRepository;
 
     /**
      * 通过商家分店id查询现在单量和金额
@@ -46,15 +54,15 @@ public class BOrderService {
         }else{
             if(orderSummaryitem.equals("3")){
                 String etime = DateUtil.formatDate(new Date(),"yyyy-MM-dd");
-                String stime = DateUtil.calculationTime(new Date(),"DATE",-7);
+                String stime = DateUtil.calculationTime(new Date(),"DATE",-6);
                 stime=DateUtil.format(DateUtil.parseTime(stime),"yyyy-MM-dd") ;
-
+//                System.out.println(stime+"   "+etime);
                 return this.findByOrderSummaryRange(branchid,stime,etime);
             }else if(orderSummaryitem.equals("4")){
                 String etime = DateUtil.formatDate(new Date(),"yyyy-MM-dd");
                 String stime = DateUtil.calculationTime(new Date(),"MONTH",-1);
                 stime=DateUtil.format(DateUtil.parseTime(stime),"yyyy-MM-dd") ;
-
+//                System.out.println(stime+"   "+etime);
                 return this.findByOrderSummaryRange(branchid,stime,etime);
             }
         }
@@ -90,6 +98,27 @@ public class BOrderService {
         Map<String, Object> map = (Map<String, Object>) query.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).getSingleResult();
         return JSON.parseObject(JSON.toJSONString(map), OrderSummary.class);
     }
+
+
+
+    public int findByIsNotOrderComplete(String branchid){
+        return this.uorderRepository.findByIsNotOrderComplete(Long.valueOf(branchid));
+    }
+
+    public Object listenerNewOrder(String branchid){
+        OrderMessageTemplate orderMessageTemplate = this.orderMessageThreadingService.take();
+        if(ToolUtil.isNotEmpty(orderMessageTemplate)){
+            if(Long.valueOf(branchid).equals(orderMessageTemplate.getBranchid())){
+                System.out.println("监听到订单"+orderMessageTemplate.getOrderid()+"  "+orderMessageTemplate.getOpenid()+"   "+orderMessageTemplate.getBranchid());
+                return orderMessageTemplate;
+            }
+        }else{
+            System.out.println("未监听到订单");
+        }
+        return orderMessageTemplate;
+    }
+
+
 
 
 }

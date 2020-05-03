@@ -113,8 +113,8 @@ public class UorderService extends BaseService<Uorder, Long> {
         setbranchName(uorders, bbranchService.findAll());
         List<OrderItem> orderItems = this.findByOrderItem(request, openid);
         this.setOrderItem(uorders, orderItems);
-//        String s = JSON.toJSONString(uorders);
-//        System.out.println("orderItems:" + s);
+        String s = JSON.toJSONString(uorders);
+        System.out.println("orderItems:" + s);
         return uorders;
     }
 
@@ -127,6 +127,15 @@ public class UorderService extends BaseService<Uorder, Long> {
                     uorder.getOrderItems().add(orderItem);
                     total += orderItem.getNumber();
                     uorder.setTotal(total);
+                    if(uorder.getIscomplete()==0){
+                        if (uorder.getSelf() == 1) {
+                            uorder.setInfo("到店自取");
+                        } else {
+                            uorder.setInfo("商家已接单");
+                        }
+                    }else{
+                        uorder.setInfo("已完成");
+                    }
                 }
             }
         }
@@ -190,7 +199,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         orderDetail.setPaym("在线支付");
 
         if (uorder.getSelf() == 1) {
-            orderDetail.setExptimeinf("商家马上出品");
+            orderDetail.setExptimeinf( bbranch.getDetailed()+","+ bbranch.getName()  );
             orderDetail.setExptime("马上完成");
             orderDetail.setDisservice("到店自取");
         }

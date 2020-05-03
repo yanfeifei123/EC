@@ -35,6 +35,32 @@ public class BOrderController {
     }
 
 
+    /**
+     * 监听商家订单
+     * @param branchid
+     * @return
+     */
+    @RequestMapping(value = "/listenerNewOrder", method = RequestMethod.POST)
+    @ResponseBody
+    public Object listenerNewOrder(String branchid){
+        return this.bOrderService.listenerNewOrder(branchid);
+    }
+
+
+    /**
+     * 统计订单未完成数量
+     * @param branchid
+     * @return
+     */
+    @RequestMapping(value = "/findByIsNotOrderComplete", method = RequestMethod.POST)
+    @ResponseBody
+    public Object findByIsNotOrderComplete(String branchid){
+         return this.bOrderService.findByIsNotOrderComplete(branchid);
+    }
+
+
+
+
 
 
 

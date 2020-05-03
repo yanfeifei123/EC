@@ -210,10 +210,6 @@ public class Uorder extends BaseEntity<Long> {
     }
 
     public String getInfo() {
-        this.info = "已完成";
-        if (this.iscomplete == 0) {
-            this.info = "商家已接单";
-        }
         return info;
     }
 
