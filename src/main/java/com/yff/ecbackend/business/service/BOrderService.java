@@ -156,20 +156,21 @@ public class BOrderService {
             User user = this.userService.findByUserid(uorder.getOpenid());
             orderList.setAvatarurl(user.getAvatarurl());
             orderList.setIscomplete(uorder.getIscomplete());
-            String productNames = "";
-
-            List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, uorder.getId());
-            List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
-            int number = 0;
-            for (OrderItem orderItem : orderItems) {
-                number+=orderItem.getNumber();
-                if (productNames.equals("")) {
-                    productNames = orderItem.getName();
-                } else {
-                    productNames += "，" + orderItem.getName();
-                }
-                orderList.setProductNames(productNames+"等共"+number+"件");
-            }
+            orderList.setTradeno(uorder.getTradeno());
+//            String productNames = "";
+//
+//            List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, uorder.getId());
+//            List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
+//            int number = 0;
+//            for (OrderItem orderItem : orderItems) {
+//                number+=orderItem.getNumber();
+//                if (productNames.equals("")) {
+//                    productNames = orderItem.getName();
+//                } else {
+//                    productNames += "，" + orderItem.getName();
+//                }
+//                orderList.setProductNames(productNames+"等共"+number+"件");
+//            }
             orderViewLists.add(orderList);
         }
         this.findByuaddress(orderViewLists);

@@ -113,8 +113,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         setbranchName(uorders, bbranchService.findAll());
         List<OrderItem> orderItems = this.findByOrderItem(request, openid);
         this.setOrderItem(uorders, orderItems);
-        String s = JSON.toJSONString(uorders);
-        System.out.println("orderItems:" + s);
+
         return uorders;
     }
 

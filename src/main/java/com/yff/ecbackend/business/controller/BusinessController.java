@@ -1,6 +1,7 @@
 package com.yff.ecbackend.business.controller;
 
 
+import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.business.entity.Bbranch;
 import com.yff.ecbackend.business.service.BbranchService;
 import com.yff.ecbackend.business.service.BcategoryService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
 
 @Controller
 @RequestMapping("/business")
@@ -52,6 +54,31 @@ public class BusinessController {
         Bbranch bbranch = bbranchService.findOne(Long.valueOf(id));
         return bbranch;
     }
+
+    /**
+     * 商家营业和下班
+     * @param branchid
+     * @param bornot
+     * @return
+     */
+    @RequestMapping("/setbranchbornot")
+    @ResponseBody
+    public Object bornot(String branchid,String bornot){
+        Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
+        if(ToolUtil.isNotEmpty(bbranch)){
+            bbranch.setBornot(Integer.parseInt(bornot));
+            this.bbranchService.update(bbranch);
+        }
+        return 1;
+    }
+
+    @RequestMapping("/findBybornot")
+    @ResponseBody
+    public Object findBybornot(String branchid){
+        Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
+        return bbranch;
+    }
+
 
 
 }

@@ -26,7 +26,7 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      * @param branchid
      * @return
      */
-    @Query(" SELECT count(o) FROM Uorder o where o.branchid=2 and o.iscomplete=0")
+    @Query(" SELECT count(o) FROM Uorder o where o.branchid=:branchid and o.iscomplete=0")
     public abstract int findByIsNotOrderComplete(@Param("branchid") Long branchid);
 
     /**
@@ -34,7 +34,7 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      * @param branchid
      * @return
      */
-    @Query(" SELECT o FROM Uorder o where o.branchid=2 ORDER BY o.buildtime desc")
+    @Query(" SELECT o FROM Uorder o where o.branchid=:branchid ORDER BY o.buildtime desc")
     public abstract List<Uorder> findByBranchOrder(@Param("branchid") Long branchid);
 
 }
