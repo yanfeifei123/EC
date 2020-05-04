@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -57,6 +58,13 @@ public class BOrderController {
     public Object findByIsNotOrderComplete(String branchid){
          return this.bOrderService.findByIsNotOrderComplete(branchid);
     }
+
+    @RequestMapping(value = "/findByBranchOrder", method = RequestMethod.POST)
+    @ResponseBody
+    public Object findByBranchOrder(HttpServletRequest request, String branchid){
+       return this.bOrderService.findByBranchOrder(request,branchid);
+    }
+
 
 
 

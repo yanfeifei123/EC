@@ -29,5 +29,12 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
     @Query(" SELECT count(o) FROM Uorder o where o.branchid=2 and o.iscomplete=0")
     public abstract int findByIsNotOrderComplete(@Param("branchid") Long branchid);
 
+    /**
+     * 根据商家分店id查询订单 以时间倒序查询
+     * @param branchid
+     * @return
+     */
+    @Query(" SELECT o FROM Uorder o where o.branchid=2 ORDER BY o.buildtime desc")
+    public abstract List<Uorder> findByBranchOrder(@Param("branchid") Long branchid);
 
 }
