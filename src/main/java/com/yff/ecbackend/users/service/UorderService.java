@@ -109,11 +109,12 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @return
      */
     public List<Uorder> findOrderList(HttpServletRequest request, String openid) {
+        System.out.println(DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
         List<Uorder> uorders = this.uorderRepository.findUserOrder(openid);
         setbranchName(uorders, bbranchService.findAll());
         List<OrderItem> orderItems = this.findByOrderItem(request, openid);
         this.setOrderItem(uorders, orderItems);
-
+        System.out.println(DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
         return uorders;
     }
 

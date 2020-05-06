@@ -1,7 +1,6 @@
 package com.yff.ecbackend.business.controller;
 
 
-import com.yff.core.util.DateUtil;
 import com.yff.ecbackend.business.service.BOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 
 /**
  * 商家订单查询
@@ -22,6 +20,8 @@ public class BOrderController {
 
     @Autowired
     private BOrderService bOrderService;
+
+
 
     /**
      * 统计今天现在订单金额数量和退款金额findByOrderSummary
@@ -36,16 +36,7 @@ public class BOrderController {
     }
 
 
-    /**
-     * 监听商家订单
-     * @param branchid
-     * @return
-     */
-    @RequestMapping(value = "/listenerNewOrder", method = RequestMethod.POST)
-    @ResponseBody
-    public Object listenerNewOrder(String branchid){
-        return this.bOrderService.listenerNewOrder(branchid);
-    }
+
 
 
     /**

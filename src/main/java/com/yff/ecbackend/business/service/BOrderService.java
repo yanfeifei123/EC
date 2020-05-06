@@ -3,26 +3,19 @@ package com.yff.ecbackend.business.service;
 
 import com.alibaba.fastjson.JSON;
 import com.yff.core.util.DateUtil;
-import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.business.view.OrderList;
 import com.yff.ecbackend.business.view.OrderSummary;
-import com.yff.ecbackend.messagequeue.pojo.OrderMessageTemplate;
-import com.yff.ecbackend.messagequeue.service.OrderMessageThreadingService;
 import com.yff.ecbackend.users.entity.Uaddress;
 import com.yff.ecbackend.users.entity.Uorder;
-import com.yff.ecbackend.users.entity.Uordertail;
 import com.yff.ecbackend.users.entity.User;
 import com.yff.ecbackend.users.repository.UaddressRepository;
 import com.yff.ecbackend.users.repository.UorderRepository;
 import com.yff.ecbackend.users.service.UordertailService;
 import com.yff.ecbackend.users.service.UserService;
-import com.yff.ecbackend.users.view.OrderItem;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -42,8 +35,7 @@ public class BOrderService {
     @PersistenceContext(unitName = "entityManagerFactoryPrimary")
     private EntityManager entityManager;
 
-    @Autowired
-    private OrderMessageThreadingService orderMessageThreadingService;
+
 
     @Autowired
     private UorderRepository uorderRepository;
@@ -126,19 +118,7 @@ public class BOrderService {
         return this.uorderRepository.findByIsNotOrderComplete(Long.valueOf(branchid));
     }
 
-    public Object listenerNewOrder(String branchid) {
-        OrderMessageTemplate orderMessageTemplate = this.orderMessageThreadingService.take();
-        if (ToolUtil.isNotEmpty(orderMessageTemplate)) {
-            if (Long.valueOf(branchid).equals(orderMessageTemplate.getBranchid())) {
-                System.out.println("监听到订单" + orderMessageTemplate.getOrderid() + "  " + orderMessageTemplate.getOpenid() + "   " + orderMessageTemplate.getBranchid());
-                return orderMessageTemplate;
-            }
-        } else {
-            System.out.println("未监听到订单");
-        }
-
-        return orderMessageTemplate;
-    }
+     
 
 
     public Object findByBranchOrder(HttpServletRequest request, String branchid) {
