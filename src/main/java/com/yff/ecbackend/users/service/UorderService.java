@@ -103,18 +103,15 @@ public class UorderService extends BaseService<Uorder, Long> {
     }
 
     /**
-     * 查询订单列表
-     *
+     * 查询用户订单列表
      * @param openid
      * @return
      */
-    public List<Uorder> findOrderList(HttpServletRequest request, String openid) {
-        System.out.println(DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
-        List<Uorder> uorders = this.uorderRepository.findUserOrder(openid);
+    public List<Uorder> findOrderList(HttpServletRequest request, String openid,String pageNum,String pageSize) {
+        List<Uorder> uorders = this.uorderRepository.findUserOrderpage(openid,Integer.parseInt(pageNum),Integer.parseInt(pageSize));
         setbranchName(uorders, bbranchService.findAll());
         List<OrderItem> orderItems = this.findByOrderItem(request, openid);
         this.setOrderItem(uorders, orderItems);
-        System.out.println(DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
         return uorders;
     }
 

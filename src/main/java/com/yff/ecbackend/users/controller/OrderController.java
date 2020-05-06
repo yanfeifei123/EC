@@ -20,9 +20,9 @@ public class OrderController {
 
     @RequestMapping(value = "/findOrderList", method = RequestMethod.POST)
     @ResponseBody
-    public Object findOrderList(HttpServletRequest request, String openid) {
-//        System.out.println("openid:" + openid);
-        return this.uorderService.findOrderList(request, openid);
+    public Object findOrderList(HttpServletRequest request, String openid, String pageNum, String pageSize) {
+//        System.out.println("pageNum:" + pageNum+"  pageSize:"+pageSize);
+        return this.uorderService.findOrderList(request, openid, pageNum, pageSize);
     }
 
     /**

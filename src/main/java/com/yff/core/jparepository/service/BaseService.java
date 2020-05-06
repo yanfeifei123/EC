@@ -4,6 +4,9 @@ import com.yff.core.jparepository.entity.*;
 import com.yff.core.jparepository.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.io.Serializable;
@@ -70,6 +73,21 @@ public abstract class BaseService<T extends AbstractEntity, ID extends Serializa
     public List<T> findAll() {
 
         return this.baseRepository.findAll(Sort.by(Sort.Direction.ASC, "odr"));
+    }
+
+    /**
+     * 分页查询
+     * @param pageNum  第几页
+     * @param pageSize 一页显示多少行
+     * @param sortType 排序类型
+     * @param field  排序字段
+     * @return
+     */
+    public List<T> findAll(int pageNum,int pageSize,String sortType,String field){
+        Sort sort =Sort.by(Sort.Direction.valueOf(sortType.toUpperCase()),  field);
+        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
+        Page<T>  page = this.baseRepository.findAll(pageable);
+        return page.getContent();
     }
 
 
