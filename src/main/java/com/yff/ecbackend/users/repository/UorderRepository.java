@@ -21,7 +21,13 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
     @Query("select o from Uorder o where o.openid=:openid ORDER BY o.buildtime DESC")
     public abstract List<Uorder> findUserOrder(@Param("openid") String openid);
 
-
+    /**
+     * 原生sql查询分页返回Uorder实体
+     * @param openid
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @Query(value = "select * from u_order where openid=:openid ORDER BY  buildtime DESC limit :pageNum,:pageSize ",nativeQuery = true)
     public abstract List<Uorder> findUserOrderpage(@Param("openid") String openid,@Param("pageNum") int pageNum,@Param("pageSize") int pageSize);
 
