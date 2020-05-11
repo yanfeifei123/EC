@@ -49,7 +49,7 @@ public class LoginController {
     @PostMapping("/auth")
     @ResponseBody
     @JwtIgnore
-    public Object auth(HttpServletResponse response, String code) {
+    public Object auth(HttpServletRequest request, HttpServletResponse response, String code) {
 
         String tokenUrl = weChatService.getWebAccess(parameterconf.getAppid(), parameterconf.getAppsecret(), code);
         String appsecret = weChatService.httpsRequestToString(tokenUrl, "GET", null);
@@ -65,7 +65,8 @@ public class LoginController {
                 System.out.println("获取Web Access Token失败:" + $e.getMessage());
             }
         }
-//        System.out.println("tokenUrl:"+tokenUrl);
+        int tim = request.getSession().getMaxInactiveInterval();
+        System.out.println("session失效时间:"+tim);
         return jsonObject;
     }
 
@@ -97,8 +98,7 @@ public class LoginController {
      */
     @PostMapping("/bLogin")
     @ResponseBody
-    public Object bLogin(HttpServletResponse response, String account, String password, String sessionKey, String iv) {
-
+    public Object bLogin(HttpServletRequest request, HttpServletResponse response, String account, String password, String sessionKey, String iv) {
         Map<String, Object> map = new HashMap<>();
         User user = null;
         try {
@@ -107,12 +107,19 @@ public class LoginController {
             map.put("data", user);
             String token = JwtTokenUtil.createJWT(user.getId()+"", user.getName(), "", parameterconf);
             response.setHeader(JwtTokenUtil.AUTH_HEADER_KEY,  token);
+//            request.getSession().setAttribute("openid",user.getOpenid());
+//            System.out.println("商家登陆："+user.getOpenid());
         } catch (Exception e) {
             map.put("err", 1);
             map.put("data", e.getMessage());
         }
         return map;
     }
+
+
+
+
+
 
 
     /**

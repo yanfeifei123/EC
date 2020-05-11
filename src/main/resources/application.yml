@@ -10,6 +10,8 @@ server:
      key-store-type: PKCS12
   servlet:
      context-path: /
+     session:
+       timeout: PT2H
 
 spring:
 #数据库配置

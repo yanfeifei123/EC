@@ -235,7 +235,8 @@ public class WXPayUtil {
         StringBuffer sb = new StringBuffer();
         long millis = System.currentTimeMillis();
         sb.append(millis);
-        for (int i = 1; i <= 19; i++) {
+//        int i = 1; i <= 19; i++
+        for (int i = 1; i <= 4; i++) {
             int randNum = rand.nextInt(9) + 1;
             String num = randNum + "";
             sb = sb.append(num);

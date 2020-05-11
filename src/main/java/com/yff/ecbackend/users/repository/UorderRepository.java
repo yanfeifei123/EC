@@ -22,17 +22,6 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
     public abstract List<Uorder> findUserOrder(@Param("openid") String openid);
 
     /**
-     * 原生sql查询分页返回Uorder实体
-     * @param openid
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
-    @Query(value = "select * from u_order where openid=:openid ORDER BY  buildtime DESC limit :pageNum,:pageSize ",nativeQuery = true)
-    public abstract List<Uorder> findUserOrderpage(@Param("openid") String openid,@Param("pageNum") int pageNum,@Param("pageSize") int pageSize);
-
-
-    /**
      * 通过分店id查询商家订单未完成统计
      * @param branchid
      * @return
@@ -47,5 +36,25 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      */
     @Query(" SELECT o FROM Uorder o where o.branchid=:branchid ORDER BY o.buildtime desc")
     public abstract List<Uorder> findByBranchOrder(@Param("branchid") Long branchid);
+
+
+    /**
+     * 原生sql查询分页返回Uorder实体
+     * @param openid
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Query(value = "select * from u_order where openid=:openid ORDER BY  buildtime DESC limit :pageNum,:pageSize ",nativeQuery = true)
+    public abstract List<Uorder> findUserOrderpage(@Param("openid") String openid,@Param("pageNum") int pageNum,@Param("pageSize") int pageSize);
+
+    /**
+     * 统计用户订单
+     * @param openid
+     * @return
+     */
+    @Query(value = "select count(*) from  u_order where openid=:openid ",nativeQuery = true )
+    public abstract int countAllByUorderOAndOpenid(@Param("openid") String openid);
+
 
 }

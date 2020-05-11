@@ -1,6 +1,7 @@
 package com.yff.ecbackend.users.service;
 
 import com.alibaba.fastjson.JSON;
+import com.yff.core.jparepository.page.Paging;
 import com.yff.core.jparepository.service.BaseService;
 import com.yff.core.util.DateUtil;
 import com.yff.ecbackend.business.entity.Bbranch;
@@ -102,16 +103,30 @@ public class UorderService extends BaseService<Uorder, Long> {
         return this.uorderRepository.save(uorder);
     }
 
+    /*
+      用户订单总页数
+     */
+    public int countAllByUorderOAndOpenid(String openid) {
+        int totalRecord = this.uorderRepository.countAllByUorderOAndOpenid(openid);
+        Paging paging = new Paging();
+        paging.setPagesize(6);
+        paging.setTotalRecord(totalRecord);
+        return paging.getTotalPage();
+    }
+
     /**
      * 查询用户订单列表
+     *
      * @param openid
      * @return
      */
-    public List<Uorder> findOrderList(HttpServletRequest request, String openid,String pageNum,String pageSize) {
-        List<Uorder> uorders = this.uorderRepository.findUserOrderpage(openid,Integer.parseInt(pageNum),Integer.parseInt(pageSize));
+    public List<Uorder> findOrderList(HttpServletRequest request, String openid, String pageNum, String pageSize) {
+
+        List<Uorder> uorders = this.uorderRepository.findUserOrderpage(openid, Integer.parseInt(pageNum), Integer.parseInt(pageSize));
         setbranchName(uorders, bbranchService.findAll());
         List<OrderItem> orderItems = this.findByOrderItem(request, openid);
         this.setOrderItem(uorders, orderItems);
+//        System.out.println(pageNum + "  " + pageSize + "  ListSize:" + uorders.size());
         return uorders;
     }
 
@@ -124,13 +139,13 @@ public class UorderService extends BaseService<Uorder, Long> {
                     uorder.getOrderItems().add(orderItem);
                     total += orderItem.getNumber();
                     uorder.setTotal(total);
-                    if(uorder.getIscomplete()==0){
+                    if (uorder.getIscomplete() == 0) {
                         if (uorder.getSelf() == 1) {
                             uorder.setInfo("到店自取");
                         } else {
                             uorder.setInfo("商家已接单");
                         }
-                    }else{
+                    } else {
                         uorder.setInfo("已完成");
                     }
                 }
@@ -196,7 +211,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         orderDetail.setPaym("在线支付");
 
         if (uorder.getSelf() == 1) {
-            orderDetail.setExptimeinf( bbranch.getDetailed()+","+ bbranch.getName()  );
+            orderDetail.setExptimeinf(bbranch.getDetailed() + "," + bbranch.getName());
             orderDetail.setExptime("马上完成");
             orderDetail.setDisservice("到店自取");
         }
@@ -228,10 +243,9 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @return
      */
     public String timeCalculation(Date time) {
-        String  date = DateUtil.calculationTime(time,"MINUTE",15);
-        return DateUtil.format(DateUtil.parseTime(date),"HH:mm") ;
+        String date = DateUtil.calculationTime(time, "MINUTE", 15);
+        return DateUtil.format(DateUtil.parseTime(date), "HH:mm");
     }
-
 
 
     public List<OrderItem> orderByOrderDetailed(HttpServletRequest request, String orderid) {

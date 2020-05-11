@@ -42,9 +42,6 @@ public class WebSocket {
         this.sid = this.session.getId();
         webSocketSet.put(this.sid,this);
         log.info("【websocket消息】有新的连接, 总数:{}，sessionid:{}", webSocketSet.size(),this.session.getId());
-
-
-
     }
 
     @OnClose

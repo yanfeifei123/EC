@@ -25,6 +25,12 @@ public class OrderController {
         return this.uorderService.findOrderList(request, openid, pageNum, pageSize);
     }
 
+    @RequestMapping(value = "/countAllByUorderOAndOpenid", method = RequestMethod.POST)
+    @ResponseBody
+    public Object countAllByUorderOAndOpenid(String openid){
+        return this.uorderService.countAllByUorderOAndOpenid(openid);
+    }
+
     /**
      * 点餐用户端订单明细
      *
