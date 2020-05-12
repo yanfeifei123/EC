@@ -27,6 +27,8 @@ public class Bbluetooth extends BaseEntity<Long> {
     @Column(columnDefinition = "varchar(255)   comment '设备入口id'")
     private String characteristicId;
 
+    @Column(columnDefinition = "varchar(255)   comment '设备名称'")
+    private String name;
 
     public Long getBranchid() {
         return branchid;
@@ -66,5 +68,13 @@ public class Bbluetooth extends BaseEntity<Long> {
 
     public void setCharacteristicId(String characteristicId) {
         this.characteristicId = characteristicId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
