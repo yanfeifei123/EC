@@ -2,6 +2,7 @@ package com.yff.ecbackend.business.service;
 
 
 import com.alibaba.fastjson.JSON;
+import com.yff.core.jparepository.page.Paging;
 import com.yff.core.util.DateUtil;
 import com.yff.ecbackend.business.view.OrderList;
 import com.yff.ecbackend.business.view.OrderSummary;
@@ -16,14 +17,12 @@ import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 商家订单查询统计服务
@@ -34,7 +33,6 @@ public class BOrderService {
 
     @PersistenceContext(unitName = "entityManagerFactoryPrimary")
     private EntityManager entityManager;
-
 
 
     @Autowired
@@ -118,12 +116,27 @@ public class BOrderService {
         return this.uorderRepository.findByIsNotOrderComplete(Long.valueOf(branchid));
     }
 
-     
 
+    public Object findByBranchOrder(String branchid, String tabid,String pageNum,String pageSize) {
 
-    public Object findByBranchOrder(HttpServletRequest request, String branchid) {
         List<OrderList> orderViewLists = new ArrayList<>();
-        List<Uorder> uorderList = this.uorderRepository.findByBranchOrder(Long.valueOf(branchid));
+        List<Uorder> uorderList = null;
+        int totalRecord = 0;
+        if (tabid.equals("0") || tabid.equals("1")) {
+            uorderList = this.uorderRepository.findByBranchOrder(Long.valueOf(branchid), Integer.parseInt(tabid),Integer.parseInt(pageNum),Integer.parseInt(pageSize));
+            totalRecord=this.uorderRepository.countAllByBranchOrder(Long.valueOf(branchid), Integer.parseInt(tabid));
+
+        } else {
+            uorderList = this.uorderRepository.findByBranchOrder(Long.valueOf(branchid),Integer.parseInt(pageNum),Integer.parseInt(pageSize));
+            totalRecord=this.uorderRepository.countAllByBranchOrder(Long.valueOf(branchid));
+        }
+
+        Paging paging = new Paging();
+        paging.setPagesize(Integer.parseInt(pageSize) );
+        paging.setTotalRecord(totalRecord);
+
+        Map<String,Object>  map = new HashMap<>();
+        map.put("totalPage",paging.getTotalPage());
         for (Uorder uorder : uorderList) {
 
             OrderList orderList = new OrderList();
@@ -137,26 +150,13 @@ public class BOrderService {
             orderList.setAvatarurl(user.getAvatarurl());
             orderList.setIscomplete(uorder.getIscomplete());
             orderList.setTradeno(uorder.getTradeno());
-//            String productNames = "";
-//
-//            List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, uorder.getId());
-//            List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
-//            int number = 0;
-//            for (OrderItem orderItem : orderItems) {
-//                number+=orderItem.getNumber();
-//                if (productNames.equals("")) {
-//                    productNames = orderItem.getName();
-//                } else {
-//                    productNames += "，" + orderItem.getName();
-//                }
-//                orderList.setProductNames(productNames+"等共"+number+"件");
-//            }
+
             orderViewLists.add(orderList);
         }
+//        System.out.println("totalPage:"+paging.getTotalPage());
         this.findByuaddress(orderViewLists);
-//        String s = JSON.toJSONString(orderViewLists);
-//        System.out.println(s);
-        return orderViewLists;
+        map.put("data",orderViewLists);
+        return map;
     }
 
 

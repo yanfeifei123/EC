@@ -75,6 +75,14 @@ public class Uorder extends BaseEntity<Long> {
     private int ismember;
 
 
+    @Column(columnDefinition = "varchar(225)   comment '收货人地址'")
+    private String address;
+
+    @Column(columnDefinition = "varchar(225)   comment '收货人姓名'")
+    private String receiver;
+
+    @Column(columnDefinition = "varchar(100)   comment '收货人电话'")
+    private String phone;
 
     @Transient
     private String branchname;
@@ -255,5 +263,29 @@ public class Uorder extends BaseEntity<Long> {
 
     public void setIsmember(int ismember) {
         this.ismember = ismember;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

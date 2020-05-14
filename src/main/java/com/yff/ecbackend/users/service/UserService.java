@@ -51,10 +51,8 @@ public class UserService extends BaseService<User, Long> {
 
 
     public User getUser(String openid) {
-//        System.out.println(openid);
         User uuser = this.findByUserid(openid);
-        String user = JSON.toJSONString(uuser);
-//        System.out.println(user);
+
         if (ToolUtil.isEmpty(uuser)) {
             uuser = new User();
             uuser.setOpenid(openid);

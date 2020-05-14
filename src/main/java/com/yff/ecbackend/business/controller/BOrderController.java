@@ -22,45 +22,38 @@ public class BOrderController {
     private BOrderService bOrderService;
 
 
-
     /**
      * 统计今天现在订单金额数量和退款金额findByOrderSummary
+     *
      * @param branchid
      * @return
      */
     @RequestMapping(value = "/findByOrderSummary", method = RequestMethod.POST)
     @ResponseBody
-    public Object findByOrderSummary(String branchid,String orderSummaryitem){
+    public Object findByOrderSummary(String branchid, String orderSummaryitem) {
 
-        return this.bOrderService.findByOrderSummary(branchid,orderSummaryitem);
+        return this.bOrderService.findByOrderSummary(branchid, orderSummaryitem);
     }
-
-
-
 
 
     /**
      * 统计订单未完成数量
+     *
      * @param branchid
      * @return
      */
     @RequestMapping(value = "/findByIsNotOrderComplete", method = RequestMethod.POST)
     @ResponseBody
-    public Object findByIsNotOrderComplete(String branchid){
-         return this.bOrderService.findByIsNotOrderComplete(branchid);
+    public Object findByIsNotOrderComplete(String branchid) {
+        return this.bOrderService.findByIsNotOrderComplete(branchid);
     }
 
     @RequestMapping(value = "/findByBranchOrder", method = RequestMethod.POST)
     @ResponseBody
-    public Object findByBranchOrder(HttpServletRequest request, String branchid){
-       return this.bOrderService.findByBranchOrder(request,branchid);
+    public Object findByBranchOrder(String branchid, String tabid,String pageNum,String pageSize) {
+//        System.out.println("tabid:" + tabid);
+        return this.bOrderService.findByBranchOrder(branchid,tabid,pageNum,pageSize);
     }
-
-
-
-
-
-
 
 
 }

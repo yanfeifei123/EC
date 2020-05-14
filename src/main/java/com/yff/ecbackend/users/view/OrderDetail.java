@@ -21,7 +21,7 @@ public class OrderDetail {
 
     private List<OrderItem> orderItems = new ArrayList<>(); //包含明细统计（不包含套餐）
 
-    private Uaddress uaddress;  //配送地址
+
     private String exptimeinf="由商家自行配送";
     private String exptime="立即配送"; //期望时间
     private String disservice="商家自行配送";//配送服务
@@ -41,6 +41,13 @@ public class OrderDetail {
     private Date completetime;
 
     private int self;
+
+    private int totalnum; //一共几件
+
+    private String address; //配送地址
+    private String receiver;// 收货人姓名
+    private String phone; //收货人电话
+
 
 
 

@@ -27,8 +27,8 @@ public class OrderController {
 
     @RequestMapping(value = "/countAllByUorderOAndOpenid", method = RequestMethod.POST)
     @ResponseBody
-    public Object countAllByUorderOAndOpenid(String openid){
-        return this.uorderService.countAllByUorderOAndOpenid(openid);
+    public Object countAllByUorderOAndOpenid(String openid,String pageSize){
+        return this.uorderService.countAllByUorderOAndOpenid(openid,pageSize);
     }
 
     /**

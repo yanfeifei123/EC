@@ -15,6 +15,7 @@ import com.yff.ecbackend.users.entity.User;
 import com.yff.ecbackend.users.repository.UorderRepository;
 import com.yff.ecbackend.users.view.OrderDetail;
 import com.yff.ecbackend.users.view.OrderItem;
+import org.hibernate.dialect.Ingres9Dialect;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,16 +101,21 @@ public class UorderService extends BaseService<Uorder, Long> {
         uorder.setFirstorder(Float.parseFloat(firstorder));
         uorder.setIsmember(Integer.parseInt(ismember));
 
+        Uaddress uaddress =   uaddressService.findOne(Long.valueOf(uaddressid));
+        uorder.setAddress(uaddress.getArea()+uaddress.getDetailed());
+        uorder.setReceiver(uaddress.getName()+"（"+uaddress.getGender()+"）");
+        uorder.setPhone(uaddress.getPhone());
+
         return this.uorderRepository.save(uorder);
     }
 
     /*
       用户订单总页数
      */
-    public int countAllByUorderOAndOpenid(String openid) {
+    public int countAllByUorderOAndOpenid(String openid, String pageSize) {
         int totalRecord = this.uorderRepository.countAllByUorderOAndOpenid(openid);
         Paging paging = new Paging();
-        paging.setPagesize(6);
+        paging.setPagesize(Integer.parseInt(pageSize));
         paging.setTotalRecord(totalRecord);
         return paging.getTotalPage();
     }
@@ -208,6 +214,11 @@ public class UorderService extends BaseService<Uorder, Long> {
         orderDetail.setFirstorder(uorder.getFirstorder());
         orderDetail.setIsmember(uorder.getIsmember());
         orderDetail.setDiscount(uorder.getDiscount());
+
+        orderDetail.setAddress(uorder.getAddress());
+        orderDetail.setReceiver(uorder.getReceiver());
+        orderDetail.setPhone(uorder.getPhone());
+
         orderDetail.setPaym("在线支付");
 
         if (uorder.getSelf() == 1) {
@@ -219,10 +230,7 @@ public class UorderService extends BaseService<Uorder, Long> {
 
         orderDetail.setCompletetime(uorder.getCompletetime());
         orderDetail.setOrdertime(uorder.getBuildtime());
-        if (orderDetail.getSelf() == 0) {
-            Uaddress uaddress = this.uaddressService.findOne(uorder.getUaddressid());
-            orderDetail.setUaddress(uaddress);
-        }
+
 
 
         orderDetail.setOrderno(uorder.getTradeno());
@@ -230,10 +238,23 @@ public class UorderService extends BaseService<Uorder, Long> {
         List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, Long.valueOf(orderid));
         List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
         orderDetail.setOrderItems(orderItems);
-
+        int totalnum= this.totalnum(orderItems);
+        orderDetail.setTotalnum(totalnum);
 //        String s = JSON.toJSONString(orderDetail) ;
 //        System.out.println(s);
+
         return orderDetail;
+    }
+
+    private int totalnum(List<OrderItem> orderItems) {
+        int num = 0;
+        for (OrderItem orderItem : orderItems) {
+            num += orderItem.getNumber();
+            for(OrderItem child : orderItem.getOrderItems()){
+                num += child.getNumber();
+            }
+        }
+        return num;
     }
 
     /**

@@ -64,6 +64,12 @@ public class UserController {
     }
 
 
+    @PostMapping("/findByUserid")
+    @ResponseBody
+    public Object findByUserid(String openid){
+        return  this.userService.findByUserid(openid);
+    }
+
 
 
 }
