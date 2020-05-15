@@ -1,10 +1,12 @@
 package com.yff.ecbackend.users.view;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yff.ecbackend.common.json.Object6Serialize;
 import lombok.Data;
 
-import javax.persistence.Entity;
+
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -17,8 +19,11 @@ public class OrderItem {
     private Long productid;
     private String name;
     private Integer number;
+
     private Float price;
+
     private Float memberprice;
+
     private Long orderid;
     private Integer ismeal;
     private String imagepath;
@@ -53,6 +58,7 @@ public class OrderItem {
     }
 
     public Float getPrice() {
+
         return price;
     }
 
@@ -61,7 +67,7 @@ public class OrderItem {
     }
 
     public Float getMemberprice() {
-        return memberprice;
+        return  memberprice;
     }
 
     public void setMemberprice(Float memberprice) {

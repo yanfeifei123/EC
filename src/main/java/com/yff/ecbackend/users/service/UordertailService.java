@@ -38,6 +38,8 @@ public class UordertailService extends BaseService<Uordertail, Long> {
     @Autowired
     private BphotoService bphotoService;
 
+
+
     public List<Uordertail> updateUordertail(Long orderid, String shoppingcart) {
         JSONArray jsonArray = JSON.parseArray(shoppingcart);
         List<Uordertail> uordertails = new ArrayList<>();
@@ -128,7 +130,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
         List<Bproduct> bproducts = this.bproductService.findByBproductToBbranch(uorder.getBranchid());
         for (Uordertail uordertail : uordertails) {
             for (Bproduct bproduct : bproducts) {
-                if (uordertail.getProductid() == bproduct.getId()) {
+                if (uordertail.getProductid().equals(bproduct.getId())) {
                     uordertail.setName(bproduct.getName());
                 }
             }
@@ -203,7 +205,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                 OrderItem mapitem = mapOrderItem.get(uordertail.getProductid());
 
                 int number = mapitem.getNumber() + 1;
-                float price = mapitem.getPrice() + orderItem.getPrice();
+                float price =  mapitem.getPrice() + orderItem.getPrice();
                 float memberprice = mapitem.getMemberprice() + orderItem.getMemberprice();
 
                 mapitem.setNumber(number);

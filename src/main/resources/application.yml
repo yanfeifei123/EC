@@ -3,6 +3,8 @@
 #  port: 7001
 
 server:
+  tomcat:
+    uri-encoding: UTF-8
   port: 443   # 默认https 443端口
   ssl:
      key-store: classpath:xyfantuan.cn.pfx
@@ -67,7 +69,11 @@ spring:
        prefix: classpath:/view/
        cache: false
        encoding: UTF-8
-
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 
 

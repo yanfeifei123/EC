@@ -127,12 +127,13 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @return
      */
     public List<Uorder> findOrderList(HttpServletRequest request, String openid, String pageNum, String pageSize) {
-
         List<Uorder> uorders = this.uorderRepository.findUserOrderpage(openid, Integer.parseInt(pageNum), Integer.parseInt(pageSize));
         setbranchName(uorders, bbranchService.findAll());
         List<OrderItem> orderItems = this.findByOrderItem(request, openid);
         this.setOrderItem(uorders, orderItems);
 //        System.out.println(pageNum + "  " + pageSize + "  ListSize:" + uorders.size());
+//        String s = JSON.toJSONString(uorders);
+//        System.out.println("findOrderList:"+s);
         return uorders;
     }
 
@@ -141,7 +142,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         for (Uorder uorder : uorders) {
             int total = uorder.getTotal();
             for (OrderItem orderItem : orderItems) {
-                if (uorder.getId() == orderItem.getOrderid()) {
+                if (uorder.getId().equals(orderItem.getOrderid())) {
                     uorder.getOrderItems().add(orderItem);
                     total += orderItem.getNumber();
                     uorder.setTotal(total);
@@ -173,6 +174,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         Query query = this.entityManager.createNativeQuery(dataSql.toString());
         query.setParameter("openid", openid);
         List<Map<String, Object>> list = query.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+        System.out.println("用户端订单统计："+list.size());
         List<OrderItem> orderItems = JSON.parseArray(JSON.toJSONString(list), OrderItem.class);
         this.bphotoService.setOrderItemImagePath(request, orderItems);
         return orderItems;
@@ -182,7 +184,7 @@ public class UorderService extends BaseService<Uorder, Long> {
     private void setbranchName(List<Uorder> uorders, List<Bbranch> bbranchs) {
         for (Uorder uorder : uorders) {
             for (Bbranch bbranch : bbranchs) {
-                if (uorder.getBranchid() == bbranch.getId()) {
+                if (uorder.getBranchid().equals(bbranch.getId()) ) {
                     uorder.setBranchname(bbranch.getName());
                 }
             }
@@ -240,6 +242,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         orderDetail.setOrderItems(orderItems);
         int totalnum= this.totalnum(orderItems);
         orderDetail.setTotalnum(totalnum);
+
 //        String s = JSON.toJSONString(orderDetail) ;
 //        System.out.println(s);
 

@@ -29,7 +29,7 @@ public class BphotoService extends BaseService<Bphoto, Long> {
         String https = weChatService.getHttps(request);
         String imagepath = "";
         for (Bphoto bphoto : bphotos) {
-            if (bphoto.getFkid() == bproduct.getId()) {
+            if (bphoto.getFkid().equals(bproduct.getId())) {
                 imagepath = https + bphoto.getPath();
                 bproduct.setImagepath(imagepath);
             }
@@ -42,7 +42,7 @@ public class BphotoService extends BaseService<Bphoto, Long> {
         String imagepath = "";
         for (Bphoto bphoto : bphotos) {
             for (Bproduct bproduct : bproducts) {
-                if (bphoto.getFkid() == bproduct.getId()) {
+                if (bphoto.getFkid().equals(bproduct.getId()) ) {
                     imagepath = https + bphoto.getPath();
                     bproduct.setImagepath(imagepath);
                 }
@@ -56,7 +56,7 @@ public class BphotoService extends BaseService<Bphoto, Long> {
         List<Bphoto> bphotoList = this.findAll();
         for (Bphoto bphoto : bphotoList) {
             for (OrderItem orderItem : orderItems) {
-                if (orderItem.getProductid() == bphoto.getFkid()) {
+                if (orderItem.getProductid().equals(bphoto.getFkid()) ) {
                     imagepath = https + bphoto.getPath();
                     orderItem.setImagepath(imagepath);
                 }
@@ -70,7 +70,7 @@ public class BphotoService extends BaseService<Bphoto, Long> {
         List<Bphoto> bphotoList = this.findAll();
         for (Bphoto bphoto : bphotoList) {
             for (Uordertail uordertail : uordertails) {
-                if (uordertail.getProductid() == bphoto.getFkid()) {
+                if (uordertail.getProductid().equals(bphoto.getFkid()) ) {
                     imagepath = https + bphoto.getPath();
                     uordertail.setImagepath(imagepath);
                 }

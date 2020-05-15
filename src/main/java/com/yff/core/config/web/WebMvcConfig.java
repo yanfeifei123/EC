@@ -1,6 +1,8 @@
 package com.yff.core.config.web;
 
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.yff.core.safetysupport.jwt.JwtInterceptor;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import java.math.BigInteger;
 import java.util.*;
 
 @Configuration
@@ -70,6 +73,17 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 SerializerFeature.WriteDateUseDateFormat,
                 SerializerFeature.WriteNullBooleanAsFalse
         );
+
+        SerializeConfig serializeConfig = SerializeConfig.globalInstance;
+        serializeConfig.put(BigInteger.class, ToStringSerializer.instance);
+        serializeConfig.put(Long.class, ToStringSerializer.instance);
+        serializeConfig.put(Long.TYPE, ToStringSerializer.instance);
+        serializeConfig.put(Double.class, ToStringSerializer.instance);
+        serializeConfig.put(Double.TYPE, ToStringSerializer.instance);
+        serializeConfig.put(Float.class, ToStringSerializer.instance);
+        serializeConfig.put(Float.TYPE, ToStringSerializer.instance);
+        fastJsonConfig.setSerializeConfig(serializeConfig);
+
         List<MediaType> fastMediaTypes = new ArrayList<>();
         fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
         fastConverter.setSupportedMediaTypes(fastMediaTypes);
