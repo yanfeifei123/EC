@@ -1,12 +1,6 @@
 package com.yff.ecbackend.users.view;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.yff.ecbackend.common.json.Object6Serialize;
 import lombok.Data;
-
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -19,6 +13,7 @@ public class OrderItem {
     private Long productid;
     private String name;
     private Integer number;
+
 
     private Float price;
 

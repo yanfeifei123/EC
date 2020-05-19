@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.yff.core.jparepository.page.Paging;
 import com.yff.core.jparepository.service.BaseService;
 import com.yff.core.util.DateUtil;
+import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.business.entity.Bbranch;
 import com.yff.ecbackend.business.service.BbranchService;
 import com.yff.ecbackend.business.service.BphotoService;
 import com.yff.ecbackend.common.pojo.TemplateData;
+import com.yff.ecbackend.common.service.WeChatService;
 import com.yff.ecbackend.users.entity.Uaddress;
 import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.Uordertail;
@@ -15,6 +17,8 @@ import com.yff.ecbackend.users.entity.User;
 import com.yff.ecbackend.users.repository.UorderRepository;
 import com.yff.ecbackend.users.view.OrderDetail;
 import com.yff.ecbackend.users.view.OrderItem;
+import com.yff.ecbackend.users.view.OrderSettiing;
+import org.bouncycastle.jce.provider.asymmetric.ec.KeyFactory;
 import org.hibernate.dialect.Ingres9Dialect;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.Transformers;
@@ -53,26 +57,82 @@ public class UorderService extends BaseService<Uorder, Long> {
     @Autowired
     private UaddressService uaddressService;
 
+    @Autowired
+    private UorderOdrService uorderOdrService;
+
+    @Autowired
+    private WeChatService weChatService;
+
     private DecimalFormat df = new DecimalFormat("#.00");
 
+    /**
+     * 订单设置项
+     *
+     * @param openid
+     * @param branchid
+     * @return
+     */
+    public OrderSettiing queryOrderSettiing(String openid, String branchid) {
+        String tradeno = this.weChatService.createOutTradeno();
+        User user = this.userService.findByUserid(openid);
+        List<Uorder> uorderList = this.findUserIsfirstorder(openid);
+        float firstorder = 0;
+        float psfcost = 0;
+        Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
+        if (uorderList.size() == 0) {
+            firstorder = bbranch.getFirstorder();
+        }
+        psfcost = bbranch.getPsfcost();
+        OrderSettiing orderSettiing = new OrderSettiing();
+        orderSettiing.setTradeno(tradeno);
+        orderSettiing.setMember(Integer.parseInt(user.getMember()));
+        orderSettiing.setPsfcost(psfcost);
+        orderSettiing.setFirstorder(firstorder);
+        return orderSettiing;
+    }
 
-    public List<Uorder> findUserOrder(String openid) {
-        return this.uorderRepository.findUserOrder(openid);
+
+    public List<Uorder> findUserIsfirstorder(String openid) {
+        return this.uorderRepository.findUserIsfirstorder(openid);
     }
 
 
     @Transactional(rollbackFor = Exception.class)
-    public Object updateUserOrder(String openid, String shoppingcart, String bid, String totalfee, String branchid, String isself, String discount, String out_trade_no, String uaddressid, String firstorder, String ismember) {
-//        System.out.println(shoppingcart);
+    public Object updateUserOrder(String orderid, String tradeno, String openid, String shoppingcart, String bid, String totalfee, String branchid, String isself, String discount, String uaddressid, String firstorder, String ismember) {
+        System.out.println("openid:" + openid + " bid:" + bid + " totalfee:" + totalfee + " branchid:" + branchid + "  isself:" + isself + "  discount:" + discount + " uaddressid:" + uaddressid + " firstorder:" + firstorder + " ismember:" + ismember);
+        System.out.println("shoppingcart:"+shoppingcart);
+
         User user = this.userService.getUser(openid);
-        Uorder uorder = this.updateUorder(user, bid, branchid, Integer.parseInt(isself), Float.valueOf(totalfee), Float.valueOf(discount), shoppingcart, out_trade_no, uaddressid, firstorder, ismember);
+        Uorder uorder = this.updateUorder(orderid, tradeno, user, bid, branchid, Integer.parseInt(isself), Float.valueOf(totalfee), Float.valueOf(discount), shoppingcart, uaddressid, firstorder, ismember);
         this.uordertailService.updateUordertail(uorder.getId(), shoppingcart);
+
         return uorder;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteOrder(String orderid) {
+        if (ToolUtil.isNotEmpty(orderid)) {
+            Uorder uorder = this.findOne(Long.valueOf(orderid));
+            if (uorder.getStatus() == 0) {
+                this.delete(Long.valueOf(orderid));
+                this.uordertailService.clearUordertail(Long.valueOf(orderid));
+            }
+        }
+        return 1;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public int clearMyorder(String openid) {
+        List<Uorder> uorderList = this.uorderRepository.findUserUnpaidorder(openid);
+        for(Uorder uorder : uorderList){
+            this.uordertailService.clearUordertail(uorder.getId());
+        }
+        this.uorderRepository.clearMyorder(openid);
+        return 1;
+    }
 
     /**
-     * 创建用户订单
+     * 初始化订单信息未支付状态
      *
      * @param user
      * @param bid
@@ -81,29 +141,37 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @param totalfee
      * @return
      */
-    private Uorder updateUorder(User user, String bid, String branchid, int isself, float totalfee, float discount, String josn, String tradeno, String uaddressid, String firstorder, String ismember) {
-        Uorder uorder = new Uorder();
+    private Uorder updateUorder(String orderid, String tradeno, User user, String bid, String branchid, int isself, float totalfee, float discount, String josn, String uaddressid, String firstorder, String ismember) {
+
+        int odr = this.uorderOdrService.findByUorderOdr(Long.valueOf(branchid));
+        Uorder uorder = null;
+        if (ToolUtil.isNotEmpty(orderid)) {
+            uorder = this.uorderOdrService.findOne(Long.valueOf(orderid));
+        } else {
+            uorder = new Uorder();
+        }
+        uorder.setTradeno(tradeno);  //商户订单号
         uorder.setBid(Long.valueOf(bid));
         uorder.setBranchid(Long.valueOf(branchid));
         uorder.setIscomplete(0);
         uorder.setOpenid(user.getOpenid());
-        uorder.setStatus(1);
+        uorder.setStatus(0);
         uorder.setTotalfee(totalfee);
         uorder.setUserid(user.getId());
-        uorder.setOdr(1);
+        uorder.setOdr(odr);
         uorder.setBuildtime(new Date());
         uorder.setSelf(isself);
         uorder.setDiscount(discount);
         uorder.setIscomplete(0);
         uorder.setJson(josn);
-        uorder.setTradeno(tradeno);
+//        uorder.setTradeno(tradeno);
         uorder.setUaddressid(Long.valueOf(uaddressid));
         uorder.setFirstorder(Float.parseFloat(firstorder));
         uorder.setIsmember(Integer.parseInt(ismember));
 
-        Uaddress uaddress =   uaddressService.findOne(Long.valueOf(uaddressid));
-        uorder.setAddress(uaddress.getArea()+uaddress.getDetailed());
-        uorder.setReceiver(uaddress.getName()+"（"+uaddress.getGender()+"）");
+        Uaddress uaddress = uaddressService.findOne(Long.valueOf(uaddressid));
+        uorder.setAddress(uaddress.getArea() + uaddress.getDetailed());
+        uorder.setReceiver(uaddress.getName() + "（" + uaddress.getGender() + "）");
         uorder.setPhone(uaddress.getPhone());
 
         return this.uorderRepository.save(uorder);
@@ -174,7 +242,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         Query query = this.entityManager.createNativeQuery(dataSql.toString());
         query.setParameter("openid", openid);
         List<Map<String, Object>> list = query.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
-        System.out.println("用户端订单统计："+list.size());
+//        System.out.println("用户端订单统计："+list.size());
         List<OrderItem> orderItems = JSON.parseArray(JSON.toJSONString(list), OrderItem.class);
         this.bphotoService.setOrderItemImagePath(request, orderItems);
         return orderItems;
@@ -184,7 +252,7 @@ public class UorderService extends BaseService<Uorder, Long> {
     private void setbranchName(List<Uorder> uorders, List<Bbranch> bbranchs) {
         for (Uorder uorder : uorders) {
             for (Bbranch bbranch : bbranchs) {
-                if (uorder.getBranchid().equals(bbranch.getId()) ) {
+                if (uorder.getBranchid().equals(bbranch.getId())) {
                     uorder.setBranchname(bbranch.getName());
                 }
             }
@@ -198,11 +266,12 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @return
      */
     public Object findOrderDetailed(HttpServletRequest request, String orderid) {
+
         OrderDetail orderDetail = new OrderDetail();
 
         Uorder uorder = this.findOne(Long.valueOf(orderid));
         if (uorder.getIscomplete() == 0) { //未完成订单
-            String e = this.timeCalculation(uorder.getBuildtime());
+            String e = weChatService.timeCalculation(uorder.getBuildtime());
             orderDetail.setHour(e);
         }
         orderDetail.setIscomplete(uorder.getIscomplete());
@@ -216,7 +285,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         orderDetail.setFirstorder(uorder.getFirstorder());
         orderDetail.setIsmember(uorder.getIsmember());
         orderDetail.setDiscount(uorder.getDiscount());
-
+        orderDetail.setOrder(uorder.getOdr());
         orderDetail.setAddress(uorder.getAddress());
         orderDetail.setReceiver(uorder.getReceiver());
         orderDetail.setPhone(uorder.getPhone());
@@ -234,13 +303,12 @@ public class UorderService extends BaseService<Uorder, Long> {
         orderDetail.setOrdertime(uorder.getBuildtime());
 
 
-
         orderDetail.setOrderno(uorder.getTradeno());
 
         List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, Long.valueOf(orderid));
         List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
         orderDetail.setOrderItems(orderItems);
-        int totalnum= this.totalnum(orderItems);
+        int totalnum = this.totalnum(orderItems);
         orderDetail.setTotalnum(totalnum);
 
 //        String s = JSON.toJSONString(orderDetail) ;
@@ -253,22 +321,11 @@ public class UorderService extends BaseService<Uorder, Long> {
         int num = 0;
         for (OrderItem orderItem : orderItems) {
             num += orderItem.getNumber();
-            for(OrderItem child : orderItem.getOrderItems()){
+            for (OrderItem child : orderItem.getOrderItems()) {
                 num += child.getNumber();
             }
         }
         return num;
-    }
-
-    /**
-     * 预计订单完成时间
-     *
-     * @param time
-     * @return
-     */
-    public String timeCalculation(Date time) {
-        String date = DateUtil.calculationTime(time, "MINUTE", 15);
-        return DateUtil.format(DateUtil.parseTime(date), "HH:mm");
     }
 
 
@@ -306,5 +363,6 @@ public class UorderService extends BaseService<Uorder, Long> {
         map.put("name7", new TemplateData(uaddress.getName() + "(" + uaddress.getGender() + ")"));
         return map;
     }
+
 
 }

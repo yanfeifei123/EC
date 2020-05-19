@@ -74,15 +74,16 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 SerializerFeature.WriteNullBooleanAsFalse
         );
 
-        SerializeConfig serializeConfig = SerializeConfig.globalInstance;
-        serializeConfig.put(BigInteger.class, ToStringSerializer.instance);
-        serializeConfig.put(Long.class, ToStringSerializer.instance);
-        serializeConfig.put(Long.TYPE, ToStringSerializer.instance);
-        serializeConfig.put(Double.class, ToStringSerializer.instance);
-        serializeConfig.put(Double.TYPE, ToStringSerializer.instance);
-        serializeConfig.put(Float.class, ToStringSerializer.instance);
-        serializeConfig.put(Float.TYPE, ToStringSerializer.instance);
-        fastJsonConfig.setSerializeConfig(serializeConfig);
+//        SerializeConfig serializeConfig = SerializeConfig.globalInstance;
+//        serializeConfig.put(BigInteger.class, ToStringSerializer.instance);
+//        serializeConfig.put(Long.class, ToStringSerializer.instance);
+//        serializeConfig.put(Long.TYPE, ToStringSerializer.instance);
+//        serializeConfig.put(Double.class, ToStringSerializer.instance);
+//        serializeConfig.put(Double.TYPE, ToStringSerializer.instance);
+//        serializeConfig.put(Float.class, ToStringSerializer.instance);
+//        serializeConfig.put(Float.TYPE, ToStringSerializer.instance);
+
+//        fastJsonConfig.setSerializeConfig(serializeConfig);
 
         List<MediaType> fastMediaTypes = new ArrayList<>();
         fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);

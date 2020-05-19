@@ -47,7 +47,7 @@ public class Uorder extends BaseEntity<Long> {
     @Column(columnDefinition = "int DEFAULT '0' comment '是否完成(0未完成，1已完成)'")
     private int iscomplete;
 
-    @Column(columnDefinition = "int comment '是否到店自取(0否，1是)'")
+    @Column(columnDefinition = "int comment '是否到店自取(0否，1是，2已取消)'")
     private int self;
 
     @Column(columnDefinition = "varchar(5000) comment '备注'")

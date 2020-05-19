@@ -74,6 +74,11 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
+#  servlet:
+#    multipart:
+#      maxFileSize: 100MB
+#      maxRequestSize: 100MB
+
 
 
 
@@ -98,7 +103,7 @@ parameterconf:
 
     sessionHost: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
 
-    notify_url: http://www.weixin.qq.com/wxpay/pay.php
+    notify_url: www.xyfantuan.cn/weChatPay/notify
 
     paykey: 40288184715a5d4d01715a5d4d460000  #商户API
 

@@ -47,6 +47,7 @@ public class OrderDetail {
     private String address; //配送地址
     private String receiver;// 收货人姓名
     private String phone; //收货人电话
+    private int order;// 订单序列号
 
 
 

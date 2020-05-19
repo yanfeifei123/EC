@@ -46,7 +46,9 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
             System.out.println("### 用户未登录，请先登录 ###   url:"+url);
 //            throw new CustomException(USER_NOT_LOGGED_IN);
         }
+//        System.out.println("authHeader:"+authHeader);
         final String token = authHeader.substring(6);
+
         if (parameterconf == null) {
             BeanFactory factory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
             parameterconf = (Parameterconf) factory.getBean("parameterconf");

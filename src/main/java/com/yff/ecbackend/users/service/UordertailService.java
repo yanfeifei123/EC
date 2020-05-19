@@ -14,6 +14,7 @@ import com.yff.ecbackend.users.entity.Uordertail;
 import com.yff.ecbackend.users.repository.UordertailRepository;
 import com.yff.ecbackend.users.view.OrderItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,9 +39,16 @@ public class UordertailService extends BaseService<Uordertail, Long> {
     @Autowired
     private BphotoService bphotoService;
 
+    @Modifying
+    public void clearUordertail(Long orderid){
+         this.uordertailRepository.clearUordertail(Long.valueOf(orderid));
+    }
 
 
     public List<Uordertail> updateUordertail(Long orderid, String shoppingcart) {
+
+        this.clearUordertail(orderid);
+
         JSONArray jsonArray = JSON.parseArray(shoppingcart);
         List<Uordertail> uordertails = new ArrayList<>();
         for (int i = 0; i < jsonArray.size(); i++) {

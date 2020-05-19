@@ -3,6 +3,7 @@ package com.yff.ecbackend.users.repository;
 
 import com.yff.core.jparepository.repository.BaseRepository;
 import com.yff.ecbackend.users.entity.Uorder;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,6 +21,23 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      */
     @Query("select o from Uorder o where o.openid=:openid ORDER BY o.buildtime DESC")
     public abstract List<Uorder> findUserOrder(@Param("openid") String openid);
+
+
+    /**
+     * 查询首单用户
+     * @param openid
+     * @return
+     */
+    @Query("select o from Uorder o where o.openid=:openid and o.status=1 ORDER BY o.buildtime DESC")
+    public abstract List<Uorder> findUserIsfirstorder(@Param("openid") String openid);
+
+    /**
+     * 查询未支付的订单
+     * @param openid
+     * @return
+     */
+    @Query("select o from Uorder o where o.openid=:openid and o.status=0 ORDER BY o.buildtime DESC")
+    public abstract List<Uorder> findUserUnpaidorder(@Param("openid") String openid);
 
     /**
      * 通过分店id查询商家订单未完成统计
@@ -70,6 +88,10 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      */
     @Query(value = "select count(*) from  u_order where openid=:openid ",nativeQuery = true )
     public abstract int countAllByUorderOAndOpenid(@Param("openid") String openid);
+
+    @Modifying
+    @Query(value = " DELETE FROM u_order where openid=:openid and status=0 ", nativeQuery=true)
+    public abstract void clearMyorder(@Param("openid") String openid);
 
 
 }

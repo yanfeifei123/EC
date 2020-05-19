@@ -7,7 +7,6 @@ import com.yff.core.safetysupport.aes.Aes;
 import com.yff.core.util.CustomException;
 import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.business.entity.Bbranch;
-import com.yff.ecbackend.business.entity.Business;
 import com.yff.ecbackend.business.service.BbranchService;
 import com.yff.ecbackend.business.service.BusinessService;
 import com.yff.ecbackend.users.entity.Uorder;
@@ -22,7 +21,7 @@ import java.util.*;
 public class UserService extends BaseService<User, Long> {
 
     @Autowired
-    private UserRepository uuserRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private UorderService uorderService;
@@ -34,19 +33,19 @@ public class UserService extends BaseService<User, Long> {
     private BbranchService bbranchService;
 
     public User uLogin(String userInfo, String openid) {
-
-        User uuser = this.uuserRepository.findByOnenid(openid);
+        System.out.println("uLogin:"+userInfo+"  openid:"+openid);
+        User user = this.userRepository.findByOnenid(openid);
         JSONObject jsonObject = JSON.parseObject(userInfo);
-
-        if (ToolUtil.isEmpty(uuser)) {
-            uuser = new User();
-            uuser.setBuildtime(new Date());
+        if (ToolUtil.isEmpty(user)) {
+            user = new User();
+            user.setBuildtime(new Date());
+            user.setOpenid(openid);
+            user.setAvatarurl(jsonObject.getString("avatarUrl"));
+            user.setGender(Integer.parseInt(jsonObject.getString("gender")));
+            user.setNickname(jsonObject.getString("nickName"));
+            return this.update(user);
         }
-        uuser.setOpenid(openid);
-        uuser.setAvatarurl(jsonObject.getString("avatarUrl"));
-        uuser.setGender(Integer.parseInt(jsonObject.getString("gender")));
-        uuser.setNickname(jsonObject.getString("nickName"));
-        return this.update(uuser);
+       return user;
     }
 
 
@@ -68,7 +67,7 @@ public class UserService extends BaseService<User, Long> {
      * @return
      */
     public User findByUserid(String openid) {
-        return this.uuserRepository.findByOnenid(openid);
+        return this.userRepository.findByOnenid(openid);
     }
 
     /**
@@ -85,12 +84,12 @@ public class UserService extends BaseService<User, Long> {
 
         String a = aes.decrypt(account, sessionKey, iv);
 
-        User user = this.uuserRepository.findByAccount(a);
+        User user = this.userRepository.findByAccount(a);
         if (ToolUtil.isEmpty(user)) {
             throw new CustomException("账号不存在!");
         } else {
             String p = aes.decrypt(password, sessionKey, iv);
-            String pa = this.uuserRepository.findByPassword(p, user.getOpenid());
+            String pa = this.userRepository.findByPassword(p, user.getOpenid());
 //            System.out.println(pa);
             if (!pa.equals(user.getPassword())) {
                 throw new CustomException("账号密码错误!");
@@ -102,11 +101,12 @@ public class UserService extends BaseService<User, Long> {
 
     public Map<String,Object> onisfirstorder(String branchid, String openid) {
         Map<String,Object> map =new HashMap<>();
-        List<Uorder> uorderList = this.uorderService.findUserOrder(openid);
+        List<Uorder> uorderList = this.uorderService.findUserIsfirstorder(openid);
+
         float firstorder = 0;
         float psfcost=0;
         Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
-        if (ToolUtil.isEmpty(uorderList)) {
+        if (uorderList.size()==0) {
             firstorder = bbranch.getFirstorder();
         }
         psfcost=bbranch.getPsfcost();
@@ -121,7 +121,7 @@ public class UserService extends BaseService<User, Long> {
      * @return
      */
     public User findByBranchid(Long branchid){
-        return  this.uuserRepository.findByBranchid(branchid);
+        return  this.userRepository.findByBranchid(branchid);
     }
 
 

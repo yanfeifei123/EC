@@ -1,11 +1,13 @@
 package com.yff.ecbackend.common.service;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.yff.core.safetysupport.parameterconf.Parameterconf;
+import com.yff.core.util.DateUtil;
 import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.common.pojo.SubscribeMessage;
 import com.yff.ecbackend.common.pojo.TemplateData;
@@ -30,6 +32,7 @@ import java.security.AlgorithmParameters;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +41,7 @@ public class WeChatService {
 
     @Autowired
     private Parameterconf parameterconf;
+
 
 
     public Object subscribeMessage(String touser, String templateId, String page, Map<String, TemplateData> map) {
@@ -61,6 +65,7 @@ public class WeChatService {
             jsonmap.put("errmsg",e.getMessage());
             e.printStackTrace();
         }
+//        System.out.println("subscribeMessage:"+ JSON.toJSONString(ret));
         return jsonmap;
     }
 
@@ -242,7 +247,9 @@ public class WeChatService {
      * @param request
      * @return
      */
-    public Object UnifiedOrder(String openid, String total_fee, String body, HttpServletRequest request) {
+    public Object UnifiedOrder(String tradeno,String openid, String total_fee, String body, HttpServletRequest request) {
+//        this.orderid = Long.valueOf(orderid); //缓存预支付的订单id
+
         Map<String, String> resultMap = new HashMap<>();
 
         WXPayConfigImpl config = null;
@@ -262,8 +269,7 @@ public class WeChatService {
 
         String nonce_str = WXPayUtil.generateNonceStr();
         String spbill_create_ip = this.getIp(request);
-        String out_trade_no = WXPayUtil.outtradeno();
-
+//        String out_trade_no = WXPayUtil.outtradeno();
 //        System.out.println("out_trade_no:"+out_trade_no);
 
         HashMap<String, String> data = new HashMap<String, String>();
@@ -271,12 +277,16 @@ public class WeChatService {
         data.put("mch_id", parameterconf.getBnumber());
         data.put("nonce_str", nonce_str);
         data.put("body", body);
-        data.put("out_trade_no", out_trade_no);
+        data.put("out_trade_no", tradeno);
         data.put("total_fee", total_fee);
         data.put("spbill_create_ip", spbill_create_ip);
-        data.put("notify_url", parameterconf.getNotify_url());
+        String notify_url = parameterconf.getNotify_url();
+//        System.out.println("notify_url:"+notify_url);
+        data.put("notify_url", notify_url);
         data.put("trade_type", "JSAPI");
         data.put("openid", openid);
+
+//        System.out.println(JSON.toJSONString(data));
         try {
             Map<String, String> rMap = wxpay.unifiedOrder(data);
             String return_code = rMap.get("return_code");
@@ -285,24 +295,24 @@ public class WeChatService {
             resultMap.put("nonceStr", nonceStr);
             Long timeStamp = System.currentTimeMillis() / 1000;
 
-//            System.out.println(JSON.toJSONString(rMap));
+//            System.out.println(JSON.toJSONString(result_code));
 
             if ("SUCCESS".equals(return_code) && return_code.equals(result_code)) {
                 String prepayid = rMap.get("prepay_id");
-                System.out.println("prepayid:" + prepayid);
+//                System.out.println("prepayid:" + prepayid);
                 resultMap.put("package", "prepay_id=" + prepayid);
                 resultMap.put("signType", "MD5");
                 resultMap.put("timeStamp", timeStamp + "");
                 resultMap.put("appId", parameterconf.getAppid());
                 String sign = WXPayUtil.generateSignature(resultMap, parameterconf.getPaykey());
                 resultMap.put("paySign", sign);
-                resultMap.put("out_trade_no", out_trade_no);
                 resultMap.put("prepay_id", prepayid);
-                System.out.println("生成的签名paySign : " + sign);
+//                System.out.println("生成的签名paySign : " + sign);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+//        System.out.println("统一下单:"+JSON.toJSONString(resultMap));
         return resultMap;
 
     }
@@ -311,6 +321,25 @@ public class WeChatService {
     public String getHttps(HttpServletRequest request) {
 //        return "https://" + this.getIp(request) + ":" + parameterconf.getServerPort();
         return "https://" + this.parameterconf.getDomainname()  + ":" + parameterconf.getServerPort();
+    }
+
+    /**
+     * 预计订单完成时间
+     *
+     * @param time
+     * @return
+     */
+    public String timeCalculation(Date time) {
+        String date = DateUtil.calculationTime(time, "MINUTE", 15);
+        return DateUtil.format(DateUtil.parseTime(date), "HH:mm");
+    }
+
+    /**
+     * 获取订单商户号
+     * @return
+     */
+    public String createOutTradeno(){
+       return  WXPayUtil.outtradeno();
     }
 
 

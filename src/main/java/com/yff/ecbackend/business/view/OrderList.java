@@ -10,8 +10,10 @@ public class OrderList {
     private Long orderid; //订单id
     private String productNames; //商品名称
 
-    @JSONField(format = "yyyy-MM-dd HH:mm")
+    @JSONField(format = "HH:mm")
     private Date ordertime; //下单时间
+
+    private String hour;
 
     private String state;//状态（已完成/未完成）
 
@@ -25,9 +27,8 @@ public class OrderList {
 
     private Long uaddressid;
     private int iscomplete;
-
     private String tradeno;
-
+    private int order; //订单序号
 
 
 }

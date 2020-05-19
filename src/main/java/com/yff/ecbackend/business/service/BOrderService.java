@@ -6,6 +6,7 @@ import com.yff.core.jparepository.page.Paging;
 import com.yff.core.util.DateUtil;
 import com.yff.ecbackend.business.view.OrderList;
 import com.yff.ecbackend.business.view.OrderSummary;
+import com.yff.ecbackend.common.service.WeChatService;
 import com.yff.ecbackend.users.entity.Uaddress;
 import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.User;
@@ -47,6 +48,9 @@ public class BOrderService {
     @Autowired
     private UserService userService;
 
+
+    @Autowired
+    private WeChatService weChatService;
     /**
      * 通过商家分店id查询现在单量和金额
      *
@@ -138,8 +142,13 @@ public class BOrderService {
         Map<String,Object>  map = new HashMap<>();
         map.put("totalPage",paging.getTotalPage());
         for (Uorder uorder : uorderList) {
-
+            String hour="";
+            if (uorder.getIscomplete() == 0) { //未完成订单
+                String e = weChatService.timeCalculation(uorder.getBuildtime());
+                hour=e;
+            }
             OrderList orderList = new OrderList();
+            orderList.setHour(hour);
             orderList.setOrderid(uorder.getId());
             orderList.setOrdertime(uorder.getBuildtime());
             orderList.setTotalfee(uorder.getTotalfee());
@@ -150,7 +159,7 @@ public class BOrderService {
             orderList.setAvatarurl(user.getAvatarurl());
             orderList.setIscomplete(uorder.getIscomplete());
             orderList.setTradeno(uorder.getTradeno());
-
+            orderList.setOrder(uorder.getOdr());
             orderViewLists.add(orderList);
         }
 //        System.out.println("totalPage:"+paging.getTotalPage());
