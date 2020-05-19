@@ -13,12 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PostMapping;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import com.alibaba.fastjson.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,15 +53,16 @@ public class LoginController {
     @PostMapping("/auth")
     @ResponseBody
     @JwtIgnore
-    public Object auth(HttpServletRequest request, HttpServletResponse response, String code) {
+    public Object auth(@RequestBody Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
 
-        String tokenUrl = weChatService.getWebAccess(parameterconf.getAppid(), parameterconf.getAppsecret(), code);
+        String tokenUrl = weChatService.getWebAccess(parameterconf.getAppid(), parameterconf.getAppsecret(), params.get("code"));
         String appsecret = weChatService.httpsRequestToString(tokenUrl, "GET", null);
+        String token = "";
         JSONObject jsonObject = JSON.parseObject(appsecret);
 
         if (ToolUtil.isNotEmpty(jsonObject)) {
             try {
-                String token = JwtTokenUtil.createJWT("", "", "", parameterconf);
+                token = JwtTokenUtil.createJWT("", "", "", parameterconf);
                 response.setHeader(JwtTokenUtil.AUTH_HEADER_KEY, JwtTokenUtil.TOKEN_PREFIX + token);
                 jsonObject.put("token", token);
 //                System.out.println(JSON.toJSONString(jsonObject));
@@ -65,17 +70,16 @@ public class LoginController {
                 System.out.println("获取Web Access Token失败:" + $e.getMessage());
             }
         }
-        int tim = request.getSession().getMaxInactiveInterval();
-        System.out.println("session失效时间:"+tim);
+        System.out.println("获取token:" + token);
         return jsonObject;
     }
 
 
     @PostMapping("/uLogin")
     @ResponseBody
-    public Object uLogin(String userInfo, String openid) {
+    public Object uLogin(@RequestBody Map<String, String> params ) {
 
-        return uuserService.uLogin(userInfo, openid);
+        return uuserService.uLogin(params.get("userInfo") ,params.get("openid")  );
     }
 
 
@@ -98,15 +102,15 @@ public class LoginController {
      */
     @PostMapping("/bLogin")
     @ResponseBody
-    public Object bLogin(HttpServletRequest request, HttpServletResponse response, String account, String password, String sessionKey, String iv) {
+    public Object bLogin(@RequestBody Map<String, String> params , HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
         User user = null;
         try {
-            user = this.uuserService.bLogiin(account, password, sessionKey, iv);
+            user = this.uuserService.bLogiin(params.get("account") ,params.get("password") ,params.get("sessionKey")  ,params.get("iv"));
             map.put("err", 0);
             map.put("data", user);
-            String token = JwtTokenUtil.createJWT(user.getId()+"", user.getName(), "", parameterconf);
-            response.setHeader(JwtTokenUtil.AUTH_HEADER_KEY,  token);
+            String token = JwtTokenUtil.createJWT(user.getId() + "", user.getName(), "", parameterconf);
+            response.setHeader(JwtTokenUtil.AUTH_HEADER_KEY, token);
 //            request.getSession().setAttribute("openid",user.getOpenid());
 //            System.out.println("商家登陆："+user.getOpenid());
         } catch (Exception e) {
@@ -117,26 +121,18 @@ public class LoginController {
     }
 
 
-
-
-
-
-
     /**
      * 获取用户手机号
      *
      * @param request
-     * @param encryptedData
-     * @param iv
-     * @param session_key
      * @return
      */
     @RequestMapping("/binding/mobilePhone")
     @ResponseBody
-    public Object login(HttpServletRequest request, String encryptedData,  String iv,  String session_key, String openid) {
-        JSONObject obj = this.weChatService.getPhoneNumber(session_key, encryptedData, iv);
+    public Object login(@RequestBody Map<String, String> params , HttpServletRequest request) {
+        JSONObject obj = this.weChatService.getPhoneNumber(params.get("session_key") ,params.get("encryptedData") , params.get("iv") );
         String phone = obj.get("phoneNumber").toString();
-        User user = this.uuserService.getUser(openid);
+        User user = this.uuserService.getUser(params.get("openid") );
         if (ToolUtil.isNotEmpty(user)) {
             user.setPhone(phone);
             return this.uuserService.update(user);

@@ -13,6 +13,7 @@ import com.yff.ecbackend.users.service.UorderService;
 import com.yff.ecbackend.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,14 +45,20 @@ public class MessagePushController {
 
     @RequestMapping(value = "/sendOrderPayInfo", method = RequestMethod.POST)
     @ResponseBody
-    public Object send(HttpServletRequest request, String branchid, String templateId, String page, String orderid,String out_trade_no) {
-//        System.out.println("消息通知服务sendOrderPayInfo:branchid"+branchid);
+    public Object send(@RequestBody Map<String, String> params, HttpServletRequest request  ) {
+
+        String branchid =params.get("branchid");
+        String templateId =params.get("templateId");
+        String page=params.get("page");
+        String orderid=params.get("orderid");
+        System.out.println("orderid:"+orderid);
+        String out_trade_no=params.get("out_trade_no");
         Uorder uorder = this.uorderService.findOne(Long.valueOf(orderid));
         uorder.setStatus(1);
         uorder.setTradeno(out_trade_no);
         uorder = this.uorderService.update(uorder);
         Map<String, TemplateData> map = this.uorderService.findByOrderSendTempInfo(request, orderid);
-        System.out.println(JSON.toJSONString(map));
+        System.out.println("subscribeMessage:"+JSON.toJSONString(map));
         User user = this.userService.findByBranchid(Long.valueOf(branchid));
         String openid = "";
         if (ToolUtil.isNotEmpty(user)) {

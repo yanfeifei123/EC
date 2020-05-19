@@ -5,6 +5,7 @@
 server:
   tomcat:
     uri-encoding: UTF-8
+    max-http-post-size: -1
   port: 443   # 默认https 443端口
   ssl:
      key-store: classpath:xyfantuan.cn.pfx
@@ -74,10 +75,10 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
-#  servlet:
-#    multipart:
-#      maxFileSize: 100MB
-#      maxRequestSize: 100MB
+  servlet:
+    multipart:
+      maxFileSize: 100MB
+      maxRequestSize: 100MB
 
 
 

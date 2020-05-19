@@ -12,7 +12,10 @@ import com.yff.ecbackend.business.service.BproductService;
 import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.Uordertail;
 import com.yff.ecbackend.users.repository.UordertailRepository;
+import com.yff.ecbackend.users.view.Child;
+import com.yff.ecbackend.users.view.Cshoppingcart;
 import com.yff.ecbackend.users.view.OrderItem;
+import com.yff.ecbackend.users.view.ShoppingCart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
@@ -40,39 +43,38 @@ public class UordertailService extends BaseService<Uordertail, Long> {
     private BphotoService bphotoService;
 
     @Modifying
-    public void clearUordertail(Long orderid){
-         this.uordertailRepository.clearUordertail(Long.valueOf(orderid));
+    public void clearUordertail(Long orderid) {
+        this.uordertailRepository.clearUordertail(Long.valueOf(orderid));
     }
 
 
-    public List<Uordertail> updateUordertail(Long orderid, String shoppingcart) {
+    public List<Uordertail> updateUordertail(Long orderid, List<ShoppingCart> shoppingCarts) {
 
         this.clearUordertail(orderid);
 
-        JSONArray jsonArray = JSON.parseArray(shoppingcart);
         List<Uordertail> uordertails = new ArrayList<>();
-        for (int i = 0; i < jsonArray.size(); i++) {
+        int i = 0;
+        for (ShoppingCart shoppingcart : shoppingCarts) {
 
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            Long productid = Long.valueOf(jsonObject.getString("id"));
-            Integer num = Integer.parseInt(jsonObject.getString("num"));
-            JSONArray items = JSON.parseArray(jsonObject.getString("items"));
+            Long productid = shoppingcart.getId();
+            Integer num = shoppingcart.getNum();
+            List<Cshoppingcart> items = shoppingcart.getItems();
 
             if (num != 1) {  // 多个商品同一类型
                 for (int j = 1; j <= num; j++) {
 
                     Bproduct bproduct = bproductService.findOne(productid);
-                    int ismeal = ToolUtil.isNotEmpty(items) ? 1 : 0;
+                    int ismeal = items.size() != 0 ? 1 : 0;
 
                     Uordertail uordertail = this.assembleUordertail(orderid, bproduct.getMemberprice(), bproduct.getPrice(), bproduct.getId(), j, null, ismeal);
                     uordertail = this.uordertailRepository.save(uordertail);
 
                     if (ismeal == 1) {  //如果包含套餐
-                        JSONArray childshoppingcarts = JSON.parseArray(items.getJSONObject(j - 1).getString("shoppingcart"));
+                        List<Child> childshoppingcarts = items.get(j - 1).getShoppingcart();
                         for (int k = 0; k < childshoppingcarts.size(); k++) {
-                            JSONObject childshoppingcart = childshoppingcarts.getJSONObject(k);
-                            Integer number = Integer.parseInt(childshoppingcart.getString("num")); //数量
-                            Long productid1 = Long.valueOf(childshoppingcart.getString("id"));  //商品id
+                            Child childshoppingcart = childshoppingcarts.get(k);
+                            Integer number = childshoppingcart.getNum(); //数量
+                            Long productid1 = childshoppingcart.getId();  //商品id
                             for (int l = 1; l <= number; l++) {
                                 Bproduct bproductc = bproductService.findOne(productid1);
                                 Uordertail uordertailc = this.assembleUordertail(orderid, bproductc.getMemberprice(), bproductc.getPrice(), bproductc.getId(), l, uordertail.getId(), 0);
@@ -91,11 +93,12 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                 if (ismeal == 1) {
                     Uordertail uordertail = this.assembleUordertail(orderid, tmemberprice, tprice, productid, i + 1, null, ismeal);
                     uordertail = this.uordertailRepository.save(uordertail);
-                    JSONArray childshoppingcarts = JSON.parseArray(items.getJSONObject(0).getString("shoppingcart"));
+//                    System.out.println("pid:" + uordertail.getId());
+                    List<Child> childshoppingcarts = items.get(0).getShoppingcart();
                     for (int k = 0; k < childshoppingcarts.size(); k++) {
-                        JSONObject childshoppingcart = childshoppingcarts.getJSONObject(k);
-                        Integer number = Integer.parseInt(childshoppingcart.getString("num")); //数量
-                        Long productid1 = Long.valueOf(childshoppingcart.getString("id"));  //商品id
+                        Child childshoppingcart = childshoppingcarts.get(k);
+                        Integer number = childshoppingcart.getNum(); //数量
+                        Long productid1 = childshoppingcart.getId();  //商品id
                         for (int l = 1; l <= number; l++) {
                             Bproduct bproductc = bproductService.findOne(productid1);
                             Uordertail uordertailc = this.assembleUordertail(orderid, bproductc.getMemberprice(), bproductc.getPrice(), bproductc.getId(), l, uordertail.getId(), 0);
@@ -107,6 +110,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                     uordertails.add(uordertail);
                 }
             }
+            i++;
         }
         return this.update(uordertails);
     }
@@ -163,10 +167,10 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                 List<OrderItem> childOrderItem = this.statisticsToOrderItem(childUordertails);
                 orderItem.setOrderItems(childOrderItem);
                 orderItems.add(orderItem);
-                f=true;
+                f = true;
             }
         }
-        if(f){
+        if (f) {
             for (OrderItem orderItem : orderItems) {
                 uordertails.removeIf(node -> node.getProductid().equals(orderItem.getProductid()));
                 for (OrderItem child : orderItem.getOrderItems()) {
@@ -175,8 +179,8 @@ public class UordertailService extends BaseService<Uordertail, Long> {
             }
             List<OrderItem> orderItems1 = this.statisticsToOrderItem(uordertails);
             orderItems.addAll(orderItems1);
-        }else{
-            List<OrderItem>   orderItemList = this.statisticsToOrderItem(uordertails);
+        } else {
+            List<OrderItem> orderItemList = this.statisticsToOrderItem(uordertails);
             orderItems.addAll(orderItemList);
         }
 
@@ -213,7 +217,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                 OrderItem mapitem = mapOrderItem.get(uordertail.getProductid());
 
                 int number = mapitem.getNumber() + 1;
-                float price =  mapitem.getPrice() + orderItem.getPrice();
+                float price = mapitem.getPrice() + orderItem.getPrice();
                 float memberprice = mapitem.getMemberprice() + orderItem.getMemberprice();
 
                 mapitem.setNumber(number);

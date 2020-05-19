@@ -15,6 +15,7 @@ import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.Uordertail;
 import com.yff.ecbackend.users.entity.User;
 import com.yff.ecbackend.users.repository.UorderRepository;
+import com.yff.ecbackend.users.view.OrderBean;
 import com.yff.ecbackend.users.view.OrderDetail;
 import com.yff.ecbackend.users.view.OrderItem;
 import com.yff.ecbackend.users.view.OrderSettiing;
@@ -98,14 +99,10 @@ public class UorderService extends BaseService<Uorder, Long> {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public Object updateUserOrder(String orderid, String tradeno, String openid, String shoppingcart, String bid, String totalfee, String branchid, String isself, String discount, String uaddressid, String firstorder, String ismember) {
-        System.out.println("openid:" + openid + " bid:" + bid + " totalfee:" + totalfee + " branchid:" + branchid + "  isself:" + isself + "  discount:" + discount + " uaddressid:" + uaddressid + " firstorder:" + firstorder + " ismember:" + ismember);
-        System.out.println("shoppingcart:"+shoppingcart);
-
-        User user = this.userService.getUser(openid);
-        Uorder uorder = this.updateUorder(orderid, tradeno, user, bid, branchid, Integer.parseInt(isself), Float.valueOf(totalfee), Float.valueOf(discount), shoppingcart, uaddressid, firstorder, ismember);
-        this.uordertailService.updateUordertail(uorder.getId(), shoppingcart);
-
+    public Object updateUserOrder(OrderBean orderBean) {
+        User user = this.userService.getUser(orderBean.getOpenid());
+        Uorder uorder = this.updateUorder(orderBean.getOrderid() , orderBean.getTradeno() , user, orderBean.getBid(), orderBean.getBranchid() ,orderBean.getIsself() , Float.valueOf(orderBean.getTotalfee()), Float.valueOf(orderBean.getDiscount()),orderBean.getUaddressid() ,orderBean.getFirstorder()  ,orderBean.getIsmember());
+        this.uordertailService.updateUordertail(uorder.getId(), orderBean.getShoppingCart() );
         return uorder;
     }
 
@@ -141,12 +138,12 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @param totalfee
      * @return
      */
-    private Uorder updateUorder(String orderid, String tradeno, User user, String bid, String branchid, int isself, float totalfee, float discount, String josn, String uaddressid, String firstorder, String ismember) {
+    private Uorder updateUorder(Long orderid, String tradeno, User user, Long bid, Long branchid, int isself, float totalfee, float discount, Long uaddressid, float firstorder, String ismember) {
 
-        int odr = this.uorderOdrService.findByUorderOdr(Long.valueOf(branchid));
+        int odr = this.uorderOdrService.findByUorderOdr(branchid);
         Uorder uorder = null;
         if (ToolUtil.isNotEmpty(orderid)) {
-            uorder = this.uorderOdrService.findOne(Long.valueOf(orderid));
+            uorder = this.uorderOdrService.findOne(orderid);
         } else {
             uorder = new Uorder();
         }
@@ -163,13 +160,14 @@ public class UorderService extends BaseService<Uorder, Long> {
         uorder.setSelf(isself);
         uorder.setDiscount(discount);
         uorder.setIscomplete(0);
-        uorder.setJson(josn);
+//        uorder.setJson(josn);
 //        uorder.setTradeno(tradeno);
-        uorder.setUaddressid(Long.valueOf(uaddressid));
-        uorder.setFirstorder(Float.parseFloat(firstorder));
+        uorder.setUaddressid(uaddressid);
+        uorder.setFirstorder(firstorder);
         uorder.setIsmember(Integer.parseInt(ismember));
 
-        Uaddress uaddress = uaddressService.findOne(Long.valueOf(uaddressid));
+        Uaddress uaddress = uaddressService.findOne(uaddressid);
+
         uorder.setAddress(uaddress.getArea() + uaddress.getDetailed());
         uorder.setReceiver(uaddress.getName() + "（" + uaddress.getGender() + "）");
         uorder.setPhone(uaddress.getPhone());
