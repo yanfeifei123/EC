@@ -10,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/business")
@@ -37,30 +35,30 @@ public class BusinessController {
 
     @RequestMapping("/getgoods")
     @ResponseBody
-    public Object getgoods(@RequestBody Map<String,String> params) {
-
-        return businessService.getgoods(params.get("businessid"));
+    public Object getgoods(String businessid) {
+        return businessService.getgoods(businessid);
     }
 
 
     @RequestMapping("/findbusinessAll")
     @ResponseBody
-    public Object findbusinessAll(@RequestBody  Map<String,String> params  ,  HttpServletRequest request  ) {
+    public Object findbusinessAll(HttpServletRequest request, String businessid) {
 
-        return bcategoryService.findbusinessAll(request, Long.valueOf(params.get("businessid")));
+        return bcategoryService.findbusinessAll(request, Long.valueOf(businessid));
     }
 
     @RequestMapping("/findByproductPackage")
     @ResponseBody
-    public Object findByproductPackage(@RequestBody Map<String, String> params , HttpServletRequest request ) {
-        return bproductService.findByproductPackage(request, Long.valueOf(params.get("pid")));
+    public Object findByproductPackage(HttpServletRequest request, String pid) {
+        return bproductService.findByproductPackage(request, Long.valueOf(pid));
     }
 
     @RequestMapping("/findByBbranch")
     @ResponseBody
-    public Object findByfirstmoney(@RequestBody Map<String,String> params  ) {
-
-        Bbranch bbranch = bbranchService.findOne(Long.valueOf(params.get("id")));
+    public Object findByfirstmoney(String id) {
+        Bbranch bbranch = bbranchService.findOne(Long.valueOf(id));
+//        String s = JSON.toJSONString(bbranch);
+//        System.out.println(s);
         return bbranch;
     }
 
@@ -73,10 +71,10 @@ public class BusinessController {
      */
     @RequestMapping("/setbranchbornot")
     @ResponseBody
-    public Object bornot(@RequestBody Map<String, String> params) {
-        Bbranch bbranch = bbranchService.findOne(Long.valueOf(params.get("branchid")));
+    public Object bornot(String branchid, String bornot) {
+        Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
         if (ToolUtil.isNotEmpty(bbranch)) {
-            bbranch.setBornot(Integer.parseInt(params.get("bornot") ));
+            bbranch.setBornot(Integer.parseInt(bornot));
             this.bbranchService.update(bbranch);
         }
         return 1;
@@ -84,24 +82,28 @@ public class BusinessController {
 
     @RequestMapping("/findBybornot")
     @ResponseBody
-    public Object findBybornot(@RequestBody Map<String, String> params) {
-        Bbranch bbranch = bbranchService.findOne(Long.valueOf(params.get("branchid") ));
+    public Object findBybornot(String branchid) {
+        Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
         return bbranch;
     }
 
     @RequestMapping("/updateBbluetooth")
     @ResponseBody
-    public Object updateBbluetooth(@RequestBody  Map<String, String> params) {
+    public Object updateBbluetooth(String bbluetooth) {
 //        System.out.println("bbluetooth:" + bbluetooth);
-        Bbluetooth o = JSON.parseObject(params.get("bbluetooth") , Bbluetooth.class);
+        Bbluetooth o = JSON.parseObject(bbluetooth, Bbluetooth.class);
         return this.bbluetoothService.updatebbluetooth(o);
+
     }
 
     @RequestMapping("/findByBbluetooth")
     @ResponseBody
-    public Object findByBbluetooth(@RequestBody Map<String, String> params) {
-        return this.bbluetoothService.findByBbluetooth(params.get("branchid") );
+    public Object findByBbluetooth(String branchid) {
+        return this.bbluetoothService.findByBbluetooth(branchid);
     }
+
+
+
 
 
 }

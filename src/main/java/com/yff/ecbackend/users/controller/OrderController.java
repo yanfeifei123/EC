@@ -26,19 +26,16 @@ public class OrderController {
 
     @RequestMapping(value = "/findOrderList", method = RequestMethod.POST)
     @ResponseBody
-    public Object findOrderList(@RequestBody Map<String, String> params, HttpServletRequest request) {
+    public Object findOrderList( HttpServletRequest request,String openid,String pageNum,String pageSize) {
 //        System.out.println("pageNum:" + pageNum+"  pageSize:"+pageSize);
-        String openid = params.get("openid");
-        String pageNum = params.get("pageNum");
-        String pageSize = params.get("pageSize");
+
         return this.uorderService.findOrderList(request, openid, pageNum, pageSize);
     }
 
     @RequestMapping(value = "/countAllByUorderOAndOpenid", method = RequestMethod.POST)
     @ResponseBody
-    public Object countAllByUorderOAndOpenid(@RequestBody Map<String, String> params) {
-        String openid = params.get("openid");
-        String pageSize = params.get("pageSize");
+    public Object countAllByUorderOAndOpenid(String  openid,String pageSize) {
+
         return this.uorderService.countAllByUorderOAndOpenid(openid, pageSize);
     }
 
@@ -49,31 +46,30 @@ public class OrderController {
      */
     @RequestMapping(value = "/findOrderDetailed", method = RequestMethod.POST)
     @ResponseBody
-    public Object findOrderDetailed(@RequestBody  Map<String, String> params ,HttpServletRequest request ) {
-        return this.uorderService.findOrderDetailed(request, params.get("orderid"));
+    public Object findOrderDetailed(HttpServletRequest request ,String orderid) {
+        return this.uorderService.findOrderDetailed(request, orderid);
     }
 
 
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
     @ResponseBody
-    public int deleteOrder(@RequestBody Map<String, String> params ) {
+    public int deleteOrder(String orderid) {
 
-        return this.uorderService.deleteOrder(params.get("orderid") );
+        return this.uorderService.deleteOrder(orderid );
     }
 
     @RequestMapping(value = "/queryOrderSettiing", method = RequestMethod.POST)
     @ResponseBody
-    public Object queryOrderSettiing(@RequestBody Map<String, String> params  ) {
-        String openid=params.get("openid");
-        String branchid = params.get("branchid");
+    public Object queryOrderSettiing(String openid, String branchid) {
+
         return this.uorderService.queryOrderSettiing(openid, branchid);
     }
 
     @RequestMapping(value = "/clearMyorder", method = RequestMethod.POST)
     @ResponseBody
-    public void clearMyorder(@RequestBody Map<String, String> params ) {
+    public void clearMyorder( String openid ) {
 //        System.out.println("清除未支付的订单信息");
-        this.uorderService.clearMyorder(params.get("openid"));
+        this.uorderService.clearMyorder(openid);
     }
 
 

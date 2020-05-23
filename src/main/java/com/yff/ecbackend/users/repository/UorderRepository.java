@@ -47,7 +47,13 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
     @Query(" SELECT count(o) FROM Uorder o where o.branchid=:branchid and o.iscomplete=0")
     public abstract int findByIsNotOrderComplete(@Param("branchid") Long branchid);
 
-
+    /**
+     * 通过商户号查询订单
+     * @param tradeno
+     * @return
+     */
+    @Query("SELECT o FROM Uorder o where o.tradeno=:tradeno")
+    public abstract Uorder findTradenoUorder(@Param("tradeno") String tradeno);
 
 
     @Query(value = " SELECT * FROM u_order o where o.branchid=:branchid   ORDER BY o.buildtime desc limit :pageNum,:pageSize",nativeQuery = true)
@@ -69,6 +75,8 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
     @Query(value = " SELECT count(*) FROM u_order o where o.branchid=:branchid" ,nativeQuery = true)
     public abstract int countAllByBranchOrder(@Param("branchid") Long branchid);
 
+
+
     /**
      * 原生sql查询分页返回Uorder实体
      * @param openid
@@ -78,6 +86,7 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      */
     @Query(value = "select * from u_order where openid=:openid ORDER BY  buildtime DESC limit :pageNum,:pageSize ",nativeQuery = true)
     public abstract List<Uorder> findUserOrderpage(@Param("openid") String openid,@Param("pageNum") int pageNum,@Param("pageSize") int pageSize);
+
 
 
 

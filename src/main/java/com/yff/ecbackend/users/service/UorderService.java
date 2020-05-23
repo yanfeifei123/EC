@@ -100,9 +100,11 @@ public class UorderService extends BaseService<Uorder, Long> {
 
     @Transactional(rollbackFor = Exception.class)
     public Object updateUserOrder(OrderBean orderBean) {
+
         User user = this.userService.getUser(orderBean.getOpenid());
-        Uorder uorder = this.updateUorder(orderBean.getOrderid() , orderBean.getTradeno() , user, orderBean.getBid(), orderBean.getBranchid() ,orderBean.getIsself() , Float.valueOf(orderBean.getTotalfee()), Float.valueOf(orderBean.getDiscount()),orderBean.getUaddressid() ,orderBean.getFirstorder()  ,orderBean.getIsmember());
-        this.uordertailService.updateUordertail(uorder.getId(), orderBean.getShoppingCart() );
+
+        Uorder uorder = this.updateUorder(orderBean.getOrderid(), orderBean.getTradeno(), user, orderBean.getBid(), orderBean.getBranchid(), orderBean.getIsself(), Float.valueOf(orderBean.getTotalfee()), Float.valueOf(orderBean.getDiscount()), orderBean.getUaddressid(), orderBean.getFirstorder(), orderBean.getIsmember());
+        this.uordertailService.updateUordertail(uorder.getId(), orderBean.getShoppingCart());
         return uorder;
     }
 
@@ -121,7 +123,8 @@ public class UorderService extends BaseService<Uorder, Long> {
     @Transactional(rollbackFor = Exception.class)
     public int clearMyorder(String openid) {
         List<Uorder> uorderList = this.uorderRepository.findUserUnpaidorder(openid);
-        for(Uorder uorder : uorderList){
+//        System.out.println(JSON.toJSONString(uorderList));
+        for (Uorder uorder : uorderList) {
             this.uordertailService.clearUordertail(uorder.getId());
         }
         this.uorderRepository.clearMyorder(openid);
@@ -139,7 +142,7 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @return
      */
     private Uorder updateUorder(Long orderid, String tradeno, User user, Long bid, Long branchid, int isself, float totalfee, float discount, Long uaddressid, float firstorder, String ismember) {
-
+//        System.out.println("orderid:"+orderid);
         int odr = this.uorderOdrService.findByUorderOdr(branchid);
         Uorder uorder = null;
         if (ToolUtil.isNotEmpty(orderid)) {
@@ -165,7 +168,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         uorder.setUaddressid(uaddressid);
         uorder.setFirstorder(firstorder);
         uorder.setIsmember(Integer.parseInt(ismember));
-
+//        System.out.println("uaddressid:"+uaddressid);
         Uaddress uaddress = uaddressService.findOne(uaddressid);
 
         uorder.setAddress(uaddress.getArea() + uaddress.getDetailed());
@@ -268,10 +271,10 @@ public class UorderService extends BaseService<Uorder, Long> {
         OrderDetail orderDetail = new OrderDetail();
 
         Uorder uorder = this.findOne(Long.valueOf(orderid));
-        if (uorder.getIscomplete() == 0) { //未完成订单
+//        if (uorder.getIscomplete() == 0) {
             String e = weChatService.timeCalculation(uorder.getBuildtime());
             orderDetail.setHour(e);
-        }
+//        }
         orderDetail.setIscomplete(uorder.getIscomplete());
         orderDetail.setOpenid(uorder.getOpenid());
         orderDetail.setOrderid(uorder.getId());
@@ -338,14 +341,14 @@ public class UorderService extends BaseService<Uorder, Long> {
      *
      * @return
      */
-    public Map<String, TemplateData> findByOrderSendTempInfo(HttpServletRequest request, String orderid) {
-        Uorder uorder = this.findOne(Long.valueOf(orderid));
+    public Map<String, TemplateData> findByOrderSendTempInfo(HttpServletRequest request, Uorder uorder) {
+
         Map<String, TemplateData> map = new HashMap<>();
         map.put("character_string1", new TemplateData(uorder.getTradeno()));
         String orderType = uorder.getSelf() == 1 ? "到店自取" : "外卖配送";
         map.put("phrase2", new TemplateData(orderType));
         map.put("amount4", new TemplateData(df.format(uorder.getTotalfee())));
-        List<OrderItem> orderItems = this.orderByOrderDetailed(request, orderid);
+        List<OrderItem> orderItems = this.orderByOrderDetailed(request, uorder.getId().toString());
         String names = "";
         String istc = "";
         for (OrderItem orderItem : orderItems) {
@@ -361,6 +364,39 @@ public class UorderService extends BaseService<Uorder, Long> {
         map.put("name7", new TemplateData(uaddress.getName() + "(" + uaddress.getGender() + ")"));
         return map;
     }
+
+    /**
+     * 通过商户号查询订单
+     *
+     * @param tradeno
+     * @return
+     */
+    public Uorder findTradenoUorder(String tradeno) {
+        return this.uorderRepository.findTradenoUorder(tradeno);
+    }
+
+    /**
+     * 更新订单状态
+     * @param tradeno
+     * @return
+     */
+
+    public Uorder updateUorder(String tradeno) {
+        Uorder uorder = this.findTradenoUorder(tradeno);
+        uorder.setStatus(1);
+
+        this.clearMyorder(uorder.getOpenid());  //清空未支付的订单
+
+        return uorder = this.update(uorder);  //更新订单状态
+    }
+
+    public Uorder updateUorderComplete(String orderid){
+        Uorder uorder = this.findOne(Long.valueOf(orderid));
+        uorder.setIscomplete(1);
+        uorder.setCompletetime(new Date());
+        return this.update(uorder);
+    }
+
 
 
 }

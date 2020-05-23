@@ -160,25 +160,16 @@ public class BOrderService {
             orderList.setIscomplete(uorder.getIscomplete());
             orderList.setTradeno(uorder.getTradeno());
             orderList.setOrder(uorder.getOdr());
+            orderList.setUsername(uorder.getReceiver());
             orderViewLists.add(orderList);
         }
 //        System.out.println("totalPage:"+paging.getTotalPage());
-        this.findByuaddress(orderViewLists);
         map.put("data",orderViewLists);
         return map;
     }
 
 
-    private void findByuaddress(List<OrderList> orderViewLists) {
-        List<Uaddress> uaddressList = this.uaddressRepository.findAll();
-        for (OrderList orderList : orderViewLists) {
-            for (Uaddress uaddress : uaddressList) {
-                if (orderList.getUaddressid().equals(uaddress.getId())) {
-                    orderList.setUsername(uaddress.getName() + "(" + uaddress.getGender() + ")");
-                }
-            }
-        }
-    }
+
 
 
 }

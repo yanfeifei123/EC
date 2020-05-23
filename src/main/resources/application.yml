@@ -1,57 +1,57 @@
-
-#http:
-#  port: 7001
+http:
+  port: 80
 
 server:
   tomcat:
     uri-encoding: UTF-8
-    max-http-post-size: -1
+
   port: 443   # 默认https 443端口
   ssl:
-     key-store: classpath:xyfantuan.cn.pfx
-     key-store-password: Aaa!1234
-     key-store-type: PKCS12
+    key-store: classpath:xyfantuan.cn.jks
+    key-store-password: Aaa!1234
+    key-store-type: JKS
+    enabled-protocols: TLSv1.1,TLSv1.2
+    ciphers: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_RC4_128_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA,SSL_RSA_WITH_RC4_128_SHA
+    enabled: true
   servlet:
-     context-path: /
-     session:
-       timeout: PT2H
+    context-path: /
 
 spring:
-#数据库配置
+  #数据库配置
   datasource:
     primary:
-#      driver-class-name: com.mysql.cj.jdbc.Driver
+      #      driver-class-name: com.mysql.cj.jdbc.Driver
       type: com.zaxxer.hikari.HikariDataSource
       url: jdbc:mysql://127.0.0.1:3305/ec?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
-#      url: jdbc:mysql://111.231.190.252:3305/ec?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
+      #      url: jdbc:mysql://111.231.190.252:3305/ec?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
       username: ec
       password: Aaa!1234
       hikari:
-         minimum-idle: 10
-         maximum-pool-size: 60
-         auto-commit: true
-         idle-timeout: 600000
-         pool-name: DatebookHikariCP
-         max-lifetime: 1800000
-         connection-timeout: 30000
+        minimum-idle: 10
+        maximum-pool-size: 60
+        auto-commit: true
+        idle-timeout: 600000
+        pool-name: DatebookHikariCP
+        max-lifetime: 1800000
+        connection-timeout: 30000
 
     secondary:
-#      driver-class-name: com.mysql.cj.jdbc.Driver
+      #      driver-class-name: com.mysql.cj.jdbc.Driver
       type: com.zaxxer.hikari.HikariDataSource
       url: jdbc:mysql://127.0.0.1:3305/iteae?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
-#      url: jdbc:mysql://10.111.117.225:3307/iteae?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
-#      username: kshjk
-#      password: Nbs@2010
+      #      url: jdbc:mysql://10.111.117.225:3307/iteae?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=CTT
+      #      username: kshjk
+      #      password: Nbs@2010
       username: root
       password: Gntz@2019
       hikari:
-         minimum-idle: 10
-         maximum-pool-size: 60
-         auto-commit: true
-         idle-timeout: 600000
-         pool-name: DatebookHikariCP
-         max-lifetime: 1800000
-         connection-timeout: 30000
+        minimum-idle: 10
+        maximum-pool-size: 60
+        auto-commit: true
+        idle-timeout: 600000
+        pool-name: DatebookHikariCP
+        max-lifetime: 1800000
+        connection-timeout: 30000
 
   jpa:
     database: mysql
@@ -62,14 +62,14 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
-#         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  #         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   mvc:
-     view:
-        prefix: /view
+    view:
+      prefix: /view
   thymeleaf:
-       prefix: classpath:/view/
-       cache: false
-       encoding: UTF-8
+    prefix: classpath:/view/
+    cache: false
+    encoding: UTF-8
   http:
     encoding:
       charset: UTF-8
@@ -77,8 +77,8 @@ spring:
       force: true
   servlet:
     multipart:
-      maxFileSize: 100MB
-      maxRequestSize: 100MB
+      max-file-size: 1000MB    #单个文件的最大上限
+      max-request-size: 1000MB #单个请求的文件总大小上限
 
 
 
@@ -87,33 +87,38 @@ spring:
 
 
 parameterconf:
-    # 代表这个JWT的接收对象,存入audience
-    clientId: 098f6bcd4621d373cade4e832627b4f6
-    # 密钥, 经过Base64加密, 可自行替换
-    base64Secret: MDk4ZjZiY2Q0NjIxZDM3M2NhZGU0ZTgzMjYyN2I0ZjY=
-    # JWT的签发主体，存入issuer
-    name: restapiuser
-    # 过期时间，时间戳
-    expiresSecond: 1800000  # 毫秒
 
-    appid: wx9458a422912a3de5  # 小程序id
 
-    appsecret: f608de4a08b04b276e7fa84e56a93b79  #小程序API
 
-    bnumber: 1584671801   #商户id
+  # 代表这个JWT的接收对象,存入audience
+  clientId: 098f6bcd4621d373cade4e832627b4f6
+  # 密钥, 经过Base64加密, 可自行替换
+  base64Secret: MDk4ZjZiY2Q0NjIxZDM3M2NhZGU0ZTgzMjYyN2I0ZjY=
+  # JWT的签发主体，存入issuer
+  name: restapiuser
+  # 过期时间，时间戳
+  expiresSecond: 1800000  # 毫秒
 
-    sessionHost: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
+  appid: wx9458a422912a3de5  # 小程序id
 
-    notify_url: www.xyfantuan.cn/weChatPay/notify
+  appsecret: f608de4a08b04b276e7fa84e56a93b79  #小程序API
 
-    paykey: 40288184715a5d4d01715a5d4d460000  #商户API
+  bnumber: 1584671801   #商户id
 
-    unifiedorderurl: https://api.mch.weixin.qq.com/pay/unifiedorder
+  sessionHost: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
 
-    domainname: www.xyfantuan.cn
-#    domainname: 127.0.0.1
+  notify_url: http://www.xyfantuan.cn/pay/notify
 
-    subscribeMessageurl: https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=
+  paykey: 40288184715a5d4d01715a5d4d460000  #商户API
+
+  unifiedorderurl: https://api.mch.weixin.qq.com/pay/unifiedorder
+
+  http: https
+
+  domainname: www.xyfantuan.cn
+#  domainname: 127.0.0.1
+
+  subscribeMessageurl: https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=
 
 
 

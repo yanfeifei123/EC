@@ -43,7 +43,14 @@ public class WeChatService {
     private Parameterconf parameterconf;
 
 
-
+    /**
+     * 把消息推送给微信端
+     * @param touser
+     * @param templateId
+     * @param page
+     * @param map
+     * @return
+     */
     public Object subscribeMessage(String touser, String templateId, String page, Map<String, TemplateData> map) {
 
         Map<String,Object> jsonmap = new HashMap<>();
@@ -65,7 +72,7 @@ public class WeChatService {
             jsonmap.put("errmsg",e.getMessage());
             e.printStackTrace();
         }
-//        System.out.println("subscribeMessage:"+ JSON.toJSONString(ret));
+        System.out.println("subscribeMessage:"+ JSON.toJSONString(ret));
         return jsonmap;
     }
 
@@ -105,7 +112,7 @@ public class WeChatService {
         JSONObject jsonObject = JSONObject.parseObject(message);
         String accessToken = jsonObject.getString("access_token");
         String expires_in = jsonObject.getString("expires_in");
-//        System.out.println(expires_in);
+        System.out.println(JSON.toJSONString(jsonObject));
         return accessToken;
     }
 
@@ -320,7 +327,7 @@ public class WeChatService {
 
     public String getHttps(HttpServletRequest request) {
 //        return "https://" + this.getIp(request) + ":" + parameterconf.getServerPort();
-        return "https://" + this.parameterconf.getDomainname()  + ":" + parameterconf.getServerPort();
+        return this.parameterconf.getHttp()+"://" + this.parameterconf.getDomainname()  + ":" + parameterconf.getServerPort();
     }
 
     /**

@@ -33,7 +33,7 @@ public class UserService extends BaseService<User, Long> {
     private BbranchService bbranchService;
 
     public User uLogin(String userInfo, String openid) {
-        System.out.println("uLogin:"+userInfo+"  openid:"+openid);
+        System.out.println("uLogin:" + userInfo + "  openid:" + openid);
         User user = this.userRepository.findByOnenid(openid);
         JSONObject jsonObject = JSON.parseObject(userInfo);
         if (ToolUtil.isEmpty(user)) {
@@ -45,7 +45,7 @@ public class UserService extends BaseService<User, Long> {
             user.setNickname(jsonObject.getString("nickName"));
             return this.update(user);
         }
-       return user;
+        return user;
     }
 
 
@@ -99,31 +99,38 @@ public class UserService extends BaseService<User, Long> {
 
     }
 
-    public Map<String,Object> onisfirstorder(String branchid, String openid) {
-        Map<String,Object> map =new HashMap<>();
+    public Map<String, Object> onisfirstorder(String branchid, String openid) {
+        Map<String, Object> map = new HashMap<>();
         List<Uorder> uorderList = this.uorderService.findUserIsfirstorder(openid);
 
         float firstorder = 0;
-        float psfcost=0;
+        float psfcost = 0;
         Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
-        if (uorderList.size()==0) {
+        if (uorderList.size() == 0) {
             firstorder = bbranch.getFirstorder();
         }
-        psfcost=bbranch.getPsfcost();
-        map.put("firstorder",firstorder);
-        map.put("psfcost",psfcost);
+        psfcost = bbranch.getPsfcost();
+        map.put("firstorder", firstorder);
+        map.put("psfcost", psfcost);
         return map;
     }
 
     /**
      * 通过分店id查询管理者
+     *
      * @param branchid
      * @return
      */
-    public User findByBranchid(Long branchid){
-        return  this.userRepository.findByBranchid(branchid);
+    public User findByBranchid(Long branchid) {
+        return this.userRepository.findByBranchid(branchid);
     }
 
+
+    public boolean bOpenidLogiin(String openid) {
+        User user = this.userRepository.findByOnenid(openid);
+        Bbranch bbranch = this.bbranchService.findOne(user.getBranchid());
+        return ToolUtil.isNotEmpty(bbranch);
+    }
 
 
 }

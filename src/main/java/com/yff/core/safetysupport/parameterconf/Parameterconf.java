@@ -13,6 +13,7 @@ public class Parameterconf {
     @Value("${server.port}")
     private int serverPort;
 
+    private String http;
     private String clientId;
     private String base64Secret;
     private String name;

@@ -24,39 +24,37 @@ public class UserController {
 
     @PostMapping("/findByUaddress")
     @ResponseBody
-    public Object findByUaddress(@RequestBody Map<String, String> params  ) {
+    public Object findByUaddress(String openid ) {
 
-        return this.uaddressService.findByUaddress(params.get("openid") );
+        return this.uaddressService.findByUaddress(openid);
     }
 
     @PostMapping("/updateUaddress")
     @ResponseBody
-    public int updateUaddress(@RequestBody Map<String, String> params ) {
-        String u_address=params.get("u_address");
-        String openid=params.get("openid");
+    public int updateUaddress(String u_address , String openid) {
+
         return this.uaddressService.updateUaddress(u_address,openid);
     }
 
     @PostMapping("/selectAddress")
     @ResponseBody
-    public int  selectAddress(Map<String, String> params  ){
-        return this.uaddressService.selectAddress(params.get("id"));
+    public int  selectAddress(String id ){
+        return this.uaddressService.selectAddress(id);
     }
 
     @PostMapping("/delAddress")
     @ResponseBody
-    public Object delAddress(@RequestBody Map<String, String> params ){
-        String id = params.get("id");
-        String openid = params.get("openid");
+    public Object delAddress(String id, String openid){
+
         this.uaddressService.delete(Long.valueOf(id));
         return this.uaddressService.findByUaddress(openid);
     }
 
     @PostMapping("/findByOneUaddress")
     @ResponseBody
-    public Object findByOneUaddress(@RequestBody Map<String, String> params ){
+    public Object findByOneUaddress(String id){
 
-        Uaddress uaddress = this.uaddressService.findOne(Long.valueOf(params.get("id")));
+        Uaddress uaddress = this.uaddressService.findOne(Long.valueOf(id));
         uaddress.setBuildtime(new Date());
         return this.uaddressService.update(uaddress);
     }
@@ -64,17 +62,16 @@ public class UserController {
 
     @PostMapping("/onisfirstorder")
     @ResponseBody
-    public Object onisfirstorder(@RequestBody Map<String, String> params ){
-        String branchid=params.get("branchid");
-        String openid=params.get("openid");
+    public Object onisfirstorder(String branchid,String openid ){
+
         return  this.userService.onisfirstorder(branchid,openid);
     }
 
 
     @PostMapping("/findByUserid")
     @ResponseBody
-    public Object findByUserid(@RequestBody Map<String, String> params){
-        return  this.userService.findByUserid(params.get("openid"));
+    public Object findByUserid(String openid){
+        return  this.userService.findByUserid(openid);
     }
 
 

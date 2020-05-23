@@ -3,7 +3,9 @@ package com.yff.ecbackend.users.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.yff.core.safetysupport.jwt.JwtIgnore;
+import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.common.service.WeChatService;
+import com.yff.ecbackend.common.view.CommonReturnType;
 import com.yff.ecbackend.users.service.UorderService;
 import com.yff.ecbackend.users.view.OrderBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Map;
 
 /**
  * 点餐用户端/统一订单管理
@@ -36,11 +37,8 @@ public class OrderManagerController {
      */
     @RequestMapping(value = "/doUnifiedOrder", method = RequestMethod.POST)
     @ResponseBody
-    public Object doUnifiedOrder(@RequestBody Map<String, String> params, HttpServletRequest request) {
-        String tradeno = params.get("tradeno");
-        String openid = params.get("openid");
-        String total_fee = params.get("total_fee");
-        String body = params.get("body");
+    public Object doUnifiedOrder(HttpServletRequest request, String tradeno, String openid, String total_fee, String body) {
+        System.out.println("tradeno:"+tradeno);
         return weChatService.UnifiedOrder(tradeno, openid, total_fee, body, request);
     }
 
@@ -49,12 +47,20 @@ public class OrderManagerController {
      *
      * @return
      */
-
-    @RequestMapping(value = "/updateUserOrder", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/updateUserOrder", method = RequestMethod.POST)
     @ResponseBody
-    public Object updateUserOrder(@RequestBody(required = false) OrderBean orderBean) {
-//        System.out.println(JSON.toJSONString(orderBean.getShoppingCart()));
-        return this.uorderService.updateUserOrder(orderBean);
+    public Object updateUserOrder(String orderBean) {
+//        System.out.println("订单数据："+orderBean);
+        CommonReturnType commonReturnType = new CommonReturnType();
+        if(ToolUtil.isEmpty(orderBean)){
+            commonReturnType.setCode(-1);
+            commonReturnType.setMsg("网络延迟请稍等.....");
+        }else{
+            OrderBean  bean=  JSON.parseObject(orderBean,OrderBean.class);
+            Object object = this.uorderService.updateUserOrder(bean);
+            commonReturnType.setData(object);
+        }
+        return commonReturnType;
     }
 
 
@@ -73,14 +79,6 @@ public class OrderManagerController {
     @ResponseBody
     public String createOutTradeno() {
         return this.weChatService.createOutTradeno();
-    }
-
-
-    @JwtIgnore
-    @RequestMapping(value = "/notify", method = RequestMethod.POST)
-    @ResponseBody
-    public void notify(@RequestBody HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("支付成功回调：notify");
     }
 
 

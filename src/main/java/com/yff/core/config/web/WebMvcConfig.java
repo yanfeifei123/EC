@@ -1,5 +1,6 @@
 package com.yff.core.config.web;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.*;
 
 @Configuration
@@ -36,66 +38,59 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     public void addInterceptors(InterceptorRegistry registry) {
         //拦截路径可自行配置多个 可用 ，分隔开
 
-        registry.addInterceptor(new JwtInterceptor()).addPathPatterns("/**")
-                .excludePathPatterns("/static/**")
-                .excludePathPatterns("/view/**");
+//        registry.addInterceptor(new JwtInterceptor()).addPathPatterns("/**")
+//                .excludePathPatterns("/static/**")
+//                .excludePathPatterns("/view/**");
 
 
 
 
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowCredentials(true)
-                .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS", "HEAD")
-                .maxAge(3600 * 24);
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowCredentials(true)
+//                .allowedHeaders("*")
+//                .allowedOrigins("*")
+//                .allowedMethods("*");
+//    }
 
 
     /**
      * 配置使项目使用fastJson
-     *
+
      * @param converters
      */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
-        FastJsonConfig fastJsonConfig = new FastJsonConfig();
-        fastJsonConfig.setSerializerFeatures(
-                SerializerFeature.PrettyFormat,
-                SerializerFeature.QuoteFieldNames,
-                SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteNullStringAsEmpty,
-                SerializerFeature.WriteDateUseDateFormat,
-                SerializerFeature.WriteNullBooleanAsFalse
-        );
-
-//        SerializeConfig serializeConfig = SerializeConfig.globalInstance;
-//        serializeConfig.put(BigInteger.class, ToStringSerializer.instance);
-//        serializeConfig.put(Long.class, ToStringSerializer.instance);
-//        serializeConfig.put(Long.TYPE, ToStringSerializer.instance);
-//        serializeConfig.put(Double.class, ToStringSerializer.instance);
-//        serializeConfig.put(Double.TYPE, ToStringSerializer.instance);
-//        serializeConfig.put(Float.class, ToStringSerializer.instance);
-//        serializeConfig.put(Float.TYPE, ToStringSerializer.instance);
-
-//        fastJsonConfig.setSerializeConfig(serializeConfig);
-
-        List<MediaType> fastMediaTypes = new ArrayList<>();
-        fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
-        fastConverter.setSupportedMediaTypes(fastMediaTypes);
-
-        fastConverter.setFastJsonConfig(fastJsonConfig);
-        converters.add(fastConverter);
+        FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
+        List<MediaType> supportedMediaTypes = new ArrayList<>();
+        supportedMediaTypes.add(MediaType.APPLICATION_JSON);
+        supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
+        supportedMediaTypes.add(MediaType.APPLICATION_ATOM_XML);
+        supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
+        supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
+        supportedMediaTypes.add(MediaType.APPLICATION_PDF);
+        supportedMediaTypes.add(MediaType.APPLICATION_RSS_XML);
+        supportedMediaTypes.add(MediaType.APPLICATION_XHTML_XML);
+        supportedMediaTypes.add(MediaType.APPLICATION_XML);
+        supportedMediaTypes.add(MediaType.IMAGE_GIF);
+        supportedMediaTypes.add(MediaType.IMAGE_JPEG);
+        supportedMediaTypes.add(MediaType.IMAGE_PNG);
+        supportedMediaTypes.add(MediaType.TEXT_EVENT_STREAM);
+        supportedMediaTypes.add(MediaType.TEXT_HTML);
+        supportedMediaTypes.add(MediaType.TEXT_MARKDOWN);
+        supportedMediaTypes.add(MediaType.TEXT_PLAIN);
+        supportedMediaTypes.add(MediaType.TEXT_XML);
+        converter.setSupportedMediaTypes(supportedMediaTypes);
+        converter.setDefaultCharset(Charset.forName("UTF-8"));
+        FastJsonConfig config = new FastJsonConfig();
+        JSON.DEFFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+        config.setSerializerFeatures(SerializerFeature.WriteDateUseDateFormat);//格式化时间
+        converter.setFastJsonConfig(config);
+        converters.add(converter);
     }
 
-    @Bean
-    public OpenEntityManagerInViewFilter openEntityManagerInViewFilter() {
-        return new OpenEntityManagerInViewFilter();
-    }
 
 }
