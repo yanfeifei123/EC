@@ -52,7 +52,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
 
         this.clearUordertail(orderid);
 
-        List<Uordertail> uordertails = new ArrayList<>();
+        List<Uordertail> uordertails = new ArrayList<Uordertail>();
         int i = 0;
         for (ShoppingCart shoppingcart : shoppingCarts) {
 
@@ -158,7 +158,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
      * @return
      */
     public List<OrderItem> detailedStatisticsToOrderItem(List<Uordertail> uordertails) {
-        List<OrderItem> orderItems = new ArrayList<>();
+        List<OrderItem> orderItems = new ArrayList<OrderItem>();
         boolean f = false;
         for (Uordertail uordertail : uordertails) {
             OrderItem orderItem = this.initOrderItemToUordertail(uordertail);

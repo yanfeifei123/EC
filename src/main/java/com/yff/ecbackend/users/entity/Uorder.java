@@ -88,7 +88,7 @@ public class Uorder extends BaseEntity<Long> {
     private String branchname;
 
     @Transient
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<OrderItem> orderItems = new ArrayList<OrderItem>();
 
     @Transient
     private String info;

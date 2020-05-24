@@ -49,14 +49,14 @@ public class OrderManagerController {
      */
     @RequestMapping(value = "/updateUserOrder", method = RequestMethod.POST)
     @ResponseBody
-    public Object updateUserOrder(String orderBean) {
-//        System.out.println("订单数据："+orderBean);
+    public Object updateUserOrder(String orderObj) {
+        System.out.println("订单数据："+orderObj);
         CommonReturnType commonReturnType = new CommonReturnType();
-        if(ToolUtil.isEmpty(orderBean)){
+        if(ToolUtil.isEmpty(orderObj)){
             commonReturnType.setCode(-1);
             commonReturnType.setMsg("网络延迟请稍等.....");
         }else{
-            OrderBean  bean=  JSON.parseObject(orderBean,OrderBean.class);
+            OrderBean  bean=  JSON.parseObject(orderObj,OrderBean.class);
             Object object = this.uorderService.updateUserOrder(bean);
             commonReturnType.setData(object);
         }

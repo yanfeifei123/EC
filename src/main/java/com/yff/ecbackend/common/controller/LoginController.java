@@ -86,7 +86,7 @@ public class LoginController {
     public Object bauth() {
         String sessionKey = ToolUtil.getRandomString(16);
         String iv = ToolUtil.getRandomString(16);
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<String, String>();
         map.put("sessionKey", sessionKey);
         map.put("iv", iv);
         return map;
@@ -98,7 +98,7 @@ public class LoginController {
     @PostMapping("/bLogin")
     @ResponseBody
     public Object bLogin(HttpServletResponse response, String openid) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<String, Object>();
         User user = null;
         try {
             boolean f =  this.uuserService.bOpenidLogiin(openid);

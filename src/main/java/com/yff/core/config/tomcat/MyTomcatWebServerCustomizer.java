@@ -16,11 +16,9 @@ public class MyTomcatWebServerCustomizer implements WebServerFactoryCustomizer<T
         factory.addConnectorCustomizers(new TomcatConnectorCustomizer() {
             @Override
             public void customize(Connector connector) {
-                connector.setAttribute("relaxedPathChars", "\\");
-                connector.setAttribute("relaxedQueryChars", "\\");
 
-//                connector.setProperty("relaxedPathChars", "\\");
-//                connector.setProperty("relaxedQueryChars", "\\");
+                connector.setProperty("relaxedPathChars", "|{}");
+                connector.setProperty("relaxedQueryChars", "|{}");
                 connector.setScheme("https");
 
                 Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();

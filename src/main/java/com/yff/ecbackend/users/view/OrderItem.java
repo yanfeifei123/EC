@@ -25,7 +25,7 @@ public class OrderItem {
     /*
       套餐统计
      */
-    private List<OrderItem> orderItems =new ArrayList<>();
+    private List<OrderItem> orderItems =new ArrayList<OrderItem>();
 
 
     public Long getProductid() {

@@ -26,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Slf4j
 public class OrderMessageThreadingService {
 
-    private BlockingQueue<OrderMessageTemplate> msgQueue = new LinkedBlockingQueue<>();  //消息队列
+    private BlockingQueue<OrderMessageTemplate> msgQueue = new LinkedBlockingQueue<OrderMessageTemplate>();  //消息队列
 
     @Autowired
     private UorderService uorderService;

@@ -100,7 +100,7 @@ public class UserService extends BaseService<User, Long> {
     }
 
     public Map<String, Object> onisfirstorder(String branchid, String openid) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<String, Object>();
         List<Uorder> uorderList = this.uorderService.findUserIsfirstorder(openid);
 
         float firstorder = 0;

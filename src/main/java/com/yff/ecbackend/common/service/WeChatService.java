@@ -53,7 +53,7 @@ public class WeChatService {
      */
     public Object subscribeMessage(String touser, String templateId, String page, Map<String, TemplateData> map) {
 
-        Map<String,Object> jsonmap = new HashMap<>();
+        Map<String,Object> jsonmap = new HashMap<String,Object>();
         String accessToken = this.getAccess_token();
         SubscribeMessage subscribeMessage = new SubscribeMessage();
         subscribeMessage.setAccess_token(accessToken);
@@ -257,7 +257,7 @@ public class WeChatService {
     public Object UnifiedOrder(String tradeno,String openid, String total_fee, String body, HttpServletRequest request) {
 //        this.orderid = Long.valueOf(orderid); //缓存预支付的订单id
 
-        Map<String, String> resultMap = new HashMap<>();
+        Map<String, String> resultMap = new HashMap<String, String>();
 
         WXPayConfigImpl config = null;
         WXPay wxpay = null;

@@ -279,19 +279,36 @@
             "firstorder": 0,
             "ismember": 1
         };
-        var url = 'https://www.xyfantuan.cn/test'
-        // var url = 'https://127.0.0.1/test'
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: JSON.stringify(orderBean),
-            contentType: 'application/json',
-            success: function (data) {
-                console.log(data)
+
+
+        var settings = {
+            "url": "/testJosn",
+            // "url": "https://127.0.0.1/testPost",
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                // "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/json"
             },
-            error: function (request) {
-            }
+            // "data":{
+            //     "orderObj":JSON.stringify(orderBean)
+            // }
+            "data":JSON.stringify(orderBean)
+        }
+        $.ajax(settings).done(function (response) {
+            console.log(response);
         });
+        // $.ajax({
+        //     type: 'POST',
+        //     url: url,
+        //     data: JSON.stringify(orderBean),
+        //     contentType: 'application/json',
+        //     success: function (data) {
+        //         console.log(data)
+        //     },
+        //     error: function (request) {
+        //     }
+        // });
 
     </script>
 </head>

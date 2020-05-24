@@ -19,7 +19,7 @@ public class OrderDetail {
     private String branchname; //商家分店名称
     private Long branchid; //分店id
 
-    private List<OrderItem> orderItems = new ArrayList<>(); //包含明细统计（不包含套餐）
+    private List<OrderItem> orderItems = new ArrayList<OrderItem>(); //包含明细统计（不包含套餐）
 
 
     private String exptimeinf="由商家自行配送";

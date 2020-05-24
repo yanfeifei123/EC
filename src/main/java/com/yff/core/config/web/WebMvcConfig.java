@@ -47,14 +47,14 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
     }
 
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowCredentials(true)
-//                .allowedHeaders("*")
-//                .allowedOrigins("*")
-//                .allowedMethods("*");
-//    }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowCredentials(true)
+                .allowedHeaders("*")
+                .allowedOrigins("*")
+                .allowedMethods("*");
+    }
 
 
     /**
@@ -65,7 +65,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
-        List<MediaType> supportedMediaTypes = new ArrayList<>();
+        List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
         supportedMediaTypes.add(MediaType.APPLICATION_JSON);
         supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
         supportedMediaTypes.add(MediaType.APPLICATION_ATOM_XML);
