@@ -58,6 +58,17 @@ public class Bproduct extends BaseEntity<Long> {
     @Transient
     private List<Bproduct> bproductsitems = new ArrayList<>();
 
+    @Transient
+    private int msales ;  //月销售
+
+
+    public int getMsales() {
+        return msales;
+    }
+
+    public void setMsales(int msales) {
+        this.msales = msales;
+    }
 
     public Long getBusinessid() {
         return businessid;

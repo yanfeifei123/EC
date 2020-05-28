@@ -12,11 +12,13 @@ public interface BcategoryRepository extends BaseRepository<Bcategory,Long> {
 
     /**
      * 查询商家所有商品
-     * @param businessid
+     * @param branchid
      * @return
      */
-    @Query("select c from Bcategory c where c.businessid=:businessid order by c.odr")
-    public abstract List<Bcategory> findbusinessAll(@Param("businessid") Long businessid);
+    @Query("select c from Bcategory c where c.branchid=:branchid order by c.odr")
+    public abstract List<Bcategory> findbusinessAll(@Param("branchid") Long branchid);
+
+
 
 
 }

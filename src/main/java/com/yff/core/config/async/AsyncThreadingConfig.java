@@ -1,4 +1,4 @@
-package com.yff.ecbackend.messagequeue.config;
+package com.yff.core.config.async;
 
 
 import org.springframework.context.annotation.ComponentScan;
@@ -12,7 +12,7 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 @Configuration
 @ComponentScan("com.yff.ecbackend")
 @EnableAsync//利用@EnableAsync注解开启异步任务支持
-public class OrderMessageThreadingConfig implements AsyncConfigurer {
+public class AsyncThreadingConfig implements AsyncConfigurer {
 
     @Override
     public Executor getAsyncExecutor() {
@@ -21,6 +21,7 @@ public class OrderMessageThreadingConfig implements AsyncConfigurer {
         taskExecutor.setMaxPoolSize(10);
         taskExecutor.setQueueCapacity(25);
         taskExecutor.initialize();
+        System.out.println("AsyncThreadingConfig线程配置");
         return taskExecutor;
     }
 

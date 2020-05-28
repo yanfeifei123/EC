@@ -13,6 +13,8 @@ public class OrderList {
     @JSONField(format = "HH:mm")
     private Date ordertime; //下单时间
 
+    private String orderdate;//订单日期
+
     private String hour;
 
     private String state;//状态（已完成/未完成）

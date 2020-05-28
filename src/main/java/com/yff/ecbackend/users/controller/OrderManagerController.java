@@ -38,7 +38,7 @@ public class OrderManagerController {
     @RequestMapping(value = "/doUnifiedOrder", method = RequestMethod.POST)
     @ResponseBody
     public Object doUnifiedOrder(HttpServletRequest request, String tradeno, String openid, String total_fee, String body) {
-        System.out.println("tradeno:"+tradeno);
+//        System.out.println("tradeno:"+tradeno);
         return weChatService.UnifiedOrder(tradeno, openid, total_fee, body, request);
     }
 
@@ -50,7 +50,7 @@ public class OrderManagerController {
     @RequestMapping(value = "/updateUserOrder", method = RequestMethod.POST)
     @ResponseBody
     public Object updateUserOrder(String orderObj) {
-        System.out.println("订单数据："+orderObj);
+//        System.out.println("订单数据："+orderObj);
         CommonReturnType commonReturnType = new CommonReturnType();
         if(ToolUtil.isEmpty(orderObj)){
             commonReturnType.setCode(-1);

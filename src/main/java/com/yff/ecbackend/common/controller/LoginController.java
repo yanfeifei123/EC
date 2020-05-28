@@ -5,12 +5,12 @@ import com.alibaba.fastjson.JSON;
 import com.yff.core.safetysupport.parameterconf.Parameterconf;
 import com.yff.core.safetysupport.jwt.JwtIgnore;
 import com.yff.core.safetysupport.jwt.JwtTokenUtil;
+import com.yff.sysaop.SysLoga;
 import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.common.service.WeChatService;
 import com.yff.ecbackend.users.entity.User;
 import com.yff.ecbackend.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
+
 
 
 @Controller
@@ -47,6 +48,7 @@ public class LoginController {
 
     @PostMapping("/auth")
     @ResponseBody
+    @SysLoga("系统登录")
     @JwtIgnore
     public Object auth(HttpServletRequest request, HttpServletResponse response, String code) {
 
@@ -59,7 +61,7 @@ public class LoginController {
                 token = JwtTokenUtil.createJWT("", "", "", parameterconf);
                 response.setHeader(JwtTokenUtil.AUTH_HEADER_KEY, JwtTokenUtil.TOKEN_PREFIX + token);
                 jsonObject.put("token", token);
-//                System.out.println(JSON.toJSONString(jsonObject));
+
             } catch (Exception $e) {
                 System.out.println("获取Web Access Token失败:" + $e.getMessage());
             }
@@ -72,6 +74,7 @@ public class LoginController {
 
     @PostMapping("/uLogin")
     @ResponseBody
+    @SysLoga("微信授权")
     public Object uLogin(String userInfo, String openid) {
 
         return uuserService.uLogin(userInfo, openid);

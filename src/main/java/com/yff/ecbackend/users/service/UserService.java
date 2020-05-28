@@ -33,7 +33,7 @@ public class UserService extends BaseService<User, Long> {
     private BbranchService bbranchService;
 
     public User uLogin(String userInfo, String openid) {
-        System.out.println("uLogin:" + userInfo + "  openid:" + openid);
+//        System.out.println("uLogin:" + userInfo + "  openid:" + openid);
         User user = this.userRepository.findByOnenid(openid);
         JSONObject jsonObject = JSON.parseObject(userInfo);
         if (ToolUtil.isEmpty(user)) {

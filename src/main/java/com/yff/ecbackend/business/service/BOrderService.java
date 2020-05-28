@@ -122,7 +122,7 @@ public class BOrderService {
 
 
     public Object findByBranchOrder(String branchid, String tabid,String pageNum,String pageSize) {
-
+//        System.out.println(tabid+"  "+pageNum+"  "+pageSize);
         List<OrderList> orderViewLists = new ArrayList<>();
         List<Uorder> uorderList = null;
         int totalRecord = 0;
@@ -141,6 +141,7 @@ public class BOrderService {
 
         Map<String,Object>  map = new HashMap<>();
         map.put("totalPage",paging.getTotalPage());
+//        System.out.println("pageNum: "+ pageNum + "   pageSize: " + pageSize );
         for (Uorder uorder : uorderList) {
             String hour="";
             if (uorder.getIscomplete() == 0) { //未完成订单
@@ -153,8 +154,14 @@ public class BOrderService {
             orderList.setOrdertime(uorder.getBuildtime());
             orderList.setTotalfee(uorder.getTotalfee());
             orderList.setState(uorder.getIscomplete() == 1 ? "已完成" : "未完成");
-            orderList.setUaddressid(uorder.getUaddressid());
+            if(uorder.getIscomplete() == 1 ){
+                orderList.setHour(DateUtil.format(uorder.getCompletetime(),"HH:mm"));
+            }
+            orderList.setOrderdate(DateUtil.format(uorder.getBuildtime(),"yyyy-MM-dd"));
             orderList.setType(uorder.getSelf() == 1 ? "到店自取" : "外卖配送");
+
+            orderList.setUaddressid(uorder.getUaddressid());
+
             User user = this.userService.findByUserid(uorder.getOpenid());
             orderList.setAvatarurl(user.getAvatarurl());
             orderList.setIscomplete(uorder.getIscomplete());

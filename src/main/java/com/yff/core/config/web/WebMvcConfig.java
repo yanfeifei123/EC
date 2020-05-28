@@ -88,6 +88,11 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         FastJsonConfig config = new FastJsonConfig();
         JSON.DEFFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
         config.setSerializerFeatures(SerializerFeature.WriteDateUseDateFormat);//格式化时间
+        config.setSerializerFeatures(SerializerFeature.WriteMapNullValue);
+
+//        config.setSerializerFeatures(SerializerFeature.WriteNullNumberAsZero);
+//        config.setSerializerFeatures(SerializerFeature.WriteNullListAsEmpty);
+//        config.setSerializerFeatures(SerializerFeature.WriteNullStringAsEmpty);
         converter.setFastJsonConfig(config);
         converters.add(converter);
     }

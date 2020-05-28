@@ -200,9 +200,6 @@ public class UorderService extends BaseService<Uorder, Long> {
         setbranchName(uorders, bbranchService.findAll());
         List<OrderItem> orderItems = this.findByOrderItem(request, openid);
         this.setOrderItem(uorders, orderItems);
-//        System.out.println(pageNum + "  " + pageSize + "  ListSize:" + uorders.size());
-//        String s = JSON.toJSONString(uorders);
-//        System.out.println("findOrderList:"+s);
         return uorders;
     }
 
@@ -216,10 +213,14 @@ public class UorderService extends BaseService<Uorder, Long> {
                     total += orderItem.getNumber();
                     uorder.setTotal(total);
                     if (uorder.getIscomplete() == 0) {
-                        if (uorder.getSelf() == 1) {
-                            uorder.setInfo("到店自取");
-                        } else {
-                            uorder.setInfo("商家已接单");
+                        if(uorder.getStatus()==0){
+                            uorder.setInfo("未支付");
+                        }else{
+                            if (uorder.getSelf() == 1) {
+                                uorder.setInfo("到店自取");
+                            } else {
+                                uorder.setInfo("商家已接单");
+                            }
                         }
                     } else {
                         uorder.setInfo("已完成");

@@ -29,10 +29,36 @@ public class BproductService extends BaseService<Bproduct, Long> {
     @Autowired
     private Parameterconf parameterconf;
 
-
+    /**
+     * 点餐用户端查询
+     * @param categoryid
+     * @return
+     */
     public List<Bproduct> findBproducts(Long categoryid) {
-        return this.bcategorysRepository.findBproducts(categoryid);
+        List<Bproduct> bproducts = this.bcategorysRepository.findBproducts(categoryid);
+        for(Bproduct  bproduct :bproducts){
+            int msales = this.bcategorysRepository.countMsales(bproduct.getId());
+            bproduct.setMsales(msales);
+        }
+        return bproducts;
     }
+    /**
+     * 商家用户端查询
+     * @param categoryid
+     * @return
+     */
+    public List<Bproduct> findinSetmealBproducts(Long categoryid){
+        List<Bproduct> bproducts = this.bcategorysRepository.findinSetmealBproducts(categoryid);
+        for(Bproduct  bproduct :bproducts){
+            int msales = this.bcategorysRepository.countMsales(bproduct.getId());
+            bproduct.setMsales(msales);
+        }
+//        System.out.println(JSON.toJSONString(bproducts));
+        return bproducts;
+    }
+
+
+
 
     /**
      * 查询组合套餐

@@ -44,7 +44,7 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      * @param branchid
      * @return
      */
-    @Query(" SELECT count(o) FROM Uorder o where o.branchid=:branchid and o.iscomplete=0")
+    @Query(" SELECT count(o) FROM Uorder o where o.branchid=:branchid and o.iscomplete=0 and o.status=1")
     public abstract int findByIsNotOrderComplete(@Param("branchid") Long branchid);
 
     /**
@@ -56,7 +56,7 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
     public abstract Uorder findTradenoUorder(@Param("tradeno") String tradeno);
 
 
-    @Query(value = " SELECT * FROM u_order o where o.branchid=:branchid   ORDER BY o.buildtime desc limit :pageNum,:pageSize",nativeQuery = true)
+    @Query(value = " SELECT * FROM u_order o where o.branchid=:branchid and o.status=1  ORDER BY o.buildtime desc,odr limit :pageNum,:pageSize",nativeQuery = true)
     public abstract List<Uorder> findByBranchOrder(@Param("branchid") Long branchid,@Param("pageNum") int pageNum,@Param("pageSize") int pageSize);
 
 
@@ -65,14 +65,14 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      * @param branchid
      * @return
      */
-    @Query(value = " SELECT * FROM u_order o where o.branchid=:branchid and o.iscomplete=:iscomplete  ORDER BY o.buildtime desc limit :pageNum,:pageSize" ,nativeQuery = true)
+    @Query(value = " SELECT * FROM u_order o where o.branchid=:branchid and o.iscomplete=:iscomplete and o.status=1 ORDER BY o.buildtime desc ,odr limit :pageNum,:pageSize" ,nativeQuery = true)
     public abstract List<Uorder> findByBranchOrder(@Param("branchid") Long branchid,@Param("iscomplete") int iscomplete,@Param("pageNum") int pageNum,@Param("pageSize") int pageSize);
 
 
-    @Query(value = " SELECT count(*) FROM u_order o where o.branchid=:branchid and o.iscomplete=:iscomplete  " ,nativeQuery = true)
+    @Query(value = " SELECT count(*) FROM u_order o where o.branchid=:branchid and o.iscomplete=:iscomplete  and o.status=1 " ,nativeQuery = true)
     public abstract int countAllByBranchOrder(@Param("branchid") Long branchid,@Param("iscomplete") int iscomplete);
 
-    @Query(value = " SELECT count(*) FROM u_order o where o.branchid=:branchid" ,nativeQuery = true)
+    @Query(value = " SELECT count(*) FROM u_order o where o.branchid=:branchid and o.status=1"  ,nativeQuery = true)
     public abstract int countAllByBranchOrder(@Param("branchid") Long branchid);
 
 

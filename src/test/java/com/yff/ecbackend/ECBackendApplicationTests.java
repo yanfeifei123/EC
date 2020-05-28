@@ -12,17 +12,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
-//@RunWith(SpringRunner.class)
+
 @SpringBootTest
-public class FrameApplicationTests {
+public class ECBackendApplicationTests {
 
     @Autowired
     private UorderOdrService uorderOdrService;
 
     @Test
     public void contextLoads() {
-        Object o= uorderOdrService.findByUorderOdr(Long.valueOf(1));
-        System.out.println("o:"+o);
+        System.out.println("ECBackendApplicationTests:");
     }
 
 

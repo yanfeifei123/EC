@@ -5,7 +5,10 @@ import com.alibaba.fastjson.JSON;
 import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.business.entity.Bbluetooth;
 import com.yff.ecbackend.business.entity.Bbranch;
+import com.yff.ecbackend.business.entity.Bcategory;
+import com.yff.ecbackend.business.entity.Bproduct;
 import com.yff.ecbackend.business.service.*;
+import com.yff.ecbackend.common.view.CommonReturnType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
+import java.util.List;
+import java.util.Map;
+
 
 @Controller
 @RequestMapping("/business")
@@ -33,6 +38,9 @@ public class BusinessController {
     @Autowired
     private BbranchService bbranchService;
 
+    @Autowired
+    private BphotoService bphotoService;
+
     @RequestMapping("/getgoods")
     @ResponseBody
     public Object getgoods(String businessid) {
@@ -42,9 +50,9 @@ public class BusinessController {
 
     @RequestMapping("/findbusinessAll")
     @ResponseBody
-    public Object findbusinessAll(HttpServletRequest request, String businessid) {
+    public Object findbusinessAll(HttpServletRequest request, String branchid) {
 
-        return bcategoryService.findbusinessAll(request, Long.valueOf(businessid));
+        return bcategoryService.findbusinessAll(request, Long.valueOf(branchid));
     }
 
     @RequestMapping("/findByproductPackage")
@@ -103,7 +111,44 @@ public class BusinessController {
     }
 
 
+    @RequestMapping("/findByBcategory")
+    @ResponseBody
+    public Object findByBcategory(String branchid) {
+        return this.bcategoryService.findByBcategory(branchid);
+    }
 
+    @RequestMapping("/findByBproduct")
+    @ResponseBody
+    public Object findByBproduct(HttpServletRequest request, String categoryid) {
+        List<Bproduct> bproducts = this.bproductService.findinSetmealBproducts(Long.valueOf(categoryid));
+        this.bphotoService.setImagepath(request, bproducts);
+        return bproducts;
+    }
+
+    @RequestMapping("/updatebcategory")
+    @ResponseBody
+    public Object updatebcategory(String bcategory) {
+//        System.out.println(bcategory);
+        CommonReturnType commonReturnType = new CommonReturnType();
+        if (ToolUtil.isNotEmpty(bcategory)) {
+            commonReturnType.setCode(1);
+            commonReturnType.setMsg("ok");
+            Bcategory  bcategorypojo = JSON.parseObject(bcategory, Bcategory.class);
+            Map<String,Object>   map =(Map<String,Object>) this.bcategoryService.updatebcategory(bcategorypojo);
+            commonReturnType.setData(map);
+
+        }else{
+            commonReturnType.setCode(-1);
+            commonReturnType.setMsg("err");
+        }
+        return commonReturnType;
+    }
+
+    @RequestMapping("/deletebcategory")
+    @ResponseBody
+    public int deletebcategory(String bcategoryid){
+       return this.bcategoryService.deletebcategory(bcategoryid);
+    }
 
 
 }
