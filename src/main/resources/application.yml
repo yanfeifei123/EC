@@ -111,8 +111,8 @@ parameterconf:
 
   http: https
 
-#  domainname: www.xyfantuan.cn
-  domainname: 127.0.0.1
+  domainname: www.xyfantuan.cn
+#  domainname: 127.0.0.1
 
   subscribeMessageurl: https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=
 
