@@ -2,12 +2,16 @@ package com.yff.ecbackend.users.entity;
 
 import com.yff.core.jparepository.entity.BaseEntity;
 import com.yff.ecbackend.users.view.OrderItem;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.*;
+
+/**
+ * 订单明细
+ */
+
 @Entity
 @Table(name = "u_orderta")
 @org.hibernate.annotations.Table(appliesTo = "u_orderta",comment = "用户订单明细表")
@@ -30,16 +34,21 @@ public class Uordertail extends BaseEntity<Long> {
 
     @Column(columnDefinition = "decimal(6,2) comment '会员价'")
     private float memberprice;
-    /*
-      商品名称
-     */
-    @Transient
+
+
+    @Column(columnDefinition = "varchar(255) comment '商品名称'")
     private String name;
 
-    @Transient
-    private String imagepath;
+    @Column(columnDefinition = "varchar(520) comment '商品图片路径'")
+    private String url;
 
+    public String getUrl() {
+        return url;
+    }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public Long getOrderid() {
         return orderid;
@@ -97,12 +106,8 @@ public class Uordertail extends BaseEntity<Long> {
         this.name = name;
     }
 
-    public String getImagepath() {
-        return imagepath;
-    }
 
-    public void setImagepath(String imagepath) {
-        this.imagepath = imagepath;
-    }
+
+
 
 }

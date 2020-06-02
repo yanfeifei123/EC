@@ -79,16 +79,19 @@ public class UorderService extends BaseService<Uorder, Long> {
         List<Uorder> uorderList = this.findUserIsfirstorder(openid);
         float firstorder = 0;
         float psfcost = 0;
+        int isps = 0;
         Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
         if (uorderList.size() == 0) {
             firstorder = bbranch.getFirstorder();
         }
+        isps = bbranch.getIsps();
         psfcost = bbranch.getPsfcost();
         OrderSettiing orderSettiing = new OrderSettiing();
         orderSettiing.setTradeno(tradeno);
         orderSettiing.setMember(Integer.parseInt(user.getMember()));
         orderSettiing.setPsfcost(psfcost);
         orderSettiing.setFirstorder(firstorder);
+        orderSettiing.setIsps(isps);
         return orderSettiing;
     }
 
@@ -97,7 +100,11 @@ public class UorderService extends BaseService<Uorder, Long> {
         return this.uorderRepository.findUserIsfirstorder(openid);
     }
 
-
+    /**
+     * 创建订购单信息
+     * @param orderBean
+     * @return
+     */
     @Transactional(rollbackFor = Exception.class)
     public Object updateUserOrder(OrderBean orderBean) {
 
@@ -142,7 +149,6 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @return
      */
     private Uorder updateUorder(Long orderid, String tradeno, User user, Long bid, Long branchid, int isself, float totalfee, float discount, Long uaddressid, float firstorder, String ismember) {
-//        System.out.println("orderid:"+orderid);
         int odr = this.uorderOdrService.findByUorderOdr(branchid);
         Uorder uorder = null;
         if (ToolUtil.isNotEmpty(orderid)) {
@@ -163,12 +169,9 @@ public class UorderService extends BaseService<Uorder, Long> {
         uorder.setSelf(isself);
         uorder.setDiscount(discount);
         uorder.setIscomplete(0);
-//        uorder.setJson(josn);
-//        uorder.setTradeno(tradeno);
         uorder.setUaddressid(uaddressid);
         uorder.setFirstorder(firstorder);
         uorder.setIsmember(Integer.parseInt(ismember));
-//        System.out.println("uaddressid:"+uaddressid);
         Uaddress uaddress = uaddressService.findOne(uaddressid);
 
         uorder.setAddress(uaddress.getArea() + uaddress.getDetailed());
@@ -195,37 +198,35 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @param openid
      * @return
      */
-    public List<Uorder> findOrderList(HttpServletRequest request, String openid, String pageNum, String pageSize) {
+    public List<Uorder> findOrderList(String openid, String pageNum, String pageSize) {
         List<Uorder> uorders = this.uorderRepository.findUserOrderpage(openid, Integer.parseInt(pageNum), Integer.parseInt(pageSize));
         setbranchName(uorders, bbranchService.findAll());
-        List<OrderItem> orderItems = this.findByOrderItem(request, openid);
-        this.setOrderItem(uorders, orderItems);
+        this.setOrderItem(uorders);
         return uorders;
     }
 
 
-    private void setOrderItem(List<Uorder> uorders, List<OrderItem> orderItems) {
+    private void setOrderItem(List<Uorder> uorders) {
         for (Uorder uorder : uorders) {
             int total = uorder.getTotal();
-            for (OrderItem orderItem : orderItems) {
-                if (uorder.getId().equals(orderItem.getOrderid())) {
-                    uorder.getOrderItems().add(orderItem);
-                    total += orderItem.getNumber();
-                    uorder.setTotal(total);
-                    if (uorder.getIscomplete() == 0) {
-                        if(uorder.getStatus()==0){
-                            uorder.setInfo("未支付");
-                        }else{
-                            if (uorder.getSelf() == 1) {
-                                uorder.setInfo("到店自取");
-                            } else {
-                                uorder.setInfo("商家已接单");
-                            }
-                        }
+            List<OrderItem> orderItems = this.findByOrderItem(uorder.getOpenid(),uorder.getId());
+            uorder.setOrderItems(orderItems);
+            for(OrderItem orderItem : orderItems){
+                total+=orderItem.getNumber();
+            }
+            uorder.setTotal(total);
+            if (uorder.getIscomplete() == 0) {
+                if(uorder.getStatus()==0){
+                    uorder.setInfo("未支付");
+                }else{
+                    if (uorder.getSelf() == 1) {
+                        uorder.setInfo("到店自取");
                     } else {
-                        uorder.setInfo("已完成");
+                        uorder.setInfo("商家已接单");
                     }
                 }
+            } else {
+                uorder.setInfo("已完成");
             }
         }
     }
@@ -233,20 +234,23 @@ public class UorderService extends BaseService<Uorder, Long> {
     /**
      * 通过用户openid 查询
      *
-     * @param request
      * @param openid
      * @return
      */
-    public List<OrderItem> findByOrderItem(HttpServletRequest request, String openid) {
+    public List<OrderItem> findByOrderItem(String openid,Long orderid) {
         StringBuilder dataSql = new StringBuilder();
-        dataSql.append("select  a.productid,  if(a.ismeal=1,concat(c.name,'(套餐)'),c.name )  name, count(a.productid)   number ,sum(a.price) price  ,sum(a.memberprice ) memberprice ,a.ismeal , a.orderid   FROM u_orderta a,u_order b ,b_product c where a.orderid=b.id  and c.id=a.productid  and a.pid is null AND b.openid=:openid GROUP BY a.productid,c.name,a.ismeal,a.orderid ORDER BY b.buildtime desc");
-//        System.out.println(dataSql.toString());
+        dataSql.append("select ");
+        dataSql.append(" a.productid,  a.name, count(a.productid)   number ,sum(a.price) price  ,sum(a.memberprice ) memberprice ,a.ismeal , a.orderid  ,a.url  imagepath ");
+        dataSql.append("FROM u_orderta a,u_order b  ");
+        dataSql.append(" where a.orderid=b.id   and a.pid is null AND b.openid=:openid and a.orderid=:orderid ");
+        dataSql.append(" GROUP BY a.productid,a.name,a.ismeal,a.orderid ,a.url ");
+        dataSql.append(" ORDER BY b.buildtime desc ");
         Query query = this.entityManager.createNativeQuery(dataSql.toString());
         query.setParameter("openid", openid);
+        query.setParameter("orderid",orderid);
         List<Map<String, Object>> list = query.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
-//        System.out.println("用户端订单统计："+list.size());
         List<OrderItem> orderItems = JSON.parseArray(JSON.toJSONString(list), OrderItem.class);
-        this.bphotoService.setOrderItemImagePath(request, orderItems);
+        this.bphotoService.setOrderItemImagePath( orderItems);
         return orderItems;
     }
 
@@ -267,7 +271,7 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @param orderid
      * @return
      */
-    public Object findOrderDetailed(HttpServletRequest request, String orderid) {
+    public Object findOrderDetailed(String orderid) {
 
         OrderDetail orderDetail = new OrderDetail();
 
@@ -307,7 +311,7 @@ public class UorderService extends BaseService<Uorder, Long> {
 
         orderDetail.setOrderno(uorder.getTradeno());
 
-        List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, Long.valueOf(orderid));
+        List<Uordertail> uordertails = this.uordertailService.findByUordertail(Long.valueOf(orderid));
         List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
         orderDetail.setOrderItems(orderItems);
         int totalnum = this.totalnum(orderItems);
@@ -332,7 +336,7 @@ public class UorderService extends BaseService<Uorder, Long> {
 
 
     public List<OrderItem> orderByOrderDetailed(HttpServletRequest request, String orderid) {
-        List<Uordertail> uordertails = this.uordertailService.findByUordertail(request, Long.valueOf(orderid));
+        List<Uordertail> uordertails = this.uordertailService.findByUordertail( Long.valueOf(orderid));
         List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
         return orderItems;
     }

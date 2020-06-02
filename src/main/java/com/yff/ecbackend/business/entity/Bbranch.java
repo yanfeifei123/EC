@@ -41,8 +41,14 @@ public class Bbranch extends BaseEntity<Long> {
     @Column(columnDefinition = "decimal default 0 comment '多少钱起送'")
     private float firstmoney;
 
-    @Column(columnDefinition = "int(11) default 0 comment '分店是否营业(0后，1是)'")
+    @Column(columnDefinition = "int(11) default 0 comment '分店是否营业(0否，1是)'")
     private int bornot;
+
+    @Column(columnDefinition = "varchar(50) comment '联系电话'")
+    private String phone;
+
+    @Column(columnDefinition = "int default 0  comment '是否可以外卖配送(0否，1是)'")
+    private int isps;
 
     public String getName() {
         return name;
@@ -123,5 +129,21 @@ public class Bbranch extends BaseEntity<Long> {
 
     public void setBornot(int bornot) {
         this.bornot = bornot;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public int getIsps() {
+        return isps;
+    }
+
+    public void setIsps(int isps) {
+        this.isps = isps;
     }
 }

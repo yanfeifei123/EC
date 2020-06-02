@@ -85,7 +85,7 @@ public class TomcatConfig {
                     protocol.setSSLEnabled(true);
 //                protocol.setMaxSavePostSize(0);
                     protocol.setCompressibleMimeType("text/html,text/xml,text/plain,text/css,text/javascript,application/javascript");
-                System.out.println("内置Tomcat https请求优化");
+//                System.out.println("内置Tomcat https请求优化");
                 }
             });
         }

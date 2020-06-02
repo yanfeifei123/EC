@@ -42,7 +42,7 @@ public class BcategoryService extends BaseService<Bcategory, Long> {
         List<Bcategory> bcategoryList = this.bcategoryRepository.findbusinessAll(branchid);
         for (Bcategory bcategory : bcategoryList) {
             List<Bproduct> bproductsitems = bproductsService.findBproducts(bcategory.getId());
-            bphotoService.setImagepath(request, bproductsitems);
+            bphotoService.setImagepath(bproductsitems);
             bcategory.setBproductsitems(bproductsitems);
         }
 

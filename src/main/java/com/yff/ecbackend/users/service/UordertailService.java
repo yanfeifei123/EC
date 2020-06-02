@@ -47,12 +47,15 @@ public class UordertailService extends BaseService<Uordertail, Long> {
         this.uordertailRepository.clearUordertail(Long.valueOf(orderid));
     }
 
-
+    /**
+     * 生成订单明细
+     * @param orderid
+     * @param shoppingCarts
+     * @return
+     */
     public List<Uordertail> updateUordertail(Long orderid, List<ShoppingCart> shoppingCarts) {
-
         this.clearUordertail(orderid);
-
-        List<Uordertail> uordertails = new ArrayList<Uordertail>();
+        List<Uordertail> uordertails = new ArrayList<>();
         int i = 0;
         for (ShoppingCart shoppingcart : shoppingCarts) {
 
@@ -66,7 +69,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                     Bproduct bproduct = bproductService.findOne(productid);
                     int ismeal = items.size() != 0 ? 1 : 0;
 
-                    Uordertail uordertail = this.assembleUordertail(orderid, bproduct.getMemberprice(), bproduct.getPrice(), bproduct.getId(), j, null, ismeal);
+                    Uordertail uordertail = this.assembleUordertail(orderid, bproduct.getMemberprice(), bproduct.getPrice(), bproduct.getId(), j, null, ismeal,bproduct.getName(),bproduct.getImagepath());
                     uordertail = this.uordertailRepository.save(uordertail);
 
                     if (ismeal == 1) {  //如果包含套餐
@@ -77,7 +80,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                             Long productid1 = childshoppingcart.getId();  //商品id
                             for (int l = 1; l <= number; l++) {
                                 Bproduct bproductc = bproductService.findOne(productid1);
-                                Uordertail uordertailc = this.assembleUordertail(orderid, bproductc.getMemberprice(), bproductc.getPrice(), bproductc.getId(), l, uordertail.getId(), 0);
+                                Uordertail uordertailc = this.assembleUordertail(orderid, bproductc.getMemberprice(), bproductc.getPrice(), bproductc.getId(), l, uordertail.getId(), 0,bproductc.getName(),bproductc.getImagepath());
                                 this.uordertailRepository.save(uordertailc);
                             }
                         }
@@ -91,7 +94,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                 //计算单个套餐
                 int ismeal = ToolUtil.isNotEmpty(items) ? 1 : 0;
                 if (ismeal == 1) {
-                    Uordertail uordertail = this.assembleUordertail(orderid, tmemberprice, tprice, productid, i + 1, null, ismeal);
+                    Uordertail uordertail = this.assembleUordertail(orderid, tmemberprice, tprice, productid, i + 1, null, ismeal,bproduct.getName(),bproduct.getImagepath());
                     uordertail = this.uordertailRepository.save(uordertail);
 //                    System.out.println("pid:" + uordertail.getId());
                     List<Child> childshoppingcarts = items.get(0).getShoppingcart();
@@ -101,12 +104,12 @@ public class UordertailService extends BaseService<Uordertail, Long> {
                         Long productid1 = childshoppingcart.getId();  //商品id
                         for (int l = 1; l <= number; l++) {
                             Bproduct bproductc = bproductService.findOne(productid1);
-                            Uordertail uordertailc = this.assembleUordertail(orderid, bproductc.getMemberprice(), bproductc.getPrice(), bproductc.getId(), l, uordertail.getId(), 0);
+                            Uordertail uordertailc = this.assembleUordertail(orderid, bproductc.getMemberprice(), bproductc.getPrice(), bproductc.getId(), l, uordertail.getId(), 0,bproductc.getName(),bproductc.getImagepath());
                             this.uordertailRepository.save(uordertailc);
                         }
                     }
                 } else {
-                    Uordertail uordertail = this.assembleUordertail(orderid, tmemberprice, tprice, productid, i + 1, null, 0);
+                    Uordertail uordertail = this.assembleUordertail(orderid, tmemberprice, tprice, productid, i + 1, null, 0,bproduct.getName(),bproduct.getImagepath());
                     uordertails.add(uordertail);
                 }
             }
@@ -116,7 +119,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
     }
 
 
-    public Uordertail assembleUordertail(Long orderid, float memberprice, float price, Long productid, int odr, Long pid, int ismeal) {
+    public Uordertail assembleUordertail(Long orderid, float memberprice, float price, Long productid, int odr, Long pid, int ismeal,String name,String url) {
         Uordertail uordertail = new Uordertail();
         uordertail.setBuildtime(new Date());
         uordertail.setOrderid(orderid);
@@ -126,28 +129,19 @@ public class UordertailService extends BaseService<Uordertail, Long> {
         uordertail.setOdr(odr);
         uordertail.setIsmeal(ismeal);
         uordertail.setPid(pid);
+        uordertail.setName(name);
+        uordertail.setUrl(url);
         return uordertail;
     }
 
     /**
      * 查询订单明细
      *
-     * @param request
      * @param orderid
      * @return
      */
-    public List<Uordertail> findByUordertail(HttpServletRequest request, Long orderid) {
+    public List<Uordertail> findByUordertail( Long orderid) {
         List<Uordertail> uordertails = this.uordertailRepository.findByUordertail(orderid);
-        Uorder uorder = this.uorderService.findOne(orderid);
-        List<Bproduct> bproducts = this.bproductService.findByBproductToBbranch(uorder.getBranchid());
-        for (Uordertail uordertail : uordertails) {
-            for (Bproduct bproduct : bproducts) {
-                if (uordertail.getProductid().equals(bproduct.getId())) {
-                    uordertail.setName(bproduct.getName());
-                }
-            }
-        }
-        this.bphotoService.setUordertailImagePath(request, uordertails);
         return uordertails;
     }
 
@@ -240,7 +234,7 @@ public class UordertailService extends BaseService<Uordertail, Long> {
      */
     private OrderItem initOrderItemToUordertail(Uordertail uordertail) {
         OrderItem orderItem = new OrderItem();
-        orderItem.setImagepath(uordertail.getImagepath());
+        orderItem.setImagepath(uordertail.getUrl());
         orderItem.setIsmeal(uordertail.getIsmeal());
         orderItem.setPrice(uordertail.getPrice());
         orderItem.setMemberprice(uordertail.getMemberprice());

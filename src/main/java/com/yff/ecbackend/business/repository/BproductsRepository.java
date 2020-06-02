@@ -36,4 +36,16 @@ public interface BproductsRepository extends BaseRepository<Bproduct,Long> {
     public abstract int countMsales(@Param("productid")Long productid);
 
 
+    /**
+     * 查询出商品关联的子类商品
+     */
+    @Query(value = " select  * from b_product p where p.categoryid=:categoryid and p.id <> :bproductid  AND pid is null AND packages=0" ,nativeQuery = true)
+    public abstract List<Bproduct> findByBproductToPackage(@Param("categoryid")Long categoryid,@Param("bproductid")Long bproductid);
+
+
+    @Query( " select  p from Bproduct p where p.id in(:ids) " )
+    public abstract List<Bproduct> findByBproductIdin(@Param("ids") List<Long> ids);
+
+
+
 }

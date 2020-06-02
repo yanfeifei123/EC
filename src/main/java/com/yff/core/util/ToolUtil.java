@@ -296,4 +296,19 @@ public class ToolUtil {
 
     }
 
+    public static int deleteFile(String path){
+        int resultInfo=0;
+        File file = new File(path);
+        if (file.exists()) {//文件是否存在
+            if (file.delete()) {//存在就删了，返回1
+                resultInfo =  1;
+            } else {
+                resultInfo =  0;
+            }
+        } else {
+
+        }
+        return resultInfo;
+    }
+
 }

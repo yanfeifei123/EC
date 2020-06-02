@@ -6,7 +6,9 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.yff.core.config.file.FileVerificationProperties;
 import com.yff.core.safetysupport.jwt.JwtInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -24,12 +27,24 @@ import java.util.*;
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
+    @Autowired
+    private FileVerificationProperties filePropertie;
+
+    String os = System.getProperty("os.name");
+
     /**
-     * 开发PC端在开启
+     * 虚拟路径配置
      */
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+
         registry.addResourceHandler("/view/**").addResourceLocations("classpath:/view/");
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+
+        if (os.toLowerCase().startsWith("win")) {
+            registry.addResourceHandler("/photo/**").addResourceLocations("file:E:/photo/");
+        }else{
+            registry.addResourceHandler("/photo/**").addResourceLocations("file:"+this.filePropertie.getFileRelativepath());
+        }
         super.addResourceHandlers(registry);
     }
 

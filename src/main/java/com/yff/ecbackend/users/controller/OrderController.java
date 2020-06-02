@@ -24,12 +24,20 @@ public class OrderController {
     @Autowired
     private UordertailService uordertailService;
 
+    /**
+     * 查询用户端订单列表
+     * @param request
+     * @param openid
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @RequestMapping(value = "/findOrderList", method = RequestMethod.POST)
     @ResponseBody
     public Object findOrderList( HttpServletRequest request,String openid,String pageNum,String pageSize) {
 //        System.out.println("pageNum:" + pageNum+"  pageSize:"+pageSize);
 
-        return this.uorderService.findOrderList(request, openid, pageNum, pageSize);
+        return this.uorderService.findOrderList(openid, pageNum, pageSize);
     }
 
     @RequestMapping(value = "/countAllByUorderOAndOpenid", method = RequestMethod.POST)
@@ -46,8 +54,8 @@ public class OrderController {
      */
     @RequestMapping(value = "/findOrderDetailed", method = RequestMethod.POST)
     @ResponseBody
-    public Object findOrderDetailed(HttpServletRequest request ,String orderid) {
-        return this.uorderService.findOrderDetailed(request, orderid);
+    public Object findOrderDetailed(String orderid) {
+        return this.uorderService.findOrderDetailed(orderid);
     }
 
 

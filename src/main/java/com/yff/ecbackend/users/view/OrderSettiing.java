@@ -11,4 +11,5 @@ public class OrderSettiing {
     private int member; //是否会员
     private float firstorder; //首单用户
     private float psfcost; //配送费
+    private int isps;
 }

@@ -58,7 +58,7 @@ public class BusinessController {
     @RequestMapping("/findByproductPackage")
     @ResponseBody
     public Object findByproductPackage(HttpServletRequest request, String pid) {
-        return bproductService.findByproductPackage(request, Long.valueOf(pid));
+        return bproductService.findByproductPackage(Long.valueOf(pid));
     }
 
     @RequestMapping("/findByBbranch")
@@ -69,6 +69,14 @@ public class BusinessController {
 //        System.out.println(s);
         return bbranch;
     }
+
+    @RequestMapping("/updateBbranch")
+    @ResponseBody
+    public Object updateBbranch(String bbranch) {
+//        System.out.println(bbranch);
+        return this.bbranchService.updateBbranch(bbranch);
+    }
+
 
     /**
      * 商家营业和下班
@@ -121,7 +129,7 @@ public class BusinessController {
     @ResponseBody
     public Object findByBproduct(HttpServletRequest request, String categoryid) {
         List<Bproduct> bproducts = this.bproductService.findinSetmealBproducts(Long.valueOf(categoryid));
-        this.bphotoService.setImagepath(request, bproducts);
+        this.bphotoService.setImagepath(bproducts);
         return bproducts;
     }
 
@@ -133,11 +141,11 @@ public class BusinessController {
         if (ToolUtil.isNotEmpty(bcategory)) {
             commonReturnType.setCode(1);
             commonReturnType.setMsg("ok");
-            Bcategory  bcategorypojo = JSON.parseObject(bcategory, Bcategory.class);
-            Map<String,Object>   map =(Map<String,Object>) this.bcategoryService.updatebcategory(bcategorypojo);
+            Bcategory bcategorypojo = JSON.parseObject(bcategory, Bcategory.class);
+            Map<String, Object> map = (Map<String, Object>) this.bcategoryService.updatebcategory(bcategorypojo);
             commonReturnType.setData(map);
 
-        }else{
+        } else {
             commonReturnType.setCode(-1);
             commonReturnType.setMsg("err");
         }
@@ -146,8 +154,8 @@ public class BusinessController {
 
     @RequestMapping("/deletebcategory")
     @ResponseBody
-    public int deletebcategory(String bcategoryid){
-       return this.bcategoryService.deletebcategory(bcategoryid);
+    public int deletebcategory(String bcategoryid) {
+        return this.bcategoryService.deletebcategory(bcategoryid);
     }
 
 

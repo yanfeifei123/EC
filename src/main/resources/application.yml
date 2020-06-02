@@ -78,10 +78,6 @@ spring:
 
 
 
-
-
-
-
 parameterconf:
 
 
@@ -121,4 +117,6 @@ parameterconf:
 
 fileupload:
   upload-TypesOf: bmp,jpg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,WMF,webp
+  upload-Path: photo/
+  file-Relativepath: /root/EC/photo/
 

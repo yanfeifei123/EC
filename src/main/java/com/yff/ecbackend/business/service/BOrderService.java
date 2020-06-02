@@ -94,7 +94,7 @@ public class BOrderService {
      */
     public OrderSummary findByOrderSummaryTodayyesterday(String branchid, String datetime) {
         StringBuilder dataSql = new StringBuilder();
-        dataSql.append("SELECT sum(a.totalfee) totalfee, count(a.branchid) ordernum, 0.0 refundamount,  0 refundformnum  FROM u_order a where a.branchid=:branchid and  DATE_FORMAT(a.buildtime  ,'%Y-%m-%d') = DATE_FORMAT(:datetime  ,'%Y-%m-%d')");
+        dataSql.append("SELECT sum(a.totalfee) totalfee, count(a.branchid) ordernum, 0.0 refundamount,  0 refundformnum  FROM u_order a where a.branchid=:branchid and  DATE_FORMAT(a.buildtime  ,'%Y-%m-%d') = DATE_FORMAT(:datetime  ,'%Y-%m-%d') and a.`status`=1");
         Query query = this.entityManager.createNativeQuery(dataSql.toString());
         query.setParameter("branchid", branchid);
         query.setParameter("datetime", datetime);
@@ -106,7 +106,7 @@ public class BOrderService {
     public OrderSummary findByOrderSummaryRange(String branchid, String startdate, String enddate) {
         StringBuilder dataSql = new StringBuilder();
         dataSql.append("SELECT sum(a.totalfee) totalfee, count(a.branchid) ordernum, 0.0 refundamount,  0 refundformnum  FROM u_order a where a.branchid=:branchid");
-        dataSql.append(" and  DATE_FORMAT(a.buildtime  ,'%Y-%m-%d')  >=:startdate and DATE_FORMAT(a.buildtime  ,'%Y-%m-%d') <=:enddate");
+        dataSql.append(" and  DATE_FORMAT(a.buildtime  ,'%Y-%m-%d')  >=:startdate and DATE_FORMAT(a.buildtime  ,'%Y-%m-%d') <=:enddate  and a.status=1");
         Query query = this.entityManager.createNativeQuery(dataSql.toString());
         query.setParameter("branchid", branchid);
         query.setParameter("startdate", startdate);

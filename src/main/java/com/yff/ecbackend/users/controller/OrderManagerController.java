@@ -54,7 +54,7 @@ public class OrderManagerController {
         CommonReturnType commonReturnType = new CommonReturnType();
         if(ToolUtil.isEmpty(orderObj)){
             commonReturnType.setCode(-1);
-            commonReturnType.setMsg("网络延迟请稍等.....");
+            commonReturnType.setMsg("400");
         }else{
             OrderBean  bean=  JSON.parseObject(orderObj,OrderBean.class);
             Object object = this.uorderService.updateUserOrder(bean);

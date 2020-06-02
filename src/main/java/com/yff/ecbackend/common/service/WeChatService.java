@@ -229,6 +229,7 @@ public class WeChatService {
             // 初始化
             Security.addProvider(new BouncyCastleProvider());
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+//            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
             SecretKeySpec spec = new SecretKeySpec(keyByte, "AES");
             AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES");
             parameters.init(new IvParameterSpec(ivByte));
@@ -325,8 +326,7 @@ public class WeChatService {
     }
 
 
-    public String getHttps(HttpServletRequest request) {
-//        return "https://" + this.getIp(request) + ":" + parameterconf.getServerPort();
+    public String getHttps() {
         return this.parameterconf.getHttp()+"://" + this.parameterconf.getDomainname()  + ":" + parameterconf.getServerPort();
     }
 
