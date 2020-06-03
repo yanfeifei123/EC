@@ -3,6 +3,7 @@ package com.yff.ecbackend.users.controller;
 
 import com.yff.ecbackend.users.entity.Uaddress;
 import com.yff.ecbackend.users.service.UaddressService;
+import com.yff.ecbackend.users.service.UorderService;
 import com.yff.ecbackend.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UorderService uorderService;
+
     @PostMapping("/findByUaddress")
     @ResponseBody
     public Object findByUaddress(String openid ) {
@@ -38,7 +42,7 @@ public class UserController {
 
     @PostMapping("/selectAddress")
     @ResponseBody
-    public int  selectAddress(String id ){
+    public Object selectAddress(String id ){
         return this.uaddressService.selectAddress(id);
     }
 
@@ -72,6 +76,13 @@ public class UserController {
     @ResponseBody
     public Object findByUserid(String openid){
         return  this.userService.findByUserid(openid);
+    }
+
+    @PostMapping("/updateAddress")
+    @ResponseBody
+    public Object updateAddress(String orderid,String uaddressid){
+        System.out.println("updateAddress");
+        return this.uorderService.updateAddress(orderid,uaddressid);
     }
 
 

@@ -14,8 +14,6 @@ import com.yff.ecbackend.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +21,7 @@ import java.util.Map;
  * 订单支付消息回调服务
  */
 @Service
-public class NotifyMessagePushService {
+public class MessagePushService {
 
     @Autowired
     private UorderService uorderService;

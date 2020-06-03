@@ -9,6 +9,7 @@ import com.yff.ecbackend.business.entity.Bbranch;
 import com.yff.ecbackend.business.service.BbranchService;
 import com.yff.ecbackend.business.service.BphotoService;
 import com.yff.ecbackend.common.pojo.TemplateData;
+import com.yff.ecbackend.common.service.MessagePushService;
 import com.yff.ecbackend.common.service.WeChatService;
 import com.yff.ecbackend.users.entity.Uaddress;
 import com.yff.ecbackend.users.entity.Uorder;
@@ -63,6 +64,10 @@ public class UorderService extends BaseService<Uorder, Long> {
 
     @Autowired
     private WeChatService weChatService;
+
+
+    @Autowired
+    private MessagePushService messagePushService;
 
     private DecimalFormat df = new DecimalFormat("#.00");
 
@@ -402,6 +407,24 @@ public class UorderService extends BaseService<Uorder, Long> {
         return this.update(uorder);
     }
 
+    /**
+     * 更新订单地址并且把消息推送给商家
+     * @param orderid
+     * @param uaddressid
+     * @return
+     */
+    public Uorder updateAddress(String orderid,String uaddressid){
+        Uorder uorder= this.findOne(Long.valueOf(orderid));
+        Uaddress uaddress = this.uaddressService.selectAddress(uaddressid);
+
+        uorder.setAddress(uaddress.getArea() + uaddress.getDetailed());
+        uorder.setReceiver(uaddress.getName() + "（" + uaddress.getGender() + "）");
+        uorder.setPhone(uaddress.getPhone());
+        String type = "updateAddress" ;
+        this.messagePushService.doOrderTask(uorder.getBranchid(), uorder.getOpenid(), uorder.getId(), type);
+        System.out.println("updateAddress");
+        return uorder;
+    }
 
 
 }

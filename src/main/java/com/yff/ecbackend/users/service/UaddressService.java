@@ -39,14 +39,14 @@ public class UaddressService extends BaseService<Uaddress,Long> {
         return 1;
     }
 
-    public int selectAddress(String id){
+    public Uaddress selectAddress(String id){
 
         Uaddress uaddress = this.findOne(Long.valueOf(id));
         if(ToolUtil.isNotEmpty(uaddress)){
             uaddress.setBuildtime(new Date());
             this.update(uaddress);
         }
-        return 1;
+        return uaddress;
     }
 
 

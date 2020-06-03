@@ -3,7 +3,7 @@ package com.yff.ecbackend.common.controller;
 
 
 import com.yff.core.safetysupport.jwt.JwtIgnore;
-import com.yff.ecbackend.common.service.NotifyMessagePushService;
+import com.yff.ecbackend.common.service.MessagePushService;
 import com.yff.wechat.wxpaysdk.WXPayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class PaymentcallbackController {
 
     @Autowired
-    private NotifyMessagePushService notifyMessagePushService;
+    private MessagePushService messagePushService;
 
     @JwtIgnore
     @RequestMapping(value = "/notify", method = RequestMethod.POST)
@@ -52,7 +52,7 @@ public class PaymentcallbackController {
                 String trade_type = map.get("trade_type");
                 System.out.println("微信支付订单号:" + transaction_id + " 商户订单号:" + out_trade_no + " openid:" + openid + "  trade_type:" + trade_type);
 
-                this.notifyMessagePushService.paymentCallbackMessage(out_trade_no);
+                this.messagePushService.paymentCallbackMessage(out_trade_no);
 
 
             }
