@@ -80,8 +80,6 @@ spring:
 
 parameterconf:
 
-
-
   # 代表这个JWT的接收对象,存入audience
   clientId: 098f6bcd4621d373cade4e832627b4f6
   # 密钥, 经过Base64加密, 可自行替换
@@ -111,6 +109,8 @@ parameterconf:
 #  domainname: 127.0.0.1
 
   subscribeMessageurl: https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=
+
+  newmsgtemplateId: X4ZGAyIVgnoOKUodwioOF1ocF4x1CYpU4KoI2H8VVgE  # 新订提醒id
 
 
 

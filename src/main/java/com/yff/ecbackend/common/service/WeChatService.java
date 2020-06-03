@@ -112,7 +112,7 @@ public class WeChatService {
         JSONObject jsonObject = JSONObject.parseObject(message);
         String accessToken = jsonObject.getString("access_token");
         String expires_in = jsonObject.getString("expires_in");
-        System.out.println(JSON.toJSONString(jsonObject));
+//        System.out.println(JSON.toJSONString(jsonObject));
         return accessToken;
     }
 

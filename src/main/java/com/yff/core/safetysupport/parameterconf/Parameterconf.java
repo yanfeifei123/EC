@@ -31,4 +31,6 @@ public class Parameterconf {
     private String subscribeMessageurl;
 
     private String domainname;
+
+    private String newmsgtemplateId;
 }

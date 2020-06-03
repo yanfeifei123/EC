@@ -3,8 +3,8 @@ package com.yff.ecbackend.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.yff.core.util.ToolUtil;
-import com.yff.ecbackend.messagequeue.pojo.OrderMessageTemplate;
-import com.yff.ecbackend.messagequeue.service.OrderMessageThreadingService;
+import com.yff.ecbackend.messagequeue.config.MessageTemplate;
+import com.yff.ecbackend.messagequeue.service.MessageStackService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,6 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 
 @Component
@@ -24,14 +23,14 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class WebSocket {
 
 
-    private static OrderMessageThreadingService orderMessageThreadingService;
+    private static MessageStackService messageStackService;
     private static ConcurrentHashMap<String, WebSocket> webSocketSet = new ConcurrentHashMap<>();
     private Session session;
     private String sid = "";
 
     @Autowired
-    public  void setOrderMessageThreadingService(OrderMessageThreadingService orderMessageThreadingService) {
-        WebSocket.orderMessageThreadingService = orderMessageThreadingService;
+    public  void setMessageStackService(MessageStackService messageStackService) {
+        WebSocket.messageStackService = messageStackService;
     }
 
 
@@ -54,9 +53,9 @@ public class WebSocket {
     public void onMessage(String message) {
         log.info("【websocket消息】收到客户端发来的消息:{}", message);
         if(ToolUtil.isNotEmpty(message)){
-            OrderMessageTemplate orderMessageTemplate = orderMessageThreadingService.take(Long.valueOf(message));
-            if(ToolUtil.isNotEmpty(orderMessageTemplate)){
-                this.sendMessage(JSON.toJSONString(orderMessageTemplate));
+            MessageTemplate messageTemplate = messageStackService.take(Long.valueOf(message));
+            if(ToolUtil.isNotEmpty(messageTemplate)){
+                this.sendMessage(JSON.toJSONString(messageTemplate));
             }
         }
     }

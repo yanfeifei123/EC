@@ -5,7 +5,7 @@ import com.yff.ecbackend.users.entity.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import java.util.*;
 @Repository
 public interface UserRepository extends BaseRepository<User,Long> {
 
@@ -26,7 +26,7 @@ public interface UserRepository extends BaseRepository<User,Long> {
      * @return
      */
     @Query("select u from User u where u.branchid=:branchid" )
-    public abstract User findByBranchid(@Param("branchid") Long branchid);
+    public abstract List<User> findByBranchid(@Param("branchid") Long branchid);
 
 
 }

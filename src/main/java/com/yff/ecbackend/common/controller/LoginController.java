@@ -111,7 +111,7 @@ public class LoginController {
                 map.put("data", user);
                 String token = JwtTokenUtil.createJWT(user.getId()+"", user.getName(), "", parameterconf);
                 response.setHeader(JwtTokenUtil.AUTH_HEADER_KEY,  token);
-                System.out.println("商家登陆："+user.getOpenid());
+//                System.out.println("商家登陆："+user.getOpenid());
             }else{
                 map.put("err", 1);
                 map.put("data","你不是管理员");
