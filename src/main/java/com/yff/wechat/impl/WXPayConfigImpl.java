@@ -1,17 +1,26 @@
 package com.yff.wechat.impl;
 
 
-
 import com.yff.wechat.wxpaysdk.IWXPayDomain;
 import com.yff.wechat.wxpaysdk.WXPayConfig;
-import java.io.InputStream;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
+
+import java.io.*;
+import java.security.KeyStore;
 
 
-public  class WXPayConfigImpl extends WXPayConfig {
+public class WXPayConfigImpl extends WXPayConfig {
 
     private String appID;
     private String mchID; //商户号
     private String key; //密钥key
+
+    private byte[] certData;
+
+    public WXPayConfigImpl() throws Exception {
+
+    }
 
 
     public void setAppID(String appID) {
@@ -43,6 +52,12 @@ public  class WXPayConfigImpl extends WXPayConfig {
 
     @Override
     protected InputStream getCertStream() {
+        ClassPathResource cl = new ClassPathResource("apiclient_cert.p12");
+        try {
+            return cl.getInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

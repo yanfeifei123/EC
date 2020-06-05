@@ -21,4 +21,7 @@ public interface BcategoryRepository extends BaseRepository<Bcategory,Long> {
 
 
 
+
+
+
 }

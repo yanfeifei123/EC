@@ -6,6 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 接收请求测试
+ */
 @Controller
 public class Testcontroller {
 

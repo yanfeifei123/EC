@@ -21,8 +21,7 @@ public class OrderController {
 
     @Autowired
     private UorderService uorderService;
-    @Autowired
-    private UordertailService uordertailService;
+
 
     /**
      * 查询用户端订单列表

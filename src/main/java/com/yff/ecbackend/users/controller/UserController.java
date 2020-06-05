@@ -40,6 +40,12 @@ public class UserController {
         return this.uaddressService.updateUaddress(u_address,openid);
     }
 
+    @PostMapping("/saveUaddress")
+    @ResponseBody
+    public int saveUaddress(String u_address , String openid) {
+        return this.uaddressService.saveUaddress(u_address,openid);
+    }
+
     @PostMapping("/selectAddress")
     @ResponseBody
     public Object selectAddress(String id ){
@@ -64,13 +70,6 @@ public class UserController {
     }
 
 
-    @PostMapping("/onisfirstorder")
-    @ResponseBody
-    public Object onisfirstorder(String branchid,String openid ){
-
-        return  this.userService.onisfirstorder(branchid,openid);
-    }
-
 
     @PostMapping("/findByUserid")
     @ResponseBody
@@ -78,10 +77,16 @@ public class UserController {
         return  this.userService.findByUserid(openid);
     }
 
+
+    /**
+     * 配送中对订单地址的修改并且把消息推送给商家
+     * @param orderid
+     * @param uaddressid
+     * @return
+     */
     @PostMapping("/updateAddress")
     @ResponseBody
     public Object updateAddress(String orderid,String uaddressid){
-        System.out.println("updateAddress");
         return this.uorderService.updateAddress(orderid,uaddressid);
     }
 

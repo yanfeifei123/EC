@@ -34,10 +34,20 @@ public class UaddressService extends BaseService<Uaddress,Long> {
         Uaddress  uaddress   = JSON.parseObject(u_address,Uaddress.class);
         User user = this.userService.findByUserid(openid);
         uaddress.setUserid(user.getId());
-        uaddress.setBuildtime(new Date());
-        uaddress = this.update(uaddress);
+//        uaddress.setBuildtime(new Date());
+        this.update(uaddress);
         return 1;
     }
+
+    public int saveUaddress(String u_address,String openid){
+        Uaddress  uaddress   = JSON.parseObject(u_address,Uaddress.class);
+        User user = this.userService.findByUserid(openid);
+        uaddress.setUserid(user.getId());
+        uaddress.setBuildtime(new Date());
+        this.update(uaddress);
+        return 1;
+    }
+
 
     public Uaddress selectAddress(String id){
 

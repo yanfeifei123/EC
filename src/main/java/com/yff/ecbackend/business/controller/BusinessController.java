@@ -50,9 +50,9 @@ public class BusinessController {
 
     @RequestMapping("/findbusinessAll")
     @ResponseBody
-    public Object findbusinessAll(HttpServletRequest request, String branchid) {
+    public Object findbusinessAll(String branchid,String searchValue) {
 
-        return bcategoryService.findbusinessAll(request, Long.valueOf(branchid));
+        return bcategoryService.findbusinessAll(Long.valueOf(branchid),searchValue);
     }
 
     @RequestMapping("/findByproductPackage")
@@ -121,14 +121,14 @@ public class BusinessController {
 
     @RequestMapping("/findByBcategory")
     @ResponseBody
-    public Object findByBcategory(String branchid) {
-        return this.bcategoryService.findByBcategory(branchid);
+    public Object findByBcategory(String branchid,String searchValue) {
+        return this.bcategoryService.findByBcategory(branchid,searchValue);
     }
 
     @RequestMapping("/findByBproduct")
     @ResponseBody
-    public Object findByBproduct(HttpServletRequest request, String categoryid) {
-        List<Bproduct> bproducts = this.bproductService.findinSetmealBproducts(Long.valueOf(categoryid));
+    public Object findByBproduct(HttpServletRequest request, String categoryid,String searchValue) {
+        List<Bproduct> bproducts = this.bproductService.findinSetmealBproducts(Long.valueOf(categoryid),searchValue);
         this.bphotoService.setImagepath(bproducts);
         return bproducts;
     }

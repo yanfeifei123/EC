@@ -97,11 +97,12 @@ parameterconf:
 
   sessionHost: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
 
-  notify_url: http://www.xyfantuan.cn/pay/notify
+  notify_url: http://www.xyfantuan.cn/weChatPay/notify
+
+  refundnotify_url: https://www.xyfantuan.cn/weChatPay/refundnotify
 
   paykey: 40288184715a5d4d01715a5d4d460000  #商户API
 
-  unifiedorderurl: https://api.mch.weixin.qq.com/pay/unifiedorder
 
   http: https
 

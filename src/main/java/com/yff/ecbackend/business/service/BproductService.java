@@ -31,14 +31,6 @@ public class BproductService extends BaseService<Bproduct, Long> {
     @Autowired
     private BphotoService bphotoService;
 
-    @Autowired
-    private WeChatService weChatService;
-
-    @Autowired
-    private Parameterconf parameterconf;
-
-    @Autowired
-    private FileVerificationProperties filePropertie;
 
     @Autowired
     private BproductsRepository bproductsRepository;
@@ -73,13 +65,17 @@ public class BproductService extends BaseService<Bproduct, Long> {
      * @param categoryid
      * @return
      */
-    public List<Bproduct> findinSetmealBproducts(Long categoryid) {
-        List<Bproduct> bproducts = this.bcategorysRepository.findinSetmealBproducts(categoryid);
+    public List<Bproduct> findinSetmealBproducts(Long categoryid, String searchValue) {
+        List<Bproduct> bproducts = new ArrayList<>();
+        if (ToolUtil.isEmpty(searchValue))
+            bproducts = this.bcategorysRepository.findinSetmealBproducts(categoryid);
+        else
+            bproducts = this.bproductsRepository.findByBproductCategoryidFuzzyquery(categoryid, searchValue);
+
         for (Bproduct bproduct : bproducts) {
             int msales = this.bcategorysRepository.countMsales(bproduct.getId());
             bproduct.setMsales(msales);
         }
-//        System.out.println(JSON.toJSONString(bproducts));
         return bproducts;
     }
 
@@ -219,6 +215,10 @@ public class BproductService extends BaseService<Bproduct, Long> {
 
         return 1;
 
+    }
+
+    public List<Bproduct> findByBproductFuzzyquery(Long branchid, String searchValue) {
+        return this.bproductsRepository.findByBproductFuzzyquery(branchid, searchValue);
     }
 
 

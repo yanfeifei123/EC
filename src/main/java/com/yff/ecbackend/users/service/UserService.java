@@ -99,22 +99,6 @@ public class UserService extends BaseService<User, Long> {
 
     }
 
-    public Map<String, Object> onisfirstorder(String branchid, String openid) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        List<Uorder> uorderList = this.uorderService.findUserIsfirstorder(openid);
-
-        float firstorder = 0;
-        float psfcost = 0;
-        Bbranch bbranch = bbranchService.findOne(Long.valueOf(branchid));
-        if (uorderList.size() == 0) {
-            firstorder = bbranch.getFirstorder();
-        }
-        psfcost = bbranch.getPsfcost();
-        map.put("firstorder", firstorder);
-        map.put("psfcost", psfcost);
-        return map;
-    }
-
     /**
      * 通过分店id查询管理者
      * @param branchid

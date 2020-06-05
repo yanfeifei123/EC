@@ -21,6 +21,8 @@ public interface BproductsRepository extends BaseRepository<Bproduct,Long> {
     public abstract List<Bproduct> findinSetmealBproducts(@Param("categoryid")Long categoryid);
 
 
+
+
     @Query("select b from Bproduct b where b.pid=:pid")
     public abstract List<Bproduct> findByproductPackage(@Param("pid")Long pid);
 
@@ -45,6 +47,20 @@ public interface BproductsRepository extends BaseRepository<Bproduct,Long> {
 
     @Query( " select  p from Bproduct p where p.id in(:ids) " )
     public abstract List<Bproduct> findByBproductIdin(@Param("ids") List<Long> ids);
+
+    /**
+     * 对商品模糊查询
+     * @param branchid
+     * @param searchValue
+     * @return
+     */
+    @Query(value = "SELECT * FROM b_product where branchid=:branchid AND name like %:searchValue% ORDER BY odr",nativeQuery = true)
+    public abstract List<Bproduct> findByBproductFuzzyquery(@Param("branchid") Long branchid,@Param("searchValue") String searchValue);
+
+    @Query(value = "SELECT * FROM b_product where categoryid=:categoryid AND name like %:searchValue% ORDER BY odr",nativeQuery = true)
+    public abstract List<Bproduct> findByBproductCategoryidFuzzyquery(@Param("categoryid") Long categoryid,@Param("searchValue") String searchValue);
+
+
 
 
 

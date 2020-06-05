@@ -14,7 +14,7 @@ public interface UaddressRepository extends BaseRepository<Uaddress,Long> {
      * @param userid
      * @return
      */
-    @Query("select a from Uaddress a where a.userid=:userid order by a.buildtime desc ")
+    @Query("select a from Uaddress a where a.userid=:userid order by a.buildtime desc")
     public abstract List<Uaddress> findByUaddress(@Param("userid") Long userid);
 
 

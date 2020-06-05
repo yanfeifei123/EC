@@ -420,9 +420,10 @@ public class UorderService extends BaseService<Uorder, Long> {
         uorder.setAddress(uaddress.getArea() + uaddress.getDetailed());
         uorder.setReceiver(uaddress.getName() + "（" + uaddress.getGender() + "）");
         uorder.setPhone(uaddress.getPhone());
-        String type = "updateAddress" ;
-        this.messagePushService.doOrderTask(uorder.getBranchid(), uorder.getOpenid(), uorder.getId(), type);
-        System.out.println("updateAddress");
+        if(uorder.getStatus()==1){
+            String type = "updateAddress" ;
+            this.messagePushService.doOrderTask(uorder.getBranchid(), uorder.getOpenid(), uorder.getId(), type);
+        }
         return uorder;
     }
 

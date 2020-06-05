@@ -500,6 +500,7 @@ public class WXPay {
             url = WXPayConstants.REFUND_URL_SUFFIX;
         }
         String respXml = this.requestWithCert(url, this.fillRequestData(reqData), connectTimeoutMs, readTimeoutMs);
+//        System.out.println(respXml);
         return this.processResponseXml(respXml);
     }
 

@@ -23,14 +23,9 @@ public class Parameterconf {
     private String sessionHost;
     private String bnumber;
     private String notify_url;
-
+    private String refundnotify_url;
     private String paykey;
-
-    private String unifiedorderurl;
-
     private String subscribeMessageurl;
-
     private String domainname;
-
     private String newmsgtemplateId;
 }
