@@ -47,7 +47,7 @@ public class JwtTokenUtil {
             Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
             //userId是重要信息，进行加密下
-            String encryId = Base64Util.encode(userId);
+//            String encryId = Base64Util.encode(userId);
 
             //添加构成JWT的参数
             JwtBuilder builder = Jwts.builder().setHeaderParam("typ", "JWT")
@@ -83,8 +83,9 @@ public class JwtTokenUtil {
 
 
     public static String getUserId(String token, String base64Security) throws Exception {
-        String userId = parseJWT(token, base64Security).get("userId", String.class);
-        return Base64Util.decode(userId);
+//        String userId = parseJWT(token, base64Security).get("userId", String.class);
+//        return Base64Util.decode(userId);
+        return "";
     }
 
     public static boolean isExpiration(String token, String base64Security) throws Exception{

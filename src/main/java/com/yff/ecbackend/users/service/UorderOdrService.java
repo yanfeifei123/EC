@@ -27,7 +27,7 @@ public class UorderOdrService extends BaseService<Uorder, Long> {
      */
     public int findByUorderOdr(Long branchid) {
         StringBuilder dataSql = new StringBuilder();
-        dataSql.append("SELECT MAX(odr) FROM u_order  where  DATE_FORMAT(buildtime,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d') and branchid=:branchid and `status`=1");
+        dataSql.append("SELECT MAX(odr) FROM u_order  where  DATE_FORMAT(buildtime,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d') and branchid=:branchid and (`status`=1 OR `status`=2)");
         Query query = this.entityManager.createNativeQuery(dataSql.toString());
         query.setParameter("branchid",branchid);
         Object o = query.getSingleResult();

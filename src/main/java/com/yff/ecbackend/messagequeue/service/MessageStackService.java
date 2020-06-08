@@ -60,4 +60,36 @@ public class MessageStackService {
         return null;
     }
 
+    /**
+     * 查找消息队列
+     * @param orderid
+     * @return
+     */
+    public boolean find(Long orderid){
+        boolean f =false;
+        Iterator<MessageTemplate> iterator = this.msgQueue.iterator();
+        List<MessageTemplate> list = IteratorUtils.toList(iterator);
+        for(MessageTemplate message:  list){
+            if(orderid.equals(message.getOrderid())){
+                f=true;
+                break;
+            }
+        }
+        return f;
+    }
+
+    public boolean find(Long orderid,String type) {
+        boolean f =false;
+        Iterator<MessageTemplate> iterator = this.msgQueue.iterator();
+        List<MessageTemplate> list = IteratorUtils.toList(iterator);
+        for(MessageTemplate message:  list){
+            if(orderid.equals(message.getOrderid()) && type.equals(message.getType())){
+                f=true;
+                break;
+            }
+        }
+        return f;
+    }
+
+
 }

@@ -7,22 +7,21 @@ import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.common.service.MessagePushService;
 import com.yff.ecbackend.common.service.WeChatService;
 import com.yff.ecbackend.common.view.CommonReturnType;
+import com.yff.ecbackend.users.service.UorderRefundService;
 import com.yff.ecbackend.users.service.UorderService;
+import com.yff.ecbackend.users.service.UorderrService;
 import com.yff.ecbackend.users.view.OrderBean;
 import com.yff.wechat.wxpaysdk.WXPayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Base64;
 import java.util.Map;
-
 
 /**
  * 点餐用户端/统一订单管理
@@ -36,9 +35,14 @@ public class OrderManagerController {
     @Autowired
     private UorderService uorderService;
 
-
     @Autowired
     private MessagePushService messagePushService;
+
+    @Autowired
+    private UorderRefundService uorderRefundService;
+
+    @Autowired
+    private UorderrService uorderrService;
 
     /**
      * 微信统一下单
@@ -181,17 +185,53 @@ public class OrderManagerController {
 
 
     /**
-     * 退款申请
-     * orderDetail
+     * 退款操作
      *
      * @return
      */
     @RequestMapping(value = "/refund", method = RequestMethod.POST)
     @ResponseBody
     public Object refund(String out_trade_no, String total_fee) {
-//        System.out.println("进入退款申请:"+out_trade_no+"   "+total_fee);
         return this.weChatService.refund(out_trade_no, total_fee);
     }
 
+    /**
+     * 不允许退款
+     * @param out_trade_no
+     * @return
+     */
+    @RequestMapping(value = "/norefund", method = RequestMethod.POST)
+    @ResponseBody
+    public Object norefund(String out_trade_no) {
+       return this.uorderService.refundOpt(out_trade_no,false);
+    }
 
+
+
+    /**
+     * 退款前检查订单状态
+     *
+     * @param orderid
+     * @return
+     */
+    @RequestMapping(value = "/inspectRefund", method = RequestMethod.POST)
+    @ResponseBody
+    public Object inspectRefund(String orderid) {
+        return uorderRefundService.inspectRefund(orderid);
+    }
+
+
+
+    @RequestMapping(value = "/uorderrRefund", method = RequestMethod.POST)
+    @ResponseBody
+    public Object uorderrRefund(@RequestParam("file") MultipartFile multipartFile,@RequestParam("uorderr") String uorderr){
+       return uorderrService.uorderrRefund(multipartFile,uorderr);
+    }
+
+    @RequestMapping(value = "/uorderrRefundnofile", method = RequestMethod.POST)
+    @ResponseBody
+    public Object uorderrRefundnofile(String uorderr){
+        System.out.println(uorderr);
+        return uorderrService.uorderrRefund(null,uorderr);
+    }
 }

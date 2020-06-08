@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class BOrderController {
 
     @Autowired
-    private BOrderService bOrderService;
+    private BOrderService borderService;
 
     @Autowired
-    private  UorderService uorderService;
+    private UorderService uorderService;
 
     /**
      * 统计今天现在订单金额数量和退款金额findByOrderSummary
@@ -34,7 +34,7 @@ public class BOrderController {
     @ResponseBody
     public Object findByOrderSummary(String branchid, String orderSummaryitem) {
 
-        return this.bOrderService.findByOrderSummary(branchid, orderSummaryitem);
+        return this.borderService.findByOrderSummary(branchid, orderSummaryitem);
     }
 
 
@@ -47,14 +47,13 @@ public class BOrderController {
     @RequestMapping(value = "/findByIsNotOrderComplete", method = RequestMethod.POST)
     @ResponseBody
     public Object findByIsNotOrderComplete(String branchid) {
-        return this.bOrderService.findByIsNotOrderComplete(branchid);
+        return this.borderService.findByIsNotOrderComplete(branchid);
     }
 
     @RequestMapping(value = "/findByBranchOrder", method = RequestMethod.POST)
     @ResponseBody
     public Object findByBranchOrder(String branchid, String tabid,String pageNum,String pageSize) {
-//        System.out.println("tabid:" + tabid);
-        return this.bOrderService.findByBranchOrder(branchid,tabid,pageNum,pageSize);
+        return this.borderService.findByBranchOrder(branchid,tabid,pageNum,pageSize);
     }
 
     /**

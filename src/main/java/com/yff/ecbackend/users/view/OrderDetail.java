@@ -49,6 +49,8 @@ public class OrderDetail {
     private String phone; //收货人电话
     private int order;// 订单序列号
 
+    private String titlestatus; //状态信息
+
 
 
 

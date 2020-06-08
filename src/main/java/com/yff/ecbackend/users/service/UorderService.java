@@ -11,10 +11,7 @@ import com.yff.ecbackend.business.service.BphotoService;
 import com.yff.ecbackend.common.pojo.TemplateData;
 import com.yff.ecbackend.common.service.MessagePushService;
 import com.yff.ecbackend.common.service.WeChatService;
-import com.yff.ecbackend.users.entity.Uaddress;
-import com.yff.ecbackend.users.entity.Uorder;
-import com.yff.ecbackend.users.entity.Uordertail;
-import com.yff.ecbackend.users.entity.User;
+import com.yff.ecbackend.users.entity.*;
 import com.yff.ecbackend.users.repository.UorderRepository;
 import com.yff.ecbackend.users.view.OrderBean;
 import com.yff.ecbackend.users.view.OrderDetail;
@@ -69,6 +66,9 @@ public class UorderService extends BaseService<Uorder, Long> {
     @Autowired
     private MessagePushService messagePushService;
 
+    @Autowired
+    private UorderrService uorderrService;
+
     private DecimalFormat df = new DecimalFormat("#.00");
 
     /**
@@ -107,6 +107,7 @@ public class UorderService extends BaseService<Uorder, Long> {
 
     /**
      * 创建订购单信息
+     *
      * @param orderBean
      * @return
      */
@@ -207,6 +208,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         List<Uorder> uorders = this.uorderRepository.findUserOrderpage(openid, Integer.parseInt(pageNum), Integer.parseInt(pageSize));
         setbranchName(uorders, bbranchService.findAll());
         this.setOrderItem(uorders);
+
         return uorders;
     }
 
@@ -214,25 +216,34 @@ public class UorderService extends BaseService<Uorder, Long> {
     private void setOrderItem(List<Uorder> uorders) {
         for (Uorder uorder : uorders) {
             int total = uorder.getTotal();
-            List<OrderItem> orderItems = this.findByOrderItem(uorder.getOpenid(),uorder.getId());
+            List<OrderItem> orderItems = this.findByOrderItem(uorder.getOpenid(), uorder.getId());
             uorder.setOrderItems(orderItems);
-            for(OrderItem orderItem : orderItems){
-                total+=orderItem.getNumber();
+            for (OrderItem orderItem : orderItems) {
+                total += orderItem.getNumber();
             }
             uorder.setTotal(total);
-            if (uorder.getIscomplete() == 0) {
-                if(uorder.getStatus()==0){
-                    uorder.setInfo("未支付");
-                }else{
-                    if (uorder.getSelf() == 1) {
-                        uorder.setInfo("到店自取");
-                    } else {
-                        uorder.setInfo("商家已接单");
-                    }
-                }
+
+            String info = this.uorderrService.findRefundInfo(uorder.getId());
+
+            if (ToolUtil.isNotEmpty(info)) {
+                uorder.setInfo(info);
             } else {
-                uorder.setInfo("已完成");
+                if (uorder.getIscomplete() == 0) {
+                    if (uorder.getStatus() == 0) {
+                        uorder.setInfo("未支付");
+                    } else {
+                        if (uorder.getSelf() == 1) {
+                            uorder.setInfo("到店自取");
+                        } else {
+                            uorder.setInfo("商家已接单");
+                        }
+                    }
+                } else {
+                    uorder.setInfo("已完成");
+                }
             }
+
+
         }
     }
 
@@ -242,7 +253,7 @@ public class UorderService extends BaseService<Uorder, Long> {
      * @param openid
      * @return
      */
-    public List<OrderItem> findByOrderItem(String openid,Long orderid) {
+    public List<OrderItem> findByOrderItem(String openid, Long orderid) {
         StringBuilder dataSql = new StringBuilder();
         dataSql.append("select ");
         dataSql.append(" a.productid,  a.name, count(a.productid)   number ,sum(a.price) price  ,sum(a.memberprice ) memberprice ,a.ismeal , a.orderid  ,a.url  imagepath ");
@@ -252,10 +263,10 @@ public class UorderService extends BaseService<Uorder, Long> {
         dataSql.append(" ORDER BY b.buildtime desc ");
         Query query = this.entityManager.createNativeQuery(dataSql.toString());
         query.setParameter("openid", openid);
-        query.setParameter("orderid",orderid);
+        query.setParameter("orderid", orderid);
         List<Map<String, Object>> list = query.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
         List<OrderItem> orderItems = JSON.parseArray(JSON.toJSONString(list), OrderItem.class);
-        this.bphotoService.setOrderItemImagePath( orderItems);
+        this.bphotoService.setOrderItemImagePath(orderItems);
         return orderItems;
     }
 
@@ -281,10 +292,8 @@ public class UorderService extends BaseService<Uorder, Long> {
         OrderDetail orderDetail = new OrderDetail();
 
         Uorder uorder = this.findOne(Long.valueOf(orderid));
-//        if (uorder.getIscomplete() == 0) {
-            String e = weChatService.timeCalculation(uorder.getBuildtime());
-            orderDetail.setHour(e);
-//        }
+        String e = weChatService.timeCalculation(uorder.getBuildtime());
+        orderDetail.setHour(e);
         orderDetail.setIscomplete(uorder.getIscomplete());
         orderDetail.setOpenid(uorder.getOpenid());
         orderDetail.setOrderid(uorder.getId());
@@ -301,10 +310,23 @@ public class UorderService extends BaseService<Uorder, Long> {
         orderDetail.setReceiver(uorder.getReceiver());
         orderDetail.setPhone(uorder.getPhone());
 
+        String info = this.uorderrService.findRefundInfo(uorder.getId());
+        if (ToolUtil.isNotEmpty(info)) {
+            orderDetail.setTitlestatus(info);
+        } else {
+            if (uorder.getIscomplete() == 1) {
+                orderDetail.setTitlestatus("订单已完成");
+            } else if (uorder.getIscomplete() == 0 && uorder.getSelf() == 0) {
+                orderDetail.setTitlestatus("预计送达");
+            } else if (uorder.getIscomplete() == 0 && uorder.getSelf() == 1) {
+                orderDetail.setTitlestatus("到店自取");
+            }
+        }
+
         orderDetail.setPaym("在线支付");
 
         if (uorder.getSelf() == 1) {
-            orderDetail.setExptimeinf(bbranch.getArea()+","+bbranch.getDetailed());
+            orderDetail.setExptimeinf(bbranch.getArea() + "," + bbranch.getDetailed());
             orderDetail.setExptime("马上完成");
             orderDetail.setDisservice("到店自取");
         }
@@ -341,7 +363,7 @@ public class UorderService extends BaseService<Uorder, Long> {
 
 
     public List<OrderItem> orderByOrderDetailed(String orderid) {
-        List<Uordertail> uordertails = this.uordertailService.findByUordertail( Long.valueOf(orderid));
+        List<Uordertail> uordertails = this.uordertailService.findByUordertail(Long.valueOf(orderid));
         List<OrderItem> orderItems = this.uordertailService.detailedStatisticsToOrderItem(uordertails);
         return orderItems;
     }
@@ -358,7 +380,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         String orderType = uorder.getSelf() == 1 ? "到店自取" : "外卖配送";
         map.put("phrase2", new TemplateData(orderType));
         map.put("amount4", new TemplateData(df.format(uorder.getTotalfee())));
-        List<OrderItem> orderItems = this.orderByOrderDetailed( uorder.getId().toString());
+        List<OrderItem> orderItems = this.orderByOrderDetailed(uorder.getId().toString());
         String names = "";
         String istc = "";
         for (OrderItem orderItem : orderItems) {
@@ -387,6 +409,7 @@ public class UorderService extends BaseService<Uorder, Long> {
 
     /**
      * 更新订单状态
+     *
      * @param tradeno
      * @return
      */
@@ -400,7 +423,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         return uorder = this.update(uorder);  //更新订单状态
     }
 
-    public Uorder updateUorderComplete(String orderid){
+    public Uorder updateUorderComplete(String orderid) {
         Uorder uorder = this.findOne(Long.valueOf(orderid));
         uorder.setIscomplete(1);
         uorder.setCompletetime(new Date());
@@ -409,21 +432,57 @@ public class UorderService extends BaseService<Uorder, Long> {
 
     /**
      * 更新订单地址并且把消息推送给商家
+     *
      * @param orderid
      * @param uaddressid
      * @return
      */
-    public Uorder updateAddress(String orderid,String uaddressid){
-        Uorder uorder= this.findOne(Long.valueOf(orderid));
+    public Uorder updateAddress(String orderid, String uaddressid) {
+        Uorder uorder = this.findOne(Long.valueOf(orderid));
         Uaddress uaddress = this.uaddressService.selectAddress(uaddressid);
 
         uorder.setAddress(uaddress.getArea() + uaddress.getDetailed());
         uorder.setReceiver(uaddress.getName() + "（" + uaddress.getGender() + "）");
         uorder.setPhone(uaddress.getPhone());
-        if(uorder.getStatus()==1){
-            String type = "updateAddress" ;
+        if (uorder.getStatus() == 1) {
+            String type = "updateAddress";
             this.messagePushService.doOrderTask(uorder.getBranchid(), uorder.getOpenid(), uorder.getId(), type);
         }
+        return uorder;
+    }
+
+    /**
+     * 查询待退款信息
+     *
+     * @param branchid
+     * @return
+     */
+    public int countAllByBranchStayRefundOrder(Long branchid) {
+        return this.uorderRepository.countAllByBranchStayRefundOrder(branchid);
+    }
+
+    /**
+     * 退款更新操作
+     *
+     * @param out_trade_no
+     * @param agree
+     * @return
+     */
+    public Object refundOpt(String out_trade_no, boolean agree) {
+
+        Uorder uorder = this.findTradenoUorder(out_trade_no);
+        Uorderr uorderr = this.uorderrService.findUorderrOrderid(uorder.getId());
+        if (agree) {
+            uorderr.setAgree(1);
+            uorder.setStatus(2);
+        } else {
+            uorder.setStatus(1);
+        }
+        uorder.setCompletetime(new Date());
+        uorder.setIscomplete(1);
+        uorderr.setEnd(1);
+        this.update(uorder);
+        this.uorderrService.update(uorderr);
         return uorder;
     }
 

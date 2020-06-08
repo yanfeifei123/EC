@@ -34,7 +34,6 @@ public class OrderController {
     @RequestMapping(value = "/findOrderList", method = RequestMethod.POST)
     @ResponseBody
     public Object findOrderList( HttpServletRequest request,String openid,String pageNum,String pageSize) {
-//        System.out.println("pageNum:" + pageNum+"  pageSize:"+pageSize);
 
         return this.uorderService.findOrderList(openid, pageNum, pageSize);
     }
@@ -77,6 +76,13 @@ public class OrderController {
     public void clearMyorder( String openid ) {
 //        System.out.println("清除未支付的订单信息");
         this.uorderService.clearMyorder(openid);
+    }
+
+
+    @RequestMapping(value = "/countAllByBranchStayRefundOrder", method = RequestMethod.POST)
+    @ResponseBody
+    public Object countAllByBranchStayRefundOrder(String branchid){
+        return this.uorderService.countAllByBranchStayRefundOrder(Long.valueOf(branchid));
     }
 
 

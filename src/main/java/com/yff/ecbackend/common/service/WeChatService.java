@@ -390,7 +390,6 @@ public class WeChatService {
 
             Map<String, String> resultsetMap = wxpay.refund(data);
             if("SUCCESS".equals(resultsetMap.get("return_code"))){
-//                System.out.println(JSON.toJSONString(resultsetMap));
                 log.info("退款成功！ 商户订单号：{}，退款金额：{}",resultsetMap.get("out_refund_no"),resultsetMap.get("total_fee") );
             }
             return resultsetMap;

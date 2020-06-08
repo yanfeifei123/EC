@@ -56,7 +56,7 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
     public abstract Uorder findTradenoUorder(@Param("tradeno") String tradeno);
 
 
-    @Query(value = " SELECT * FROM u_order o where o.branchid=:branchid and o.status=1  ORDER BY o.buildtime desc,odr limit :pageNum,:pageSize",nativeQuery = true)
+    @Query(value = " SELECT * FROM u_order o where o.branchid=:branchid and (o.status=1 or o.status=2)  ORDER BY o.buildtime desc,odr limit :pageNum,:pageSize",nativeQuery = true)
     public abstract List<Uorder> findByBranchOrder(@Param("branchid") Long branchid,@Param("pageNum") int pageNum,@Param("pageSize") int pageSize);
 
 
@@ -65,16 +65,43 @@ public interface UorderRepository extends BaseRepository<Uorder,Long> {
      * @param branchid
      * @return
      */
-    @Query(value = " SELECT * FROM u_order o where o.branchid=:branchid and o.iscomplete=:iscomplete and o.status=1 ORDER BY o.buildtime desc ,odr limit :pageNum,:pageSize" ,nativeQuery = true)
+    @Query(value = " SELECT * FROM u_order o where o.branchid=:branchid and o.iscomplete=:iscomplete and o.status=1 and o.id not in (SELECT orderid FROM  u_orderr where end=0 ) ORDER BY o.buildtime desc ,odr limit :pageNum,:pageSize" ,nativeQuery = true)
     public abstract List<Uorder> findByBranchOrder(@Param("branchid") Long branchid,@Param("iscomplete") int iscomplete,@Param("pageNum") int pageNum,@Param("pageSize") int pageSize);
 
 
-    @Query(value = " SELECT count(*) FROM u_order o where o.branchid=:branchid and o.iscomplete=:iscomplete  and o.status=1 " ,nativeQuery = true)
+    @Query(value = " SELECT count(*) FROM u_order o where o.branchid=:branchid and o.iscomplete=:iscomplete  and o.status=1 and o.id not in (SELECT orderid FROM  u_orderr where end=0 ) " ,nativeQuery = true)
     public abstract int countAllByBranchOrder(@Param("branchid") Long branchid,@Param("iscomplete") int iscomplete);
 
-    @Query(value = " SELECT count(*) FROM u_order o where o.branchid=:branchid and o.status=1"  ,nativeQuery = true)
+
+    @Query(value = " SELECT count(*) FROM u_order o where o.branchid=:branchid and (o.status=1 or o.status=2)"  ,nativeQuery = true)
     public abstract int countAllByBranchOrder(@Param("branchid") Long branchid);
 
+    /**
+     * 查询待退款
+     * @param branchid
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Query(value = " SELECT o.* FROM u_order o, u_orderr r  where  o.id=r.orderid and o.branchid=:branchid    ORDER BY o.buildtime desc limit :pageNum,:pageSize" ,nativeQuery = true)
+    public abstract List<Uorder> findByBranchRefundOrder(@Param("branchid") Long branchid,@Param("pageNum") int pageNum,@Param("pageSize") int pageSize);
+
+    /**
+     * 查询待退款统计
+     * @param branchid
+     * @return
+     */
+    @Query(value = "SELECT count(*) FROM u_order o, u_orderr r  where  o.id=r.orderid and o.branchid=:branchid  ",nativeQuery = true)
+    public abstract int countAllByBranchRefundOrder(@Param("branchid") Long branchid);
+
+
+    /**
+     * 查询待退款信息
+     * @param branchid
+     * @return
+     */
+    @Query(value="SELECT count(*) FROM u_order o, u_orderr r  where  o.id=r.orderid and o.branchid=:branchid  and r.end=0   and o.status=1" ,nativeQuery = true)
+    public abstract int countAllByBranchStayRefundOrder(@Param("branchid") Long branchid);
 
 
     /**

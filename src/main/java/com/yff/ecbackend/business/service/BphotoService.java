@@ -80,14 +80,14 @@ public class BphotoService extends BaseService<Bphoto, Long> {
 
     public Object photoUpload(MultipartFile multipartFile, String openid, Long fkid, String imagepath) {
         try {
-            System.out.println("fkid:" + fkid);
+//            System.out.println("fkid:" + fkid);
             Bphoto bphoto = null;
             bphoto = this.bphotoRepository.findByfkidBphoto(fkid);
             if (ToolUtil.isEmpty(bphoto)) {
                 bphoto = new Bphoto();
             } else {
-                System.out.println("imagepath:" + imagepath);
-                System.out.println("bphotopath:" + bphoto.getPath());
+//                System.out.println("imagepath:" + imagepath);
+//                System.out.println("bphotopath:" + bphoto.getPath());
                 if (imagepath.startsWith(bphoto.getPath())) {  //如图片为进行修改，就不上传
                     return bphoto;
                 } else {

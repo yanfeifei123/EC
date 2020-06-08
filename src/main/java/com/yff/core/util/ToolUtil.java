@@ -311,4 +311,38 @@ public class ToolUtil {
         return resultInfo;
     }
 
+
+    public static String base64_decode_8859(final String source) {
+        String result = "";
+
+
+        final Base64.Decoder decoder = Base64.getDecoder();
+        try {
+            result = new String(decoder.decode(source), "ISO-8859-1");
+            //此处的字符集是ISO-8859-1
+        } catch (final UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+        return result;
+    }
+    public static String base64_encode_8859(final String source)
+    {
+        String result = "";
+
+        final Base64.Encoder encoder = Base64.getEncoder();
+        byte[] textByte = null;
+        try
+        {
+            textByte = source.getBytes("ISO-8859-1");
+            //注意此处的编码是ISO-8859-1
+        }
+        catch (final UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        result = encoder.encodeToString(textByte);
+        return result;
+    }
 }

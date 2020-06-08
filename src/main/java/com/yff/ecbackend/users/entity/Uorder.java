@@ -41,7 +41,7 @@ public class Uorder extends BaseEntity<Long> {
     private Long branchid;
 
 
-    @Column(columnDefinition = "int comment '状态(0未支付，1已支付)'")
+    @Column(columnDefinition = "int comment '状态(0未支付，1已支付，2已退款)'")
     private int status;
 
     @Column(columnDefinition = "int DEFAULT '0' comment '是否完成(0未完成，1已完成)'")
