@@ -12,5 +12,4 @@ public class Child {
     private int index;
     private int parentIndex;
 
-
 }

@@ -86,7 +86,7 @@ public class MessagePushService {
     public void wxMsghandle(String out_trade_no) {
         String templateId = this.parameterconf.getNewmsgtemplateId();
         Uorder uorder = this.uorderService.updateUorder(out_trade_no);
-        String page = "/pages/business/tabBar/tabBar?orderid=" + uorder.getId();
+        String page = "/pages/business/ordermd/ordermd?orderid=" + uorder.getId();
         List<User> userOperators = this.userService.findByBranchid(uorder.getBranchid());
 
         String openid = "";

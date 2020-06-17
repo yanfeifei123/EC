@@ -91,5 +91,43 @@ public class UserController {
     }
 
 
+    @PostMapping("/findBybranchUser")
+    @ResponseBody
+    public Object findBybranchUser(String branchid,String name){
+       return this.userService.findBybranchUser(Long.valueOf(branchid),name);
+    }
+
+
+
+    @PostMapping("/findByUsers")
+    @ResponseBody
+    public Object findByUsers(String name,String pageNum, String pageSize){
+        return this.userService.findByUsers(name,pageNum,pageSize);
+    }
+
+
+    @PostMapping("/usertotalPage")
+    @ResponseBody
+    public int usertotalPage(String name, String pageSize){
+        return this.userService.usertotalPage(name,pageSize);
+    }
+
+    @PostMapping("/unboundUser")
+    @ResponseBody
+    public Object unboundUser(String userid,String name){
+        return this.userService.unboundUser(userid,name);
+    }
+
+    @PostMapping("/onboundUser")
+    @ResponseBody
+    public Object onboundUser(String userid,String branchid){
+       return this.userService.onboundUser(userid,branchid);
+    }
+
+
+
+
+
+
 
 }

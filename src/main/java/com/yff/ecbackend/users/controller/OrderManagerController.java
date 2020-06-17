@@ -65,7 +65,7 @@ public class OrderManagerController {
     @RequestMapping(value = "/updateUserOrder", method = RequestMethod.POST)
     @ResponseBody
     public Object updateUserOrder(String orderObj) {
-//        System.out.println("订单数据："+orderObj);
+        System.out.println("订单数据："+orderObj);
         CommonReturnType commonReturnType = new CommonReturnType();
         if (ToolUtil.isEmpty(orderObj)) {
             commonReturnType.setCode(-1);

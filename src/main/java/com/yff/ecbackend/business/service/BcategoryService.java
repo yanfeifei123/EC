@@ -1,6 +1,7 @@
 package com.yff.ecbackend.business.service;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
 import com.yff.core.jparepository.service.BaseService;
 import com.yff.core.safetysupport.parameterconf.Parameterconf;
 import com.yff.core.util.DateUtil;
@@ -45,6 +46,9 @@ public class BcategoryService extends BaseService<Bcategory, Long> {
             }
         } else {
             List<Bproduct> bproducts = bproductsService.findByBproductFuzzyquery(branchid, searchValue);
+
+            this.filterChild(bproducts);
+
             Map<Long, List<Bproduct>> map = new HashMap<>();
             for (Bproduct bproduct : bproducts) {
 
@@ -65,26 +69,36 @@ public class BcategoryService extends BaseService<Bcategory, Long> {
                 bcategoryList.add(bcategory);
             }
         }
+//        System.out.println(JSON.toJSONString(bcategoryList));
+
         return bcategoryList;
     }
 
 
-    /**
-     * 通过内存查询提高效率
-     *
-     * @param allBproducts
-     * @param categoryid
-     * @return
-     */
-    private List<Bproduct> findByBproducts(List<Bproduct> allBproducts, Long categoryid) {
-        List<Bproduct> bproductsitems = new ArrayList<>();
-        for (Bproduct bproducts : allBproducts) {
-            if (bproducts.getCategoryid().equals(categoryid)) {
-                bproductsitems.add(bproducts);
-            }
-        }
-        return bproductsitems;
+    private void filterChild(List<Bproduct> bproducts){
+
+       HashSet<Long> idHashSet = new HashSet<>();
+       Map<Long,Long> map = new HashMap<>();
+       for(Bproduct bproduct : bproducts){
+           if(ToolUtil.isNotEmpty(bproduct.getPid())){
+               map.put(bproduct.getId(),bproduct.getId());
+               idHashSet.add(bproduct.getPid());
+           }
+       }
+
+       List<Bproduct> parent = new ArrayList<>();
+       for(Long  pid :  idHashSet){
+           Bproduct bproduct = this.bproductService.findOne(pid);
+           parent.add(bproduct);
+       }
+
+        bproducts.removeIf(node  -> map.get(node.getId())!=null);
+
+        bproducts.addAll(parent);
+
     }
+
+
 
     /*
       查询商品类型

@@ -22,6 +22,8 @@ public class OrderController {
     @Autowired
     private UorderService uorderService;
 
+    @Autowired
+    private UordertailService uordertailService;
 
     /**
      * 查询用户端订单列表
@@ -83,6 +85,17 @@ public class OrderController {
     @ResponseBody
     public Object countAllByBranchStayRefundOrder(String branchid){
         return this.uorderService.countAllByBranchStayRefundOrder(Long.valueOf(branchid));
+    }
+
+    /**
+     * 查询在来一单
+     * @param orderid
+     * @return
+     */
+    @RequestMapping(value = "/comingOrder", method = RequestMethod.POST)
+    @ResponseBody
+    public Object comingOrder(String orderid){
+        return this.uordertailService.comingOrder(Long.valueOf(orderid));
     }
 
 

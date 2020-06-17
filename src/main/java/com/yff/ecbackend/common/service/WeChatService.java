@@ -3,23 +3,25 @@ package com.yff.ecbackend.common.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.util.ASMUtils;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.yff.core.safetysupport.parameterconf.Parameterconf;
 import com.yff.core.util.DateUtil;
 import com.yff.core.util.ToolUtil;
+import com.yff.ecbackend.business.entity.Utoken;
+import com.yff.ecbackend.business.service.UtokenService;
 import com.yff.ecbackend.common.pojo.SubscribeMessage;
 import com.yff.ecbackend.common.pojo.TemplateData;
 import com.yff.wechat.impl.WXPayConfigImpl;
 import com.yff.wechat.wxpaysdk.WXPay;
 import com.yff.wechat.wxpaysdk.WXPayUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
+import org.springframework.util.Base64Utils;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -35,13 +37,12 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.*;
-import java.util.Arrays;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
+@EnableScheduling
 @Service
 @Slf4j
 public class WeChatService {
@@ -49,6 +50,8 @@ public class WeChatService {
     @Autowired
     private Parameterconf parameterconf;
 
+    @Autowired
+    private UtokenService utokenService;
 
     /**
      * 把消息推送给微信端
@@ -61,7 +64,7 @@ public class WeChatService {
      */
     public Object subscribeMessage(String touser, String templateId, String page, Map<String, TemplateData> map) {
 
-        Map<String, Object> jsonmap = new HashMap<String, Object>();
+        Map<String, Object> jsonmap = new HashMap<>();
         String accessToken = this.getAccess_token();
         SubscribeMessage subscribeMessage = new SubscribeMessage();
         subscribeMessage.setAccess_token(accessToken);
@@ -95,9 +98,13 @@ public class WeChatService {
      *
      * @return
      */
+
     public String getAccess_token() {
 
-
+        Utoken utoken = this.utokenService.getUtoken();
+        if(ToolUtil.isNotEmpty(utoken)){
+            return utoken.getToken();
+        }
         String access_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential" + "&appid=" + parameterconf.getAppid() + "&secret=" + parameterconf.getAppsecret();
         String message = "";
         try {
@@ -120,7 +127,7 @@ public class WeChatService {
         JSONObject jsonObject = JSONObject.parseObject(message);
         String accessToken = jsonObject.getString("access_token");
         String expires_in = jsonObject.getString("expires_in");
-//        System.out.println(JSON.toJSONString(jsonObject));
+        this.utokenService.handle(accessToken,expires_in);
         return accessToken;
     }
 
@@ -220,39 +227,32 @@ public class WeChatService {
      * @param iv
      * @return
      */
-    public JSONObject getPhoneNumber(String session_key, String encryptedData, String iv) {
-        byte[] dataByte = Base64.decode(encryptedData);
-        byte[] keyByte = Base64.decode(session_key);
-        byte[] ivByte = Base64.decode(iv);
+    public String getPhoneNumber(String session_key, String encryptedData, String iv) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+            InvalidKeyException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
+
+        byte[] encrypData = Base64Utils.decodeFromString(encryptedData);
+        byte[] sessionKey = Base64Utils.decodeFromString(session_key);
+        byte[] ivData = Base64Utils.decodeFromString(iv);
+        String resultString = null;
+        AlgorithmParameterSpec ivSpec = new IvParameterSpec(ivData);
+        SecretKeySpec keySpec = new SecretKeySpec(sessionKey, "AES");
+
 
         try {
-            int base = 16;
-            if (keyByte.length % base != 0) {
-                int groups = keyByte.length / base + (keyByte.length % base != 0 ? 1 : 0);
-                byte[] temp = new byte[groups * base];
-                Arrays.fill(temp, (byte) 0);
-                System.arraycopy(keyByte, 0, temp, 0, keyByte.length);
-                keyByte = temp;
-            }
-            // 初始化
-
-            Security.addProvider(new BouncyCastleProvider());
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-//            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
-            SecretKeySpec spec = new SecretKeySpec(keyByte, "AES");
-            AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES");
-            parameters.init(new IvParameterSpec(ivByte));
-            cipher.init(Cipher.DECRYPT_MODE, spec, parameters);
-            byte[] resultByte = cipher.doFinal(dataByte);
-
-            if (null != resultByte && resultByte.length > 0) {
-                String result = new String(resultByte, "UTF-8");
-                return JSONObject.parseObject(result);
-            }
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+            resultString = new String(cipher.doFinal(encrypData), "UTF-8");
         } catch (Exception e) {
-            e.printStackTrace();
+            Cipher cipher = null;
+            cipher = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+            resultString = new String(cipher.doFinal(encrypData), "UTF-8");
+            System.out.println("解密用户手机报错："+e.getMessage());
         }
-        return null;
+        JSONObject object = JSONObject.parseObject(resultString);
+        // 拿到手机号码
+        String phone = object.getString("phoneNumber");
+        return phone;
     }
 
 
@@ -380,17 +380,17 @@ public class WeChatService {
             wxpay = new WXPay(config);
 
 
-            data.put("out_trade_no",out_trade_no);
+            data.put("out_trade_no", out_trade_no);
             data.put("out_refund_no", out_trade_no);
-            data.put("transaction_id","");
+            data.put("transaction_id", "");
 
             data.put("total_fee", total_fee);
             data.put("refund_fee", total_fee);
             data.put("notify_url", this.parameterconf.getRefundnotify_url());
 
             Map<String, String> resultsetMap = wxpay.refund(data);
-            if("SUCCESS".equals(resultsetMap.get("return_code"))){
-                log.info("退款成功！ 商户订单号：{}，退款金额：{}",resultsetMap.get("out_refund_no"),resultsetMap.get("total_fee") );
+            if ("SUCCESS".equals(resultsetMap.get("return_code"))) {
+                log.info("退款成功！ 商户订单号：{}，退款金额：{}", resultsetMap.get("out_refund_no"), resultsetMap.get("total_fee"));
             }
             return resultsetMap;
         } catch (Exception e) {
@@ -400,13 +400,44 @@ public class WeChatService {
     }
 
 
-    public String decryptReqinfo(String req_info){
+    public String decryptReqinfo(String req_info) {
         try {
-            return  AESUtil.decryptData(req_info,this.parameterconf.getPaykey());
+            return AESUtil.decryptData(req_info, this.parameterconf.getPaykey());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
+    }
+
+
+    // 第一次延迟1秒执行，当执行完后7100秒再执行
+    @Scheduled(initialDelay = 1000, fixedDelay = 7000*1000 )
+    public void handleAccess_token(){
+        String access_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential" + "&appid=" + parameterconf.getAppid() + "&secret=" + parameterconf.getAppsecret();
+        String message = "";
+        try {
+            URL url = new URL(access_url);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.connect();
+            //获取返回的字符
+            InputStream inputStream = connection.getInputStream();
+            int size = inputStream.available();
+            byte[] bs = new byte[size];
+            inputStream.read(bs);
+            message = new String(bs, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //获取access_token
+        JSONObject jsonObject = JSONObject.parseObject(message);
+        String accessToken = jsonObject.getString("access_token");
+        String expires_in = jsonObject.getString("expires_in");
+        this.utokenService.handle(accessToken,expires_in);
+        log.info("7100秒获取access_token:{}",accessToken);
+
     }
 
 

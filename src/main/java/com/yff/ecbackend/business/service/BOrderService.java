@@ -129,7 +129,7 @@ public class BOrderService {
 
 
     public Object findByBranchOrder(String branchid, String tabid, String pageNum, String pageSize) {
-        System.out.println("tabid:" + tabid);
+//        System.out.println("tabid:" + tabid);
         List<OrderList> orderViewLists = new ArrayList<>();
         List<Uorder> uorderList = new ArrayList<>();
         int totalRecord = 0;

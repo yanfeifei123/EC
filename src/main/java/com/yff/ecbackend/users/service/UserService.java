@@ -2,6 +2,7 @@ package com.yff.ecbackend.users.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.yff.core.jparepository.page.Paging;
 import com.yff.core.jparepository.service.BaseService;
 import com.yff.core.safetysupport.aes.Aes;
 import com.yff.core.util.CustomException;
@@ -101,6 +102,7 @@ public class UserService extends BaseService<User, Long> {
 
     /**
      * 通过分店id查询管理者
+     *
      * @param branchid
      * @return
      */
@@ -113,6 +115,40 @@ public class UserService extends BaseService<User, Long> {
         User user = this.userRepository.findByOnenid(openid);
         Bbranch bbranch = this.bbranchService.findOne(user.getBranchid());
         return ToolUtil.isNotEmpty(bbranch);
+    }
+
+    public List<User> findBybranchUser(Long branchid, String name) {
+        return this.userRepository.findBybranchUser(branchid, name);
+    }
+
+    public List<User> findByUsers(String name, String pageNum, String pageSize) {
+//        System.out.println(pageNum+"   "+pageSize);
+        List<User> list = this.userRepository.findByUsers(name, Integer.parseInt(pageNum), Integer.parseInt(pageSize));
+//        System.out.println(JSON.toJSONString(list));
+        return list;
+    }
+
+    public int usertotalPage(String name, String pageSize) {
+//        System.out.println(pageSize);
+        int totalRecord = this.userRepository.usertotalPage(name);
+        Paging paging = new Paging();
+        paging.setPagesize(Integer.parseInt(pageSize));
+        paging.setTotalRecord(totalRecord);
+        return paging.getTotalPage();
+    }
+
+    public List<User> unboundUser(String userid, String name) {
+        User user = this.findOne(Long.valueOf(userid));
+        Long branchid = user.getBranchid();
+        user.setBranchid(null);
+        this.update(user);
+        return this.findBybranchUser(branchid, name);
+    }
+
+    public User onboundUser(String userid,String branchid){
+        User user = this.findOne(Long.valueOf(userid));
+        user.setBranchid(Long.valueOf(branchid));
+        return this.update(user);
     }
 
 

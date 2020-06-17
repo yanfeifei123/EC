@@ -142,16 +142,18 @@ public class LoginController {
     @RequestMapping("/binding/mobilePhone")
     @ResponseBody
     public Object mobilePhone(HttpServletRequest request, String encryptedData,  String iv,  String session_key, String openid) {
-//        System.out.println("encryptedData:"+encryptedData+"  iv:"+iv+"  session_key:"+session_key+"   openid:"+openid);
-
-        JSONObject obj = this.weChatService.getPhoneNumber(session_key, encryptedData, iv);
-        String phone = obj.get("phoneNumber").toString();
+        String phone = "";
+        try {
+            phone = this.weChatService.getPhoneNumber(session_key, encryptedData, iv);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         User user = this.uuserService.getUser(openid);
         if (ToolUtil.isNotEmpty(user)) {
             user.setPhone(phone);
             return this.uuserService.update(user);
         }
-        return null;
+        return phone;
     }
 
 

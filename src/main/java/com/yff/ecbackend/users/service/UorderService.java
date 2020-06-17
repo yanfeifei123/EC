@@ -93,7 +93,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         psfcost = bbranch.getPsfcost();
         OrderSettiing orderSettiing = new OrderSettiing();
         orderSettiing.setTradeno(tradeno);
-        orderSettiing.setMember(Integer.parseInt(user.getMember()));
+        orderSettiing.setMember(user.getMember());
         orderSettiing.setPsfcost(psfcost);
         orderSettiing.setFirstorder(firstorder);
         orderSettiing.setIsps(isps);

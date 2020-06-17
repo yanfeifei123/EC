@@ -8,7 +8,7 @@ import java.util.*;
 @Data
 public class Cshoppingcart {
 
-    List<Child> shoppingcart = new ArrayList<Child>();
+    List<Child> shoppingcart = new ArrayList<>();
     private int index;
     private int parentIndex;
     private float totalprice;
