@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class Testcontroller {
 
-
+    /**
+     * JSON提交方式
+     * @param requestBody
+     * @return
+     */
     @PostMapping(value = "/testJosn", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Object testJosn(@RequestBody String requestBody) {
@@ -24,6 +28,22 @@ public class Testcontroller {
         }
     }
 
+    /**
+     * post表单提交方式
+     * @param orderid
+     * @param tradeno
+     * @param shoppingcart
+     * @param openid
+     * @param businessid
+     * @param branchid
+     * @param isself
+     * @param discount
+     * @param totalprice
+     * @param uaddressid
+     * @param firstorder
+     * @param ismember
+     * @return
+     */
     @RequestMapping(value = "/testPost", method = RequestMethod.POST)
     @ResponseBody
     public Object testPost(String orderid,
