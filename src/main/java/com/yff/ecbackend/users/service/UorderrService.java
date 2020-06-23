@@ -5,12 +5,10 @@ import com.alibaba.fastjson.JSON;
 import com.yff.core.config.file.FileVerificationProperties;
 import com.yff.core.jparepository.service.BaseService;
 import com.yff.core.util.ToolUtil;
-import com.yff.ecbackend.common.service.MessagePushService;
 import com.yff.ecbackend.messagequeue.service.MessageStackService;
 import com.yff.ecbackend.users.entity.Uorder;
 import com.yff.ecbackend.users.entity.Uorderr;
 import com.yff.ecbackend.users.repository.UorderrRepository;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,10 +26,9 @@ public class UorderrService extends BaseService<Uorderr, Long> {
     private UorderService uorderService;
 
     @Autowired
-    private MessagePushService messagePushService;
-
-    @Autowired
     private MessageStackService messageStackService;
+
+
 
     @Autowired
     private UorderrRepository uorderrRepository;
@@ -58,7 +55,7 @@ public class UorderrService extends BaseService<Uorderr, Long> {
 
         boolean f= messageStackService.find(uorderro.getOrderid(),"refundOrder");
         if(!f){
-            messagePushService.doOrderTask(uorder.getBranchid(),uorder.getOpenid(),uorder.getId(),"refundOrder");
+            messageStackService.doOrderTask(uorder.getBranchid(),uorder.getOpenid(),uorder.getId(),"refundOrder");
         }
 
         return this.update(uorderro);

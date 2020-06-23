@@ -257,8 +257,7 @@ public class WeChatService {
 
 
     /**
-     * 统一下单
-     *
+     * 统一下单 （生成签名）
      * @param openid
      * @param total_fee
      * @param body

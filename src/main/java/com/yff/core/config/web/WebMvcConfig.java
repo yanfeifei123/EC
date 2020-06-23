@@ -8,6 +8,8 @@ import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.yff.core.config.file.FileVerificationProperties;
 import com.yff.core.safetysupport.jwt.JwtInterceptor;
+import com.yff.core.safetysupport.parameterconf.Parameterconf;
+import com.yff.core.util.SpringContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +47,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         }else{
             registry.addResourceHandler("/photo/**").addResourceLocations("file:"+this.filePropertie.getFileRelativepath());
         }
+
         super.addResourceHandlers(registry);
     }
 

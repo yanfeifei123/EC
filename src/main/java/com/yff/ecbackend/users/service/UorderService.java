@@ -3,22 +3,19 @@ package com.yff.ecbackend.users.service;
 import com.alibaba.fastjson.JSON;
 import com.yff.core.jparepository.page.Paging;
 import com.yff.core.jparepository.service.BaseService;
-import com.yff.core.util.DateUtil;
 import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.business.entity.Bbranch;
 import com.yff.ecbackend.business.service.BbranchService;
 import com.yff.ecbackend.business.service.BphotoService;
 import com.yff.ecbackend.common.pojo.TemplateData;
-import com.yff.ecbackend.common.service.MessagePushService;
 import com.yff.ecbackend.common.service.WeChatService;
+import com.yff.ecbackend.messagequeue.service.MessageStackService;
 import com.yff.ecbackend.users.entity.*;
 import com.yff.ecbackend.users.repository.UorderRepository;
 import com.yff.ecbackend.users.view.OrderBean;
 import com.yff.ecbackend.users.view.OrderDetail;
 import com.yff.ecbackend.users.view.OrderItem;
 import com.yff.ecbackend.users.view.OrderSettiing;
-import org.bouncycastle.jce.provider.asymmetric.ec.KeyFactory;
-import org.hibernate.dialect.Ingres9Dialect;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -62,9 +58,8 @@ public class UorderService extends BaseService<Uorder, Long> {
     @Autowired
     private WeChatService weChatService;
 
-
     @Autowired
-    private MessagePushService messagePushService;
+    private MessageStackService messageStackService;
 
     @Autowired
     private UorderrService uorderrService;
@@ -446,7 +441,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         uorder.setPhone(uaddress.getPhone());
         if (uorder.getStatus() == 1) {
             String type = "updateAddress";
-            this.messagePushService.doOrderTask(uorder.getBranchid(), uorder.getOpenid(), uorder.getId(), type);
+            this.messageStackService.doOrderTask(uorder.getBranchid(), uorder.getOpenid(), uorder.getId(), type);
         }
         return uorder;
     }

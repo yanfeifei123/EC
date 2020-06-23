@@ -3,6 +3,7 @@ package com.yff.core.safetysupport.jwt;
 
 import com.yff.core.safetysupport.parameterconf.Parameterconf;
 import com.yff.core.util.CustomException;
+import com.yff.core.util.SpringContextHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
@@ -50,8 +51,10 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         final String token = authHeader.substring(6);
 
         if (parameterconf == null) {
-            BeanFactory factory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
-            parameterconf = (Parameterconf) factory.getBean("parameterconf");
+//            BeanFactory factory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
+//            parameterconf = (Parameterconf) factory.getBean("parameterconf");
+            parameterconf =  SpringContextHolder.getBean(Parameterconf.class);
+            System.out.println("parameterconf:"+parameterconf.getBnumber());
         }
         // 验证token是否有效--无效已做异常抛出，由全局异常处理后返回对应信息
         try{

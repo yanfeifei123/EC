@@ -13,7 +13,7 @@ public class MessageTemplate {
     private Long orderid;//订单id
     private Long branchid;//商家分店id
     private String openid; //下单微信用户id
-    private String type;  //消息类型order,updateAddress,refundOrder
+    private String type;  //消息类型order,updateAddress,refundOrder,recharge
 
     @Override
     public String toString() {

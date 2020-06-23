@@ -29,7 +29,6 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
 
     @Override
     public T findOne(ID id) {
-
         return this.entityManager.find(entityClass,id);
     }
 

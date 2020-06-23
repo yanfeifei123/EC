@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @Controller
 public class Testcontroller {
-
     /**
      * JSON提交方式
      * @param requestBody

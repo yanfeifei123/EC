@@ -6,7 +6,6 @@ import com.yff.ecbackend.messagequeue.config.MessageTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.stereotype.Service;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -21,6 +20,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MessageStackService {
 
     private BlockingQueue<MessageTemplate> msgQueue = new LinkedBlockingQueue<>();  //消息队列
+
+    public void doOrderTask(Long branchid, String openid, Long orderid, String type) {
+        MessageTemplate messageTemplate = new MessageTemplate();
+        messageTemplate.setBranchid(branchid);
+        messageTemplate.setOpenid(openid);
+        messageTemplate.setOrderid(orderid);
+        messageTemplate.setType(type);
+        this.executeAysncOrderTask(messageTemplate);
+    }
+
+
+
     /**
      * 消息队列入栈
      *
