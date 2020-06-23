@@ -16,8 +16,6 @@ import java.util.*;
 public class PayCallbackService {
 
 
-//    @Autowired
-//    private MessageRepository messageRepository;
 
     @Autowired
     private UorderService uorderService;

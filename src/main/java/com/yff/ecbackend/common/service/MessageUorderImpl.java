@@ -29,21 +29,14 @@ public class MessageUorderImpl implements Messageinterface {
 
     @Autowired
     private MessageStackService messageStackService;
-
     @Autowired
     private UorderService uorderService;
-
-
     @Autowired
     private UaddressService uaddressService;
-
-
     @Autowired
     private WeChatService weChatService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private Parameterconf parameterconf;
 
