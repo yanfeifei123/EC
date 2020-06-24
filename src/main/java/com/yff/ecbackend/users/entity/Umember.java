@@ -19,6 +19,9 @@ public class Umember extends BaseEntity<Long> {
     @Column(columnDefinition = "int(255) comment '关联用户id'")
     private Long userid;
 
+    @Column(columnDefinition = "int(255) comment '分店id'")
+    private Long branchid;
+
     @Column(columnDefinition = "decimal(6,2) comment '金额'")
     private float money;
 

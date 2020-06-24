@@ -17,7 +17,6 @@ import com.yff.wechat.wxpaysdk.WXPay;
 import com.yff.wechat.wxpaysdk.WXPayUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -265,7 +264,6 @@ public class WeChatService {
      * @return
      */
     public Object UnifiedOrder(String tradeno, String openid, String total_fee, String body, HttpServletRequest request) {
-//        this.orderid = Long.valueOf(orderid); //缓存预支付的订单id
 
         Map<String, String> resultMap = new HashMap<String, String>();
 
@@ -286,8 +284,6 @@ public class WeChatService {
 
         String nonce_str = WXPayUtil.generateNonceStr();
         String spbill_create_ip = this.getIp(request);
-//        String out_trade_no = WXPayUtil.outtradeno();
-//        System.out.println("out_trade_no:"+out_trade_no);
 
         HashMap<String, String> data = new HashMap<String, String>();
         data.put("appid", parameterconf.getAppid());
@@ -298,12 +294,10 @@ public class WeChatService {
         data.put("total_fee", total_fee);
         data.put("spbill_create_ip", spbill_create_ip);
         String notify_url = parameterconf.getNotify_url();
-//        System.out.println("notify_url:"+notify_url);
         data.put("notify_url", notify_url);
         data.put("trade_type", "JSAPI");
         data.put("openid", openid);
 
-//        System.out.println(JSON.toJSONString(data));
         try {
             Map<String, String> rMap = wxpay.unifiedOrder(data);
             String return_code = rMap.get("return_code");
@@ -312,11 +306,8 @@ public class WeChatService {
             resultMap.put("nonceStr", nonceStr);
             Long timeStamp = System.currentTimeMillis() / 1000;
 
-//            System.out.println(JSON.toJSONString(result_code));
-
             if ("SUCCESS".equals(return_code) && return_code.equals(result_code)) {
                 String prepayid = rMap.get("prepay_id");
-//                System.out.println("prepayid:" + prepayid);
                 resultMap.put("package", "prepay_id=" + prepayid);
                 resultMap.put("signType", "MD5");
                 resultMap.put("timeStamp", timeStamp + "");
@@ -324,12 +315,10 @@ public class WeChatService {
                 String sign = WXPayUtil.generateSignature(resultMap, parameterconf.getPaykey());
                 resultMap.put("paySign", sign);
                 resultMap.put("prepay_id", prepayid);
-//                System.out.println("生成的签名paySign : " + sign);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        System.out.println("统一下单:"+JSON.toJSONString(resultMap));
         return resultMap;
 
     }

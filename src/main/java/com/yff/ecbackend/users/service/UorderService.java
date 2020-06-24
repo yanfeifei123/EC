@@ -318,7 +318,7 @@ public class UorderService extends BaseService<Uorder, Long> {
             }
         }
 
-        orderDetail.setPaym("在线支付");
+        orderDetail.setPaym(uorder.getPaymode() == 0 ? "微信支付" : "会员支付");
 
         if (uorder.getSelf() == 1) {
             orderDetail.setExptimeinf(bbranch.getArea() + "," + bbranch.getDetailed());
@@ -363,34 +363,7 @@ public class UorderService extends BaseService<Uorder, Long> {
         return orderItems;
     }
 
-    /**
-     * 新订单消息模板
-     *
-     * @return
-     */
-    public Map<String, TemplateData> findByOrderSendTempInfo(Uorder uorder) {
 
-        Map<String, TemplateData> map = new HashMap<>();
-        map.put("character_string1", new TemplateData(uorder.getTradeno()));
-        String orderType = uorder.getSelf() == 1 ? "到店自取" : "外卖配送";
-        map.put("phrase2", new TemplateData(orderType));
-        map.put("amount4", new TemplateData(df.format(uorder.getTotalfee())));
-        List<OrderItem> orderItems = this.orderByOrderDetailed(uorder.getId().toString());
-        String names = "";
-        String istc = "";
-        for (OrderItem orderItem : orderItems) {
-            istc = orderItem.getIsmeal() == 1 ? "（套餐）" : "";
-            if (names.equals("")) {
-                names = orderItem.getName() + istc;
-            } else {
-                names += "," + orderItem.getName() + istc;
-            }
-        }
-        map.put("thing6", new TemplateData(names));
-        Uaddress uaddress = this.uaddressService.findOne(uorder.getUaddressid());
-        map.put("name7", new TemplateData(uaddress.getName() + "(" + uaddress.getGender() + ")"));
-        return map;
-    }
 
     /**
      * 通过商户号查询订单

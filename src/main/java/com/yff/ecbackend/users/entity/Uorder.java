@@ -84,6 +84,9 @@ public class Uorder extends BaseEntity<Long> {
     @Column(columnDefinition = "varchar(100)   comment '收货人电话'")
     private String phone;
 
+    @Column(columnDefinition = "int(11)  DEFAULT '0' comment '支付方式(1微信,2会员)'")
+    private int paymode;
+
     @Transient
     private String branchname;
 
@@ -287,5 +290,13 @@ public class Uorder extends BaseEntity<Long> {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public int getPaymode() {
+        return paymode;
+    }
+
+    public void setPaymode(int paymode) {
+        this.paymode = paymode;
     }
 }

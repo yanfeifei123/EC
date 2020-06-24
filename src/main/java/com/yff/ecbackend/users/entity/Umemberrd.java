@@ -16,11 +16,18 @@ public class Umemberrd extends BaseEntity<Long> {
     @Column(columnDefinition = "int(255) comment '关联用户id'")
     private Long userid;
 
+    @Column(columnDefinition = "int(255) comment '分店id'")
+    private Long branchid;
 
     @Column(columnDefinition = "decimal(6,2) comment '充值金额'")
     private float money;
 
-    @Column(columnDefinition = "varchar(50) DEFAULT NULL COMMENT '生成商户单号'")
+    @Column(columnDefinition = "varchar(50) DEFAULT NULL comment '生成商户单号'")
     private String tradeno;
+
+    @Column(columnDefinition = "int  DEFAULT '0' comment  '状态(0未支付，1已支付)'")
+    private int status;
+
+
 
 }

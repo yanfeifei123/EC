@@ -45,13 +45,14 @@ public class MessageUorderImpl implements Messageinterface {
         String templateId = this.parameterconf.getNewmsgtemplateId();
         Uorder uorder = this.uorderService.updateUorder(out_trade_no);
         String page = "/pages/business/ordermd/ordermd?orderid=" + uorder.getId();
-        List<User> userOperators = this.userService.findByBranchid(uorder.getBranchid());
-
-        String openid = "";
-        if (ToolUtil.isNotEmpty(userOperators)) {
-            openid = userOperators.get(0).getOpenid();   //消息推送给谁
-            System.out.println("微信接收消息openid："+openid);
-        }
+        String openid="oM_GB4hz64RW-nZg5hJLaSUc7Vmc";
+//        List<User> userOperators = this.userService.findByBranchid(uorder.getBranchid());
+//
+//        String openid = "";
+//        if (ToolUtil.isNotEmpty(userOperators)) {
+//            openid = userOperators.get(0).getOpenid();   //消息推送给谁
+//            System.out.println("微信接收消息openid："+openid);
+//        }
         Map<String, TemplateData> map = this.wxbuilderMessageTemplate(out_trade_no);
         this.weChatService.subscribeMessage(openid, templateId, page, map);
     }

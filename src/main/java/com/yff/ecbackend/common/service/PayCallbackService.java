@@ -2,7 +2,9 @@ package com.yff.ecbackend.common.service;
 
 import com.yff.core.util.SpringContextHolder;
 import com.yff.core.util.ToolUtil;
+import com.yff.ecbackend.users.entity.Umemberrd;
 import com.yff.ecbackend.users.entity.Uorder;
+import com.yff.ecbackend.users.service.UmemberrdService;
 import com.yff.ecbackend.users.service.UorderService;
 import com.yff.wechat.wxpaysdk.WXPayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class PayCallbackService {
     @Autowired
     private WeChatService weChatService;
 
+    @Autowired
+    private UmemberrdService umemberrdService;
+
     /**
      * 支付回调
      *
@@ -41,7 +46,11 @@ public class PayCallbackService {
         Uorder uorder = uorderService.findTradenoUorder(out_trade_no);
         Messageinterface messageRepository = null;
         if(ToolUtil.isNotEmpty(uorder)){
-            messageRepository = SpringContextHolder.getBean(MessageUorderImpl.class);
+            return SpringContextHolder.getBean(MessageUorderImpl.class);
+        }
+        Umemberrd umemberrd = this.umemberrdService.findByUmemberrd(out_trade_no);
+        if(ToolUtil.isNotEmpty(umemberrd)){
+            return SpringContextHolder.getBean(MessagememberrdImpl.class);
         }
         return messageRepository;
     }

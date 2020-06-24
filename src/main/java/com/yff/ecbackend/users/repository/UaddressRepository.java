@@ -19,4 +19,6 @@ public interface UaddressRepository extends BaseRepository<Uaddress,Long> {
 
 
 
+
+
 }

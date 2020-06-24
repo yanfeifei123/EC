@@ -29,6 +29,10 @@ public class UaddressService extends BaseService<Uaddress,Long> {
          return null;
     }
 
+    public List<Uaddress> findByUaddress(Long userid){
+        return this.uaddressRepository.findByUaddress(userid);
+    }
+
 
     public int updateUaddress(String u_address,String openid){
         Uaddress  uaddress   = JSON.parseObject(u_address,Uaddress.class);
