@@ -17,8 +17,4 @@ public class OrderSummary {
     private float refundamount; //退款金额
     private int refundformnum; //退款订单数量
 
-//    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
-//    private Date datetime;  //统计时间
-
-
 }

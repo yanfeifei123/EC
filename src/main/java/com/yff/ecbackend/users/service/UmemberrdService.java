@@ -44,4 +44,14 @@ public class UmemberrdService extends BaseService<Umemberrd,Long> {
          }
          return this.update(umemberrd);
     }
+
+
+    public int findBycheckupOrderMember(Long branchid){
+        return this.umemberrdRepository.findBycheckupOrderMember(branchid);
+    }
+
+
+    public void updateCheckup(Long branchid){
+         this.umemberrdRepository.updateCheckup(branchid);
+    }
 }

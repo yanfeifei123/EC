@@ -7,6 +7,7 @@ import com.yff.core.util.ToolUtil;
 import com.yff.ecbackend.common.service.PayCallbackService;
 import com.yff.ecbackend.common.service.WeChatService;
 import com.yff.ecbackend.common.view.CommonReturnType;
+import com.yff.ecbackend.users.service.UorderPayMemberService;
 import com.yff.ecbackend.users.service.UorderRefundService;
 import com.yff.ecbackend.users.service.UorderService;
 import com.yff.ecbackend.users.service.UorderrService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +46,9 @@ public class OrderManagerController {
     @Autowired
     private UorderrService uorderrService;
 
+    @Autowired
+    private UorderPayMemberService uorderPayMemberService;
+
     /**
      * 微信统一下单
      *
@@ -65,7 +70,7 @@ public class OrderManagerController {
     @RequestMapping(value = "/updateUserOrder", method = RequestMethod.POST)
     @ResponseBody
     public Object updateUserOrder(String orderObj) {
-        System.out.println("订单数据："+orderObj);
+        System.out.println("订单数据：" + orderObj);
         CommonReturnType commonReturnType = new CommonReturnType();
         if (ToolUtil.isEmpty(orderObj)) {
             commonReturnType.setCode(-1);
@@ -197,15 +202,15 @@ public class OrderManagerController {
 
     /**
      * 不允许退款
+     *
      * @param out_trade_no
      * @return
      */
     @RequestMapping(value = "/norefund", method = RequestMethod.POST)
     @ResponseBody
     public Object norefund(String out_trade_no) {
-       return this.uorderService.refundOpt(out_trade_no,false);
+        return this.uorderService.refundOpt(out_trade_no, false);
     }
-
 
 
     /**
@@ -221,17 +226,29 @@ public class OrderManagerController {
     }
 
 
-
     @RequestMapping(value = "/uorderrRefund", method = RequestMethod.POST)
     @ResponseBody
-    public Object uorderrRefund(@RequestParam("file") MultipartFile multipartFile,@RequestParam("uorderr") String uorderr){
-       return uorderrService.uorderrRefund(multipartFile,uorderr);
+    public Object uorderrRefund(@RequestParam("file") MultipartFile multipartFile, @RequestParam("uorderr") String uorderr) {
+        return uorderrService.uorderrRefund(multipartFile, uorderr);
     }
 
     @RequestMapping(value = "/uorderrRefundnofile", method = RequestMethod.POST)
     @ResponseBody
-    public Object uorderrRefundnofile(String uorderr){
+    public Object uorderrRefundnofile(String uorderr) {
         System.out.println(uorderr);
-        return uorderrService.uorderrRefund(null,uorderr);
+        return uorderrService.uorderrRefund(null, uorderr);
+    }
+
+    /**
+     * 会员支付
+     *
+     * @param tradeno
+     * @return
+     */
+    @RequestMapping(value = "/payMember", method = RequestMethod.POST)
+    @ResponseBody
+    public Object payMember(String tradeno) {
+        uorderPayMemberService.payMember(tradeno);
+        return 1;
     }
 }

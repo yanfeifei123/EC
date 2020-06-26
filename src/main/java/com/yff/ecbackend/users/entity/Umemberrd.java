@@ -28,6 +28,11 @@ public class Umemberrd extends BaseEntity<Long> {
     @Column(columnDefinition = "int  DEFAULT '0' comment  '状态(0未支付，1已支付)'")
     private int status;
 
+    @Column(columnDefinition = "int  DEFAULT '0' comment  '是否已查看0,1'")
+    private int checkup;
+
+
+
 
 
 }

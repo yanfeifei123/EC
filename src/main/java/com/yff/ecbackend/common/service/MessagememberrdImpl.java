@@ -25,7 +25,7 @@ import java.util.Map;
 
 
 /**
- * 处理充值
+ * 处理会员充值消息
  */
 @Service
 public class MessagememberrdImpl implements Messageinterface {
@@ -53,12 +53,6 @@ public class MessagememberrdImpl implements Messageinterface {
         Umemberrd umemberrd = this.umemberrdService.findByUmemberrd(out_trade_no);
         String page = "/pages/meal/umemberrd/umemberrd?umemberrdid" + umemberrd.getId();
         String openid="oM_GB4hz64RW-nZg5hJLaSUc7Vmc";
-//        List<User> userOperators = this.userService.findByBranchid(umemberrd.getBranchid());
-//        String openid = "";
-//        if (ToolUtil.isNotEmpty(userOperators)) {
-//            openid = userOperators.get(0).getOpenid();   //消息推送给谁
-//            System.out.println("微信接收消息openid：" + openid);
-//        }
         Map<String, TemplateData> map = this.wxbuilderMessageTemplate(out_trade_no);
         this.weChatService.subscribeMessage(openid, templateId, page, map);
     }
